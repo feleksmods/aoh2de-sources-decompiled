@@ -2677,6 +2677,14 @@ public class Province {
 
     public final int getCivId() {
         try {
+            if (this.provGD.armiesC.get(0).getCivID() < 0) {
+                if (this.getTrueOwnerOfProv() > 0) {
+                    this.setCivIdJust(this.getTrueOwnerOfProv());
+                    return this.getTrueOwnerOfProv();
+                }
+                this.setCivIdJust(0);
+                return 0;
+            }
             return this.provGD.armiesC.get(0).getCivID();
         }
         catch (IndexOutOfBoundsException ex) {

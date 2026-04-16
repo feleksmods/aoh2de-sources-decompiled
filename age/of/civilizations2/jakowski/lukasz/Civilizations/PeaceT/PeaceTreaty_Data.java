@@ -406,7 +406,7 @@ public class PeaceTreaty_Data {
     }
 
     public final void prepareProvinceData(boolean buildProvincesLost) {
-        block120: {
+        block121: {
             try {
                 int i;
                 this.drawProvOwners.clear();
@@ -424,8 +424,13 @@ public class PeaceTreaty_Data {
                     tempParticipants.set(this.peaceTreatyGD.civsDataAggressors.get((int)i).iCivID, true);
                 }
                 for (i = 0; i < CFG.core.getProvinSize(); ++i) {
-                    if (((Boolean)tempParticipants.get(CFG.core.getProv(i).getCivId())).booleanValue()) {
-                        this.drawProvOwners.add(new PeaceTreaty_DrawData(CFG.core.getProv(i).getCivId(), CFG.core.getProvinceValue(i), false));
+                    int provID = CFG.core.getProv(i).getCivId();
+                    if (provID >= 0) {
+                        if (((Boolean)tempParticipants.get(CFG.core.getProv(i).getCivId())).booleanValue()) {
+                            this.drawProvOwners.add(new PeaceTreaty_DrawData(CFG.core.getProv(i).getCivId(), CFG.core.getProvinceValue(i), false));
+                            continue;
+                        }
+                        this.drawProvOwners.add(new PeaceTreaty_DrawData(CFG.core.getProv(i).getCivId() * -1, CFG.core.getProvinceValue(i), false));
                         continue;
                     }
                     this.drawProvOwners.add(new PeaceTreaty_DrawData(CFG.core.getProv(i).getCivId() * -1, CFG.core.getProvinceValue(i), false));
@@ -438,9 +443,8 @@ public class PeaceTreaty_Data {
                     int i2;
                     try {
                         for (i = this.peaceTreatyGD.civsDataDefenders.size() - 1; i >= 0; --i) {
-                            int j2;
                             try {
-                                for (j2 = this.peaceTreatyGD.civsDataDefenders.get((int)i).lProvincesLost.size() - 1; j2 >= 0; --j2) {
+                                for (int j2 = this.peaceTreatyGD.civsDataDefenders.get((int)i).lProvincesLost.size() - 1; j2 >= 0; --j2) {
                                     this.drawProvOwners.get((int)this.peaceTreatyGD.civsDataDefenders.get((int)i).lProvincesLost.get((int)j2).intValue()).isToTake = true;
                                     this.drawProvOwners.get((int)this.peaceTreatyGD.civsDataDefenders.get((int)i).lProvincesLost.get((int)j2).intValue()).iCivID = CFG.core.getProv(this.peaceTreatyGD.civsDataDefenders.get((int)i).lProvincesLost.get(j2)).getTrueOwnerOfProv();
                                     this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(this.peaceTreatyGD.civsDataDefenders.get((int)i).lProvincesLost.get(j2));
@@ -450,8 +454,8 @@ public class PeaceTreaty_Data {
                                 CFG.exceptionStack(ex);
                             }
                             try {
-                                for (j2 = 0; j2 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iCivID).getNumOfProvs(); ++j2) {
-                                    this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iCivID).getProvID(j2));
+                                for (int j3 = 0; j3 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iCivID).getNumOfProvs(); ++j3) {
+                                    this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i).iCivID).getProvID(j3));
                                 }
                                 continue;
                             }
@@ -466,18 +470,18 @@ public class PeaceTreaty_Data {
                     try {
                         for (int i3 = this.peaceTreatyGD.civsDataAggressors.size() - 1; i3 >= 0; --i3) {
                             try {
-                                for (int j3 = this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.size() - 1; j3 >= 0; --j3) {
-                                    this.drawProvOwners.get((int)this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get((int)j3).intValue()).isToTake = true;
-                                    this.drawProvOwners.get((int)this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get((int)j3).intValue()).iCivID = CFG.core.getProv(this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get(j3)).getTrueOwnerOfProv();
-                                    this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get(j3));
+                                for (int j4 = this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.size() - 1; j4 >= 0; --j4) {
+                                    this.drawProvOwners.get((int)this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get((int)j4).intValue()).isToTake = true;
+                                    this.drawProvOwners.get((int)this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get((int)j4).intValue()).iCivID = CFG.core.getProv(this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get(j4)).getTrueOwnerOfProv();
+                                    this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(this.peaceTreatyGD.civsDataAggressors.get((int)i3).lProvincesLost.get(j4));
                                 }
                             }
                             catch (Exception ex) {
                                 CFG.exceptionStack(ex);
                             }
                             try {
-                                for (int j4 = 0; j4 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iCivID).getNumOfProvs(); ++j4) {
-                                    this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iCivID).getProvID(j4));
+                                for (int j5 = 0; j5 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iCivID).getNumOfProvs(); ++j5) {
+                                    this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iTotalNumOfVicotryPoints += CFG.core.getProvinceValue(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i3).iCivID).getProvID(j5));
                                 }
                                 continue;
                             }
@@ -492,19 +496,19 @@ public class PeaceTreaty_Data {
                     for (i2 = this.peaceTreatyGD.civsDemandsAggressors.size() - 1; i2 >= 0; --i2) {
                         this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs = new ArrayList<PeaceTreaty_ReleaseableVassals>();
                         try {
-                            for (int j5 = 0; j5 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getNumOfProvs(); ++j5) {
-                                if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).isOccupied()) continue;
-                                for (u = 0; u < CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).getCores().getCivsSize(); ++u) {
-                                    if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).getCores().getCivID(u) == CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).getCivId() || CFG.core.getCiv(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).getCores().getCivID(u)).getNumOfProvs() != 0) continue;
+                            for (int j6 = 0; j6 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getNumOfProvs(); ++j6) {
+                                if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).isOccupied()) continue;
+                                for (u = 0; u < CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).getCores().getCivsSize(); ++u) {
+                                    if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u) == CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).getCivId() || CFG.core.getCiv(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u)).getNumOfProvs() != 0) continue;
                                     tAdd = true;
                                     for (k = this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.size() - 1; k >= 0; --k) {
-                                        if (this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.get((int)k).iCivID != CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).getCores().getCivID(u)) continue;
+                                        if (this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.get((int)k).iCivID != CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u)) continue;
                                         tAdd = false;
-                                        this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.get(k).addProvince(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5));
+                                        this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.get(k).addProvince(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6));
                                         break;
                                     }
                                     if (!tAdd) continue;
-                                    this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.add(new PeaceTreaty_ReleaseableVassals(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)).getCores().getCivID(u), CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j5)));
+                                    this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).lReleasableCivs.add(new PeaceTreaty_ReleaseableVassals(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u), CFG.core.getCiv(this.peaceTreatyGD.civsDemandsAggressors.get((int)i2).iCivID).getProvID(j6)));
                                 }
                             }
                         }
@@ -535,19 +539,19 @@ public class PeaceTreaty_Data {
                     for (i2 = this.peaceTreatyGD.civsDemandsDefenders.size() - 1; i2 >= 0; --i2) {
                         this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs = new ArrayList<PeaceTreaty_ReleaseableVassals>();
                         try {
-                            for (int j6 = 0; j6 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getNumOfProvs(); ++j6) {
-                                if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).isOccupied()) continue;
-                                for (u = 0; u < CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).getCores().getCivsSize(); ++u) {
-                                    if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u) == CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).getCivId() || CFG.core.getCiv(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u)).getNumOfProvs() != 0) continue;
+                            for (int j7 = 0; j7 < CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getNumOfProvs(); ++j7) {
+                                if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).isOccupied()) continue;
+                                for (u = 0; u < CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).getCores().getCivsSize(); ++u) {
+                                    if (CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).getCores().getCivID(u) == CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).getCivId() || CFG.core.getCiv(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).getCores().getCivID(u)).getNumOfProvs() != 0) continue;
                                     tAdd = true;
                                     for (k = this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.size() - 1; k >= 0; --k) {
-                                        if (this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.get((int)k).iCivID != CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u)) continue;
+                                        if (this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.get((int)k).iCivID != CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).getCores().getCivID(u)) continue;
                                         tAdd = false;
-                                        this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.get(k).addProvince(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6));
+                                        this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.get(k).addProvince(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7));
                                         break;
                                     }
                                     if (!tAdd) continue;
-                                    this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.add(new PeaceTreaty_ReleaseableVassals(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)).getCores().getCivID(u), CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j6)));
+                                    this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).lReleasableCivs.add(new PeaceTreaty_ReleaseableVassals(CFG.core.getProv(CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)).getCores().getCivID(u), CFG.core.getCiv(this.peaceTreatyGD.civsDemandsDefenders.get((int)i2).iCivID).getProvID(j7)));
                                 }
                             }
                         }
@@ -585,7 +589,7 @@ public class PeaceTreaty_Data {
                         CFG.exceptionStack(ex);
                     }
                     this.iProvsLeftToTakeSize = this.provsLeftToTake.size();
-                    break block120;
+                    break block121;
                 }
                 try {
                     int o;

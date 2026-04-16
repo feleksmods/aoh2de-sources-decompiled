@@ -240,6 +240,20 @@ public class AI {
                 int k;
                 int j;
                 War_GameData warData = CFG.core.getWar(i);
+                boolean next = false;
+                for (j = 0; j < warData.getDefendersSize(); ++j) {
+                    if (warData.getDefenderID(j).getCivID() >= 0) continue;
+                    CFG.core.removeWarData(i);
+                    next = true;
+                    break;
+                }
+                for (j = 0; j < warData.getAggressorsSize(); ++j) {
+                    if (warData.getAggressorID(j).getCivID() >= 0) continue;
+                    CFG.core.removeWarData(i);
+                    next = true;
+                    break;
+                }
+                if (next) continue;
                 for (j = 0; j < warData.getDefendersSize(); ++j) {
                     if (CFG.core.getCiv(warData.getDefenderID(j).getCivID()).getNumOfProvs() != 0 || CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)warData.getDefenderID((int)j).getCivID()).getIdeology()).REVOLUTIONARY) continue;
                     for (k = 0; k < warData.getAggressorsSize(); ++k) {

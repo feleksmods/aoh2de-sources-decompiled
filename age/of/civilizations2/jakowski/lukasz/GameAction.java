@@ -64,6 +64,7 @@ public class GameAction {
     public int eRTO_START = 0;
     public int eRTO_START2 = 0;
     public int eRTO_START3 = 0;
+    public boolean ELF = true;
     public int diceAggressors;
     public int diceDefenders;
     public int diceAggressorsCivID;
@@ -1391,6 +1392,9 @@ public class GameAction {
     }
 
     public final void startUprising() {
+        if (this.ELF) {
+            return;
+        }
         ArrayList<Integer> tempPossibleUprising = new ArrayList<Integer>();
         ArrayList<Integer> tempPossibleUprising_CheckSuggest = new ArrayList<Integer>();
         ArrayList<Integer> overMin = new ArrayList<Integer>();
@@ -1645,12 +1649,14 @@ public class GameAction {
                             for (i6 = 0; i6 < CFG.core.getCiv(nCivID).getNumOfProvs(); ++i6) {
                                 CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).setRevRisk(CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).getRevRisk() * (GameValues.gvRebels.CIV_PROVINCES_REST_REV_RISK_CHANGE_BASE + (float)CFG.oR.nextInt(GameValues.gvRebels.CIV_PROVINCES_REST_REV_RISK_CHANGE_RANDOM_1000) / 1000.0f));
                             }
-                            for (i6 = 0; i6 < CFG.core.getCiv(nRebelsCivID).getNumOfProvs(); ++i6) {
-                                CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).setRevRisk(GameValues.gvRebels.UPRAISE_REBELS_PROVINCES_REV_RISK);
-                                CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).setHappi(Math.max(GameValues.gvRebels.UPRAISE_REBELS_PROVINCES_HAPPINESS_MIN + (float)CFG.oR.nextInt(GameValues.gvRebels.UPRAISE_REBELS_PROVINCES_HAPPINESS_RANDOM_1O0) / 100.0f, CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).getHappi()));
-                            }
-                            for (i6 = 0; i6 < CFG.core.getCiv(nRebelsCivID).getNumOfProvs(); ++i6) {
-                                CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).updateDrawArmyInProv();
+                            if (nRebelsCivID > 0) {
+                                for (i6 = 0; i6 < CFG.core.getCiv(nRebelsCivID).getNumOfProvs(); ++i6) {
+                                    CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).setRevRisk(GameValues.gvRebels.UPRAISE_REBELS_PROVINCES_REV_RISK);
+                                    CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).setHappi(Math.max(GameValues.gvRebels.UPRAISE_REBELS_PROVINCES_HAPPINESS_MIN + (float)CFG.oR.nextInt(GameValues.gvRebels.UPRAISE_REBELS_PROVINCES_HAPPINESS_RANDOM_1O0) / 100.0f, CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).getHappi()));
+                                }
+                                for (i6 = 0; i6 < CFG.core.getCiv(nRebelsCivID).getNumOfProvs(); ++i6) {
+                                    CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getProvID(i6)).updateDrawArmyInProv();
+                                }
                             }
                             for (i6 = 0; i6 < CFG.core.getCiv(nCivID).getNumOfProvs(); ++i6) {
                                 if (CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).getCivId() != CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).getTrueOwnerOfProv()) continue;
@@ -1658,24 +1664,26 @@ public class GameAction {
                                 if (!(CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).getHappi() < GameValues.gvRebels.CIV_PROVINCES_REST_HAPPINESS_MIN)) continue;
                                 CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).setHappi(GameValues.gvRebels.CIV_PROVINCES_REST_HAPPINESS_MIN + CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i6)).getHappi() * GameValues.gvRebels.CIV_PROVINCES_REST_HAPPINESS_MIN_IN_PROVINCE_MODIFIER);
                             }
-                            if (CFG.core.getCiv(nRebelsCivID).getCapitalProvID() >= 0) {
-                                CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).setIsCapital(true);
-                                boolean updateCapitalLevel = true;
-                                for (int i7 = 0; i7 < CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize(); ++i7) {
-                                    if (CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(i7).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
-                                    updateCapitalLevel = false;
-                                    break;
+                            if (nRebelsCivID > 0) {
+                                if (CFG.core.getCiv(nRebelsCivID).getCapitalProvID() >= 0) {
+                                    CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).setIsCapital(true);
+                                    boolean updateCapitalLevel = true;
+                                    for (int i7 = 0; i7 < CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize(); ++i7) {
+                                        if (CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(i7).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
+                                        updateCapitalLevel = false;
+                                        break;
+                                    }
+                                    if (updateCapitalLevel && CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize() > 0) {
+                                        CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(0).setCityLevel(CFG.getEditorCityLevel(0));
+                                    }
                                 }
-                                if (updateCapitalLevel && CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize() > 0) {
-                                    CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(0).setCityLevel(CFG.getEditorCityLevel(0));
-                                }
-                            }
-                            if (CFG.FOG_OF_WAR == 2) {
-                                block33: for (i6 = 0; i6 < CFG.core.getPlayersSize(); ++i6) {
-                                    for (int j4 = 0; j4 < CFG.core.getCiv(nRebelsCivID).getNumOfProvs(); ++j4) {
-                                        if (!CFG.core.getPlayer(i6).getMetProv(CFG.core.getCiv(nRebelsCivID).getProvID(j4))) continue;
-                                        CFG.core.getPlayer(i6).setMetCiv(nRebelsCivID, true);
-                                        continue block33;
+                                if (CFG.FOG_OF_WAR == 2) {
+                                    block33: for (i6 = 0; i6 < CFG.core.getPlayersSize(); ++i6) {
+                                        for (int j4 = 0; j4 < CFG.core.getCiv(nRebelsCivID).getNumOfProvs(); ++j4) {
+                                            if (!CFG.core.getPlayer(i6).getMetProv(CFG.core.getCiv(nRebelsCivID).getProvID(j4))) continue;
+                                            CFG.core.getPlayer(i6).setMetCiv(nRebelsCivID, true);
+                                            continue block33;
+                                        }
                                     }
                                 }
                             }
@@ -1810,6 +1818,9 @@ public class GameAction {
     }
 
     public final void spawnRevolution_UpdateCivData(int nCivID, int nRebelsCivID, String nRevTag) {
+        if (nRebelsCivID < 0) {
+            return;
+        }
         CFG.core.getCiv(nRebelsCivID).setCivTag(nRevTag);
         Color nColor = CFG.getRandomColor();
         CFG.core.getCiv(nRebelsCivID).setR((int)(nColor.r * 255.0f));
@@ -5102,11 +5113,16 @@ public class GameAction {
                 nRebelsCivID = i2;
                 break;
             }
-            this.spawnRevolution_UpdateCivData(nCivID, nRebelsCivID, nRevTag);
+            if (nRebelsCivID > 0) {
+                this.spawnRevolution_UpdateCivData(nCivID, nRebelsCivID, nRevTag);
+            }
         } else if (!CFG.core.getCiv(nRebelsCivID).getCivTag().equals(nRevTag)) {
             this.spawnRevolution_UpdateCivData(nCivID, nRebelsCivID, nRevTag);
         } else {
             this.spawnRevolution_UpdateCivData(nCivID, nRebelsCivID, nRevTag);
+        }
+        if (nRebelsCivID < 0) {
+            return;
         }
         CFG.core.getCiv((int)nRebelsCivID).civGD.iRevolt_SinceTurn = GameCalendar.TURNID;
         CFG.core.getCiv((int)nRebelsCivID).civGD.iRevolt_LastTurnLostProvince = GameCalendar.TURNID;
