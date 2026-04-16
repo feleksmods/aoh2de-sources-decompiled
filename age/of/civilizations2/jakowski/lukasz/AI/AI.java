@@ -247,11 +247,13 @@ public class AI {
                     next = true;
                     break;
                 }
-                for (j = 0; j < warData.getAggressorsSize(); ++j) {
-                    if (warData.getAggressorID(j).getCivID() >= 0) continue;
-                    CFG.core.removeWarData(i);
-                    next = true;
-                    break;
+                if (!next) {
+                    for (j = 0; j < warData.getAggressorsSize(); ++j) {
+                        if (warData.getAggressorID(j).getCivID() >= 0) continue;
+                        CFG.core.removeWarData(i);
+                        next = true;
+                        break;
+                    }
                 }
                 if (next) continue;
                 for (j = 0; j < warData.getDefendersSize(); ++j) {

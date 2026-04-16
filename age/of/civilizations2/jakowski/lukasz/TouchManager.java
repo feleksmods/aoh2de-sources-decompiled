@@ -56,6 +56,7 @@ public class TouchManager {
     private ReverseDirection2 revDirectionX2;
     private ReverseDirection2 revDirectionY2;
     public static List<Integer> lMABX = new ArrayList<Integer>();
+    public static int rODS = -1;
 
     public TouchManager() {
         this.buildReversePosX();
@@ -170,7 +171,7 @@ public class TouchManager {
             this.aUSM(nPosX, nPosY);
             return;
         }
-        if (!CFG.regroupArmyMode) {
+        if (!CFG.regroupArmyMode && CFG.core.getActiveProvID() != rODS) {
             TouchManager.cMABX();
         }
         this.actionUp_setActiveProvinceID(nPosX, nPosY);
@@ -185,6 +186,9 @@ public class TouchManager {
 
     public static final void adMABX(int provinceID) {
         try {
+            if (lMABX.isEmpty()) {
+                rODS = CFG.core.getActiveProvID();
+            }
             for (int i = 0; i < CFG.core.getProv((int)provinceID).provGD.civsSize; ++i) {
                 if (CFG.core.getProv(provinceID).getCivId(i) != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(provinceID).getArmyID(i) <= 0) continue;
                 lMABX.add(provinceID);
