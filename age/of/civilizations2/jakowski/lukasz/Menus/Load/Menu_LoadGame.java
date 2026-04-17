@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Menu_LoadGame
 extends Menu {
@@ -83,30 +82,79 @@ extends Menu {
             FileHandle file2 = CFG.readLocalFiles() ? Gdx.files.local("saves/games/" + CFG.map.getFileActiveMapPath() + "Age_of_Civilizations") : FileManager.loadFile("saves/games/" + CFG.map.getFileActiveMapPath() + "Age_of_Civilizations");
             String tempTags = file2.readString();
             String[] tSplted = tempTags.split(";");
-            for (int i = tSplted.length - 1; i >= 0; --i) {
-                FileHandle file = FileManager.loadFile("saves/games/" + CFG.map.getFileActiveMapPath() + tSplted[i] + "/" + tSplted[i] + ".json");
-                String fileContent = file.readString();
-                Json json = new Json();
-                json.setElementType(SaveGameManager.ConfigSaveInfo.class, "Data_Save_Info", SaveGameManager.Data_Save_Info.class);
-                SaveGameManager.ConfigSaveInfo data = json.fromJson(SaveGameManager.ConfigSaveInfo.class, fileContent);
-                Iterator iterator = data.Data_Save_Info.iterator();
-                if (!iterator.hasNext()) continue;
-                Object e = iterator.next();
-                SaveGameManager.Data_Save_Info tempData = (SaveGameManager.Data_Save_Info)e;
-                menuElements.add(new Button_Classic_ScenarioLoad(i, tempData.PLAYER_TAG, tempData.Civs, tempData.GameDate + " - " + CFG.lang.get("Turn") + ": " + tempData.Turn, 0, tY, tempMenuWidth - CFG.BUTTON_W, CFG.BUTTON_H, true));
-                menuElements.add(new Button_Classic_Remove(tempMenuWidth - CFG.BUTTON_W, tY, CFG.BUTTON_W, CFG.BUTTON_H, true){
+            block6: for (int i = tSplted.length - 1; i >= 0; --i) {
+                try {
+                    FileHandle file = FileManager.loadFile("saves/games/" + CFG.map.getFileActiveMapPath() + tSplted[i] + "/" + tSplted[i] + ".json");
+                    String fileContent = file.readString();
+                    Json json = new Json();
+                    json.setElementType(SaveGameManager.ConfigSaveInfo.class, "Data_Save_Info", SaveGameManager.Data_Save_Info.class);
+                    SaveGameManager.ConfigSaveInfo data = json.fromJson(SaveGameManager.ConfigSaveInfo.class, fileContent);
+                    for (Object e : data.Data_Save_Info) {
+                        SaveGameManager.Data_Save_Info tempData = (SaveGameManager.Data_Save_Info)e;
+                        try {
+                            menuElements.add(new Button_Classic_ScenarioLoad(i, tempData.PLAYER_TAG, tempData.Civs, tempData.GameDate + " - " + CFG.lang.get("Turn") + ": " + tempData.Turn, 0, tY, tempMenuWidth - CFG.BUTTON_W, CFG.BUTTON_H, true));
+                            menuElements.add(new Button_Classic_Remove(tempMenuWidth - CFG.BUTTON_W, tY, CFG.BUTTON_W, CFG.BUTTON_H, true){
 
-                    @Override
-                    public void buildElemHover() {
-                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                        nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Delete"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
-                        nElements.add(new MEHover_2E(nData));
-                        nData.clear();
-                        this.menuElemHover = new ME_Hover_v2(nElements);
+                                @Override
+                                public void buildElemHover() {
+                                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Delete"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                                    nElements.add(new MEHover_2E(nData));
+                                    nData.clear();
+                                    this.menuElemHover = new ME_Hover_v2(nElements);
+                                }
+                            });
+                            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+                            continue block6;
+                        }
+                        catch (Exception exr) {
+                            menuElements.add(new Button_Classic_ScenarioLoad(0, CFG.lang.get("Error"), 0, "---", 0, tY, tempMenuWidth - CFG.BUTTON_W, CFG.BUTTON_H, true){
+
+                                @Override
+                                public boolean getIsClickable() {
+                                    return false;
+                                }
+                            });
+                            menuElements.add(new Button_Classic_Remove(tempMenuWidth - CFG.BUTTON_W, tY, CFG.BUTTON_W, CFG.BUTTON_H, true){
+
+                                @Override
+                                public void buildElemHover() {
+                                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Delete"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                                    nElements.add(new MEHover_2E(nData));
+                                    nData.clear();
+                                    this.menuElemHover = new ME_Hover_v2(nElements);
+                                }
+                            });
+                            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+                        }
                     }
-                });
-                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+                    continue;
+                }
+                catch (Exception ex) {
+                    menuElements.add(new Button_Classic_ScenarioLoad(0, CFG.lang.get("Error"), 0, "---", 0, tY, tempMenuWidth - CFG.BUTTON_W, CFG.BUTTON_H, true){
+
+                        @Override
+                        public boolean getIsClickable() {
+                            return false;
+                        }
+                    });
+                    menuElements.add(new Button_Classic_Remove(tempMenuWidth - CFG.BUTTON_W, tY, CFG.BUTTON_W, CFG.BUTTON_H, true){
+
+                        @Override
+                        public void buildElemHover() {
+                            ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                            ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Delete"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            this.menuElemHover = new ME_Hover_v2(nElements);
+                        }
+                    });
+                    tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+                }
             }
         }
         catch (GdxRuntimeException gdxRuntimeException) {

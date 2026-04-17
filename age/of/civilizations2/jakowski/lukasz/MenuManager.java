@@ -1397,7 +1397,7 @@ public class MenuManager {
     }
 
     /*
-     * Opcode count of 13490 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
+     * Opcode count of 13502 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
      */
     public final int getViewID(View eMenu) {
         try {
@@ -1537,6 +1537,13 @@ public class MenuManager {
                     CFG.map.getMpS().setCurrScale(MapScale.MINSCALE);
                     CFG.map.getMpC().setNewPosX(-((int)((float)(CFG.map.getMpB().getWidthM() / 2) - (float)CFG.GAMEWIDTH / MapScale.MINSCALE / 2.0f)));
                     CFG.map.getMpC().setNewPosY(-((int)((float)(CFG.map.getMpB().getHeightM() / 2) - (float)CFG.GAMEHEIGHT / MapScale.MINSCALE / 2.0f)));
+                    try {
+                        this.setOrderOfMenuID(0);
+                        this.setOrderOfMenuID(1);
+                    }
+                    catch (Exception exception) {
+                        // empty catch block
+                    }
                     return this.MAIN_MENU;
                 }
                 case eGAMES: {
@@ -1590,11 +1597,16 @@ public class MenuManager {
                     return this.EDITOR_SCENARIOS;
                 }
                 case eLOADGAME: {
-                    if (this.LOADGAME == -1) {
-                        this.LOADGAME = this.addMenu(new Menu_LoadGame_Title());
-                        this.addNewMenuToViewID(this.LOADGAME, new Menu_LoadGame());
-                    } else {
-                        this.menus.get(this.LOADGAME).set(1, new Menu_LoadGame());
+                    try {
+                        if (this.LOADGAME == -1) {
+                            this.LOADGAME = this.addMenu(new Menu_LoadGame_Title());
+                            this.addNewMenuToViewID(this.LOADGAME, new Menu_LoadGame());
+                        } else {
+                            this.menus.get(this.LOADGAME).set(1, new Menu_LoadGame());
+                        }
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
                     }
                     return this.LOADGAME;
                 }
