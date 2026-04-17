@@ -21,6 +21,7 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_Stats;
 import age.of.civilizations2.jakowski.lukasz.Renderer;
 import age.of.civilizations2.jakowski.lukasz.SFXManager;
+import age.of.civilizations2.jakowski.lukasz.TextB.Texts.TextScale;
 import age.of.civilizations2.jakowski.lukasz.Title.TitleM_TextSmall;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,10 +33,45 @@ extends Menu {
     public static int sortBy = 2;
     private List<Integer> lSorted = new ArrayList<Integer>();
 
+    public Menu_InGame_MilitaryAlliances(int a) {
+        ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
+        int tempWidth = CFG.CIV_INFO_MENU_WIDTH * 2 + CFG.CIV_INFO_MENU_WIDTH / 2;
+        int tempHeight = CFG.BUTTON_H + CFG.BUTTON_H * 3 / 4;
+        int tElemHeight = CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4;
+        int tElemHeight2 = Math.max(CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4, IMGManager.getIMG(Images.flagRect2).getHeight() + CFG.PADD * 4);
+        menuElements.add(new TextScale(CFG.lang.get("----"), -1, 0, CFG.PADD, tempWidth - CFG.PADD * 4, CFG.BUTTON_H * 3 / 4, 0.75f){
+
+            @Override
+            public int getWidthE() {
+                return Menu_InGame_MilitaryAlliances.this.getElementW();
+            }
+        });
+        ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setClickable(false);
+        this.initMenu(new TitleM_TextSmall(CFG.lang.get("MilitaryAlliances"), CFG.BUTTON_H * 3 / 4, true, true){
+
+            @Override
+            public void drawT(SpriteBatch oSB, int iTranslateX, int nPosX, int nPosY, int nWidth, boolean sliderMenuIsActive) {
+                IMGManager.getIMG(Images.gameTopEdge).draw2O(oSB, nPosX - Core.PADDING + iTranslateX, nPosY - this.getHeightT() - IMGManager.getIMG(Images.gameTopEdge).getHeight() - Core.PADDING, nWidth - IMGManager.getIMG(Images.gameTopEdge).getWidth() + Core.PADDING * 2, this.getHeightT() + Core.PADDING);
+                IMGManager.getIMG(Images.gameTopEdge).draw2O(oSB, nPosX + Core.PADDING + nWidth - IMGManager.getIMG(Images.gameTopEdge).getWidth() + iTranslateX, nPosY - this.getHeightT() - IMGManager.getIMG(Images.gameTopEdge).getHeight() - Core.PADDING, IMGManager.getIMG(Images.gameTopEdge).getWidth(), this.getHeightT() + Core.PADDING, true, false);
+                oSB.setColor(new Color(0.003921569f, 0.12941177f, 0.4117647f, 0.225f));
+                IMGManager.getIMG(Images.line32Off1).drawO(oSB, nPosX + 2 + iTranslateX, nPosY - this.getHeightT() + 2 - IMGManager.getIMG(Images.line32Off1).getHeight(), nWidth - 4, this.getHeightT() - 2, false, true);
+                oSB.setColor(new Color(0.003921569f, 0.12941177f, 0.4117647f, 0.375f));
+                IMGManager.getIMG(Images.gradient).drawO(oSB, nPosX + 2 + iTranslateX, nPosY - this.getHeightT() * 2 / 3 - IMGManager.getIMG(Images.gradient).getHeight(), nWidth - 4, this.getHeightT() * 2 / 3, false, true);
+                oSB.setColor(new Color(0.0f, 0.0f, 0.0f, 0.5f));
+                IMGManager.getIMG(Images.gradient).drawO(oSB, nPosX + 2 + iTranslateX, nPosY - CFG.PADD - IMGManager.getIMG(Images.gradient).getHeight(), nWidth - 4, CFG.PADD, false, true);
+                oSB.setColor(CFG.COLOR_NEW_GAME_EDGE_LINE);
+                IMGManager.getIMG(Images.pix255).drawO(oSB, nPosX + 2 + iTranslateX, nPosY - 1 - IMGManager.getIMG(Images.pix255).getHeight(), nWidth - 4, 1);
+                oSB.setColor(new Color(CFG.COLOR_FLAG_FRAME.r, CFG.COLOR_FLAG_FRAME.g, CFG.COLOR_FLAG_FRAME.b, 0.45f));
+                IMGManager.getIMG(Images.sliderGradient).drawO(oSB, nPosX + 2 + iTranslateX, nPosY - 1 - IMGManager.getIMG(Images.sliderGradient).getHeight(), (nWidth - 4) / 2, 1);
+                IMGManager.getIMG(Images.sliderGradient).drawO(oSB, nPosX + 2 + (nWidth - 4) - (nWidth - 4) / 2 + iTranslateX, nPosY - 1 - IMGManager.getIMG(Images.sliderGradient).getHeight(), (nWidth - 4) / 2, 1, true, false);
+                oSB.setColor(Color.WHITE);
+                IMGManager.getIMG(Images.diploAlliance).drawO(oSB, nPosX + (nWidth - this.getTextWidth()) / 2 - CFG.PADD - IMGManager.getIMG(Images.diploAlliance).getWidth() + iTranslateX, 2 + nPosY - this.getHeightT() + this.getHeightT() / 2 - IMGManager.getIMG(Images.diploAlliance).getHeight() / 2);
+                Renderer.drawText(oSB, CFG.FONT_BOLD_SMALL, this.getText(), nPosX + (nWidth - this.getTextWidth()) / 2 + iTranslateX, 2 + nPosY - this.getHeightT() + (this.getHeightT() - this.getTextHeight()) / 2, Color.WHITE);
+            }
+        }, CFG.CIV_INFO_MENU_WIDTH + CFG.PADD * 2, Menu_InGame_Stats.getMenuY(), tempWidth, tempHeight, menuElements, false, true);
+    }
+
     public Menu_InGame_MilitaryAlliances() {
-        int i;
-        int tAdd;
-        int i2;
         ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
         int tempWidth = CFG.CIV_INFO_MENU_WIDTH * 2 + CFG.CIV_INFO_MENU_WIDTH / 2;
         int tempHeight = CFG.BUTTON_H + CFG.BUTTON_H * 3 / 4;
@@ -204,189 +240,198 @@ extends Menu {
                 return sortBy == 5 ? CFG.COLOR_TEXT_NUM_OF_PROVINCES : super.getColorE(isActive);
             }
         });
-        int tPosY = CFG.PADD + tElemHeight;
-        ArrayList<Integer> tProvinces = new ArrayList<Integer>();
-        ArrayList<Long> tPopulation = new ArrayList<Long>();
-        for (int i3 = 1; i3 < CFG.core.getAlliancesSize(); ++i3) {
-            tProvinces.add(CFG.core.getAlliance(i3).countProvinces());
-            tPopulation.add(CFG.core.getAlliance(i3).countPopulation());
+        try {
+            int i;
+            int tAdd;
+            int i2;
+            int tPosY = CFG.PADD + tElemHeight;
+            ArrayList<Integer> tProvinces = new ArrayList<Integer>();
+            ArrayList<Long> tPopulation = new ArrayList<Long>();
+            for (int i3 = 1; i3 < CFG.core.getAlliancesSize(); ++i3) {
+                tProvinces.add(CFG.core.getAlliance(i3).countProvinces());
+                tPopulation.add(CFG.core.getAlliance(i3).countPopulation());
+            }
+            ArrayList<Integer> tempIDs = new ArrayList<Integer>();
+            for (i2 = 1; i2 < CFG.core.getAlliancesSize(); ++i2) {
+                tempIDs.add(i2);
+            }
+            if (sortBy == 0) {
+                while (tempIDs.size() > 0) {
+                    tAdd = 0;
+                    for (i = 1; i < tempIDs.size(); ++i) {
+                        if (!CFG.compareAlphabetic_TwoString(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getAllianceName(), CFG.core.getAlliance((Integer)tempIDs.get(i)).getAllianceName())) continue;
+                        tAdd = i;
+                    }
+                    this.lSorted.add((Integer)tempIDs.get(tAdd));
+                    tempIDs.remove(tAdd);
+                }
+            } else if (sortBy == 1) {
+                while (tempIDs.size() > 0) {
+                    tAdd = 0;
+                    for (i = 1; i < tempIDs.size(); ++i) {
+                        if (CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilizationsSize() >= CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilizationsSize()) continue;
+                        tAdd = i;
+                    }
+                    this.lSorted.add((Integer)tempIDs.get(tAdd));
+                    tempIDs.remove(tAdd);
+                }
+            } else if (sortBy == 2) {
+                while (tempIDs.size() > 0) {
+                    tAdd = 0;
+                    for (i = 1; i < tempIDs.size(); ++i) {
+                        if ((Integer)tProvinces.get((Integer)tempIDs.get(tAdd) - 1) >= (Integer)tProvinces.get((Integer)tempIDs.get(i) - 1)) continue;
+                        tAdd = i;
+                    }
+                    this.lSorted.add((Integer)tempIDs.get(tAdd));
+                    tempIDs.remove(tAdd);
+                }
+            } else if (sortBy == 3) {
+                while (tempIDs.size() > 0) {
+                    tAdd = 0;
+                    for (i = 1; i < tempIDs.size(); ++i) {
+                        if ((Long)tPopulation.get((Integer)tempIDs.get(tAdd) - 1) >= (Long)tPopulation.get((Integer)tempIDs.get(i) - 1)) continue;
+                        tAdd = i;
+                    }
+                    this.lSorted.add((Integer)tempIDs.get(tAdd));
+                    tempIDs.remove(tAdd);
+                }
+            } else if (sortBy == 4) {
+                while (tempIDs.size() > 0) {
+                    tAdd = 0;
+                    for (i = 1; i < tempIDs.size(); ++i) {
+                        if (!CFG.compareAlphabetic_TwoString(CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCivName()), CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCivName()))) continue;
+                        tAdd = i;
+                    }
+                    this.lSorted.add((Integer)tempIDs.get(tAdd));
+                    tempIDs.remove(tAdd);
+                }
+            } else if (sortBy == 5) {
+                while (tempIDs.size() > 0) {
+                    tAdd = 0;
+                    for (i = 1; i < tempIDs.size(); ++i) {
+                        if (CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getFormationTurnID() >= CFG.core.getAlliance((Integer)tempIDs.get(i)).getFormationTurnID()) continue;
+                        tAdd = i;
+                    }
+                    this.lSorted.add((Integer)tempIDs.get(tAdd));
+                    tempIDs.remove(tAdd);
+                }
+            }
+            for (i2 = 0; i2 < this.lSorted.size(); ++i2) {
+                if (CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID() < 0) continue;
+                menuElements.add(new Button_Stats_Alliance_Clip(CFG.FOG_OF_WAR != 2 || CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetAlliance(this.lSorted.get(i2)) ? this.lSorted.get(i2) : -1, CFG.FOG_OF_WAR == 2 ? (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetAlliance(this.lSorted.get(i2)) ? CFG.core.getAlliance(this.lSorted.get(i2)).getAllianceName() : CFG.lang.get("Undiscovered")) : CFG.core.getAlliance(this.lSorted.get(i2)).getAllianceName(), CFG.PADD, CFG.PADD * 2, tPosY, CFG.BUTTON_W * 2, tElemHeight2){
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW() * 2;
+                    }
+
+                    @Override
+                    public Color getColorE(boolean isActive) {
+                        return isActive ? CFG.COLOR_TEXT_GRAY_LEFT_NS_ACTIVE : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_LEFT_NS_HOVER : CFG.COLOR_TEXT_GRAY_LEFT_NS) : CFG.COLOR_BUTTON_MENU_TEXT_NOT_CLICKABLE);
+                    }
+
+                    @Override
+                    public int getSFXElem() {
+                        return SFXManager.SFX_CLICK2;
+                    }
+                });
+                menuElements.add(new ButtonStats("" + CFG.core.getAlliance(this.lSorted.get(i2)).getCivilizationsSize(), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 3, tPosY, CFG.BUTTON_W, tElemHeight2){
+
+                    @Override
+                    public int getPosXE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW() * 2 + CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW();
+                    }
+                });
+                menuElements.add(new ButtonStats(CFG.getNumberWthSpaces("" + tProvinces.get(this.lSorted.get(i2) - 1)), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 4, tPosY, CFG.BUTTON_W, tElemHeight2){
+
+                    @Override
+                    public int getPosXE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW() * 3 + CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW();
+                    }
+                });
+                menuElements.add(new ButtonStats(CFG.getNumberWthSpaces("" + tPopulation.get(this.lSorted.get(i2) - 1)), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 4, tPosY, CFG.BUTTON_W, tElemHeight2){
+
+                    @Override
+                    public int getPosXE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW() * 4 + CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW();
+                    }
+                });
+                menuElements.add(new Button_Stats_Flag_Clip(CFG.FOG_OF_WAR == 2 ? (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)) ? CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0) : -1) : CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0), CFG.FOG_OF_WAR == 2 ? (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()) ? (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCivName())) : CFG.lang.get("Undiscovered")) : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCivName())), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 2, tPosY, CFG.BUTTON_W, tElemHeight2){
+
+                    @Override
+                    public int getPosXE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW() * 5 + CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW();
+                    }
+
+                    @Override
+                    public void buildElemHover() {
+                        try {
+                            ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                            ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                            nData.add(new ME_Hover_2Type_Flag_Big(this.getCurr()));
+                            nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getCiv(this.getCurr()).getCivName(), CFG.COLOR_HOVER_TITLE));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            this.menuElemHover = new ME_Hover_v2(nElements);
+                        }
+                        catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                            // empty catch block
+                        }
+                    }
+                });
+                menuElements.add(new Button_Stats_Clip("" + GameCalendar.getDate_ByTurnID(CFG.core.getAlliance(this.lSorted.get(i2)).getFormationTurnID()), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 5, tPosY, CFG.BUTTON_W, tElemHeight2){
+
+                    @Override
+                    public int getPosXE() {
+                        return Menu_InGame_MilitaryAlliances.this.getElementW() * 6 + CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_MilitaryAlliances.this.getW() - Menu_InGame_MilitaryAlliances.this.getElementW() * 6;
+                    }
+
+                    @Override
+                    public void buildElemHover() {
+                        try {
+                            ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                            ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Formation") + ": "));
+                            nData.add(new ME_Hover_2Type_Text(this.getTextE(), CFG.COLOR_HOVER_TITLE));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            this.menuElemHover = new ME_Hover_v2(nElements);
+                        }
+                        catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                            // empty catch block
+                        }
+                    }
+                });
+                tPosY += tElemHeight2;
+            }
         }
-        ArrayList<Integer> tempIDs = new ArrayList<Integer>();
-        for (i2 = 1; i2 < CFG.core.getAlliancesSize(); ++i2) {
-            tempIDs.add(i2);
-        }
-        if (sortBy == 0) {
-            while (tempIDs.size() > 0) {
-                tAdd = 0;
-                for (i = 1; i < tempIDs.size(); ++i) {
-                    if (!CFG.compareAlphabetic_TwoString(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getAllianceName(), CFG.core.getAlliance((Integer)tempIDs.get(i)).getAllianceName())) continue;
-                    tAdd = i;
-                }
-                this.lSorted.add((Integer)tempIDs.get(tAdd));
-                tempIDs.remove(tAdd);
-            }
-        } else if (sortBy == 1) {
-            while (tempIDs.size() > 0) {
-                tAdd = 0;
-                for (i = 1; i < tempIDs.size(); ++i) {
-                    if (CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilizationsSize() >= CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilizationsSize()) continue;
-                    tAdd = i;
-                }
-                this.lSorted.add((Integer)tempIDs.get(tAdd));
-                tempIDs.remove(tAdd);
-            }
-        } else if (sortBy == 2) {
-            while (tempIDs.size() > 0) {
-                tAdd = 0;
-                for (i = 1; i < tempIDs.size(); ++i) {
-                    if ((Integer)tProvinces.get((Integer)tempIDs.get(tAdd) - 1) >= (Integer)tProvinces.get((Integer)tempIDs.get(i) - 1)) continue;
-                    tAdd = i;
-                }
-                this.lSorted.add((Integer)tempIDs.get(tAdd));
-                tempIDs.remove(tAdd);
-            }
-        } else if (sortBy == 3) {
-            while (tempIDs.size() > 0) {
-                tAdd = 0;
-                for (i = 1; i < tempIDs.size(); ++i) {
-                    if ((Long)tPopulation.get((Integer)tempIDs.get(tAdd) - 1) >= (Long)tPopulation.get((Integer)tempIDs.get(i) - 1)) continue;
-                    tAdd = i;
-                }
-                this.lSorted.add((Integer)tempIDs.get(tAdd));
-                tempIDs.remove(tAdd);
-            }
-        } else if (sortBy == 4) {
-            while (tempIDs.size() > 0) {
-                tAdd = 0;
-                for (i = 1; i < tempIDs.size(); ++i) {
-                    if (!CFG.compareAlphabetic_TwoString(CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getCivilization(0)).getCivName()), CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance((Integer)tempIDs.get(i)).getCivilization(0)).getCivName()))) continue;
-                    tAdd = i;
-                }
-                this.lSorted.add((Integer)tempIDs.get(tAdd));
-                tempIDs.remove(tAdd);
-            }
-        } else if (sortBy == 5) {
-            while (tempIDs.size() > 0) {
-                tAdd = 0;
-                for (i = 1; i < tempIDs.size(); ++i) {
-                    if (CFG.core.getAlliance((Integer)tempIDs.get(tAdd)).getFormationTurnID() >= CFG.core.getAlliance((Integer)tempIDs.get(i)).getFormationTurnID()) continue;
-                    tAdd = i;
-                }
-                this.lSorted.add((Integer)tempIDs.get(tAdd));
-                tempIDs.remove(tAdd);
-            }
-        }
-        for (i2 = 0; i2 < this.lSorted.size(); ++i2) {
-            menuElements.add(new Button_Stats_Alliance_Clip(CFG.FOG_OF_WAR != 2 || CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetAlliance(this.lSorted.get(i2)) ? this.lSorted.get(i2) : -1, CFG.FOG_OF_WAR == 2 ? (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetAlliance(this.lSorted.get(i2)) ? CFG.core.getAlliance(this.lSorted.get(i2)).getAllianceName() : CFG.lang.get("Undiscovered")) : CFG.core.getAlliance(this.lSorted.get(i2)).getAllianceName(), CFG.PADD, CFG.PADD * 2, tPosY, CFG.BUTTON_W * 2, tElemHeight2){
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW() * 2;
-                }
-
-                @Override
-                public Color getColorE(boolean isActive) {
-                    return isActive ? CFG.COLOR_TEXT_GRAY_LEFT_NS_ACTIVE : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_LEFT_NS_HOVER : CFG.COLOR_TEXT_GRAY_LEFT_NS) : CFG.COLOR_BUTTON_MENU_TEXT_NOT_CLICKABLE);
-                }
-
-                @Override
-                public int getSFXElem() {
-                    return SFXManager.SFX_CLICK2;
-                }
-            });
-            menuElements.add(new ButtonStats("" + CFG.core.getAlliance(this.lSorted.get(i2)).getCivilizationsSize(), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 3, tPosY, CFG.BUTTON_W, tElemHeight2){
-
-                @Override
-                public int getPosXE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW() * 2 + CFG.PADD * 2;
-                }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW();
-                }
-            });
-            menuElements.add(new ButtonStats(CFG.getNumberWthSpaces("" + tProvinces.get(this.lSorted.get(i2) - 1)), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 4, tPosY, CFG.BUTTON_W, tElemHeight2){
-
-                @Override
-                public int getPosXE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW() * 3 + CFG.PADD * 2;
-                }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW();
-                }
-            });
-            menuElements.add(new ButtonStats(CFG.getNumberWthSpaces("" + tPopulation.get(this.lSorted.get(i2) - 1)), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 4, tPosY, CFG.BUTTON_W, tElemHeight2){
-
-                @Override
-                public int getPosXE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW() * 4 + CFG.PADD * 2;
-                }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW();
-                }
-            });
-            menuElements.add(new Button_Stats_Flag_Clip(CFG.FOG_OF_WAR == 2 ? (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)) ? CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0) : -1) : CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0), CFG.FOG_OF_WAR == 2 ? (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()) ? (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCivName())) : CFG.lang.get("Undiscovered")) : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getCit(0).getCityName() : (CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName().length() > 0 ? CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCapitalProvID()).getName() : CFG.core.getCiv(CFG.core.getAlliance(this.lSorted.get(i2)).getCivilization(0)).getCivName())), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 2, tPosY, CFG.BUTTON_W, tElemHeight2){
-
-                @Override
-                public int getPosXE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW() * 5 + CFG.PADD * 2;
-                }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW();
-                }
-
-                @Override
-                public void buildElemHover() {
-                    try {
-                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                        nData.add(new ME_Hover_2Type_Flag_Big(this.getCurr()));
-                        nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getCiv(this.getCurr()).getCivName(), CFG.COLOR_HOVER_TITLE));
-                        nElements.add(new MEHover_2E(nData));
-                        nData.clear();
-                        this.menuElemHover = new ME_Hover_v2(nElements);
-                    }
-                    catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-                        // empty catch block
-                    }
-                }
-            });
-            menuElements.add(new Button_Stats_Clip("" + GameCalendar.getDate_ByTurnID(CFG.core.getAlliance(this.lSorted.get(i2)).getFormationTurnID()), CFG.PADD, CFG.PADD * 2 + CFG.BUTTON_W * 5, tPosY, CFG.BUTTON_W, tElemHeight2){
-
-                @Override
-                public int getPosXE() {
-                    return Menu_InGame_MilitaryAlliances.this.getElementW() * 6 + CFG.PADD * 2;
-                }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_MilitaryAlliances.this.getW() - Menu_InGame_MilitaryAlliances.this.getElementW() * 6;
-                }
-
-                @Override
-                public void buildElemHover() {
-                    try {
-                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                        nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Formation") + ": "));
-                        nData.add(new ME_Hover_2Type_Text(this.getTextE(), CFG.COLOR_HOVER_TITLE));
-                        nElements.add(new MEHover_2E(nData));
-                        nData.clear();
-                        this.menuElemHover = new ME_Hover_v2(nElements);
-                    }
-                    catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-                        // empty catch block
-                    }
-                }
-            });
-            tPosY += tElemHeight2;
+        catch (Exception ex) {
+            CFG.exceptionStack(ex);
         }
         this.initMenu(new TitleM_TextSmall(CFG.lang.get("MilitaryAlliances"), CFG.BUTTON_H * 3 / 4, true, true){
 
@@ -411,8 +456,8 @@ extends Menu {
             }
         }, CFG.CIV_INFO_MENU_WIDTH + CFG.PADD * 2, Menu_InGame_Stats.getMenuY(), tempWidth, tempHeight, menuElements, false, true);
         this.updateLang();
-        for (i2 = 0; i2 < this.getMenuElemsSize(); ++i2) {
-            this.getMenuElem(i2).setCurr(i2 / 6 % 2);
+        for (int i = 0; i < this.getMenuElemsSize(); ++i) {
+            this.getMenuElem(i).setCurr(i / 6 % 2);
         }
     }
 

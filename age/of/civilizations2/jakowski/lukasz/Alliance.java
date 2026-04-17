@@ -93,7 +93,12 @@ implements Serializable {
     }
 
     public final int getCivilization(int iID) {
-        return this.lCivilizations.get(iID);
+        try {
+            return this.lCivilizations.get(iID);
+        }
+        catch (Exception ex) {
+            return 0;
+        }
     }
 
     public final int getCivilizationsSize() {

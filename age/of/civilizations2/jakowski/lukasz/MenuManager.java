@@ -1397,7 +1397,7 @@ public class MenuManager {
     }
 
     /*
-     * Opcode count of 13489 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
+     * Opcode count of 13490 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
      */
     public final int getViewID(View eMenu) {
         try {
@@ -2489,7 +2489,7 @@ public class MenuManager {
                             this.INGAME_CIV_DIPLOMACY = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_Civ_Diplomacy());
                             this.INGAME_CIV_DIPLO_ORACTIONS = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_Civ_DiplomacyORActions());
                             this.INGAME_ALLIANCE = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_Alliance());
-                            this.INGAME_MILITARY_ALLIANCES = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_MilitaryAlliances());
+                            this.INGAME_MILITARY_ALLIANCES = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_MilitaryAlliances(0));
                             this.INGAME_HISTORY = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_History(0));
                             this.INGAME_TURN_SUMMARY = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_TurnSummary());
                             this.INGAME_CIV_ACTIONS = this.addNewMenuToViewID(this.IN_GAME_MENU, new Menu_InGame_Civ_Actions());
