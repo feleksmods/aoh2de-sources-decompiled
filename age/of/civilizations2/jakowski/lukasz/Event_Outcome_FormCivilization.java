@@ -131,7 +131,6 @@ extends Event_Outcome {
             } else {
                 CFG.core.getCiv(this.getCivID()).setCivTag(this.getText());
                 CFG.core.getCiv(this.getCivID()).setCivName(CFG.lang.getCiv(CFG.core.getCiv(this.getCivID()).getCivTag()));
-                CFG.core.getCiv(this.getCivID()).loadFlag();
                 Core.addSimpleTask(new Core.SimpleTask("loadFlag" + this.getCivID(), this.getCivID()){
 
                     @Override

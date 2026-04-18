@@ -237,7 +237,7 @@ extends Menu {
         });
         tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
         for (i4 = 0; i4 < CFG.core.getWar(WAR_ID).getAggressorsSize(); ++i4) {
-            menuElements.add(new Button_Stats_War_Casualties(CFG.core.getWar(WAR_ID).getAggressorID(i4).getCasualties() + CFG.core.getWar(WAR_ID).getAggressorID(i4).getCivilianDeaths(), -1, tY, CFG.BUTTON_W * 2){
+            menuElements.add(new Button_Stats_War_Casualties(Math.max(0, CFG.core.getWar(WAR_ID).getAggressorID(i4).getCasualties() + CFG.core.getWar(WAR_ID).getAggressorID(i4).getCivilianDeaths()), -1, tY, CFG.BUTTON_W * 2){
 
                 @Override
                 public int getPosXE() {
@@ -249,7 +249,7 @@ extends Menu {
                     return Menu_InGame_WarDetails.this.getElementW() + 2;
                 }
             });
-            menuElements.add(new Button_Stats_WarDetails(CFG.core.getWar(WAR_ID).getAggressorID(i4).getCivID(), CFG.core.getWar(WAR_ID).getAggressorID(i4).getCivilianDeaths(), CFG.core.getWar(WAR_ID).getAggressorID(i4).getEconomicLosses(), CFG.core.getWar(WAR_ID).getParticipation_AggressorID(i4), CFG.core.getWar(WAR_ID).getProvinces_Aggressor_OwnTotal(i4), CFG.core.getWar(WAR_ID).getProvinces_Aggressor_Own(i4), 2, tY, CFG.BUTTON_W * 2, !CFG.SPECTATOR_MODE && CFG.core.getWar(WAR_ID).getIsDefender(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())){
+            menuElements.add(new Button_Stats_WarDetails(CFG.core.getWar(WAR_ID).getAggressorID(i4).getCivID(), Math.max(0, CFG.core.getWar(WAR_ID).getAggressorID(i4).getCivilianDeaths()), Math.max(0, CFG.core.getWar(WAR_ID).getAggressorID(i4).getEconomicLosses()), CFG.core.getWar(WAR_ID).getParticipation_AggressorID(i4), CFG.core.getWar(WAR_ID).getProvinces_Aggressor_OwnTotal(i4), CFG.core.getWar(WAR_ID).getProvinces_Aggressor_Own(i4), 2, tY, CFG.BUTTON_W * 2, !CFG.SPECTATOR_MODE && CFG.core.getWar(WAR_ID).getIsDefender(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())){
 
                 @Override
                 public int getWidthE() {
@@ -260,7 +260,7 @@ extends Menu {
         }
         tY = ((MenuElemUI)menuElements.get(1)).getPosY() + ((MenuElemUI)menuElements.get(1)).getHeightE();
         for (i4 = 0; i4 < CFG.core.getWar(WAR_ID).getDefendersSize(); ++i4) {
-            menuElements.add(new Button_Stats_War_Casualties_Right(CFG.core.getWar(WAR_ID).getDefenderID(i4).getCasualties() + CFG.core.getWar(WAR_ID).getDefenderID(i4).getCivilianDeaths(), -1, tY, CFG.BUTTON_W * 2){
+            menuElements.add(new Button_Stats_War_Casualties_Right(Math.max(0, CFG.core.getWar(WAR_ID).getDefenderID(i4).getCasualties() + CFG.core.getWar(WAR_ID).getDefenderID(i4).getCivilianDeaths()), -1, tY, CFG.BUTTON_W * 2){
 
                 @Override
                 public int getPosXE() {
@@ -272,7 +272,7 @@ extends Menu {
                     return Menu_InGame_WarDetails.this.getElementW() + 2;
                 }
             });
-            menuElements.add(new Button_Stats_WarDetails_Right(CFG.core.getWar(WAR_ID).getDefenderID(i4).getCivID(), CFG.core.getWar(WAR_ID).getDefenderID(i4).getCivilianDeaths(), CFG.core.getWar(WAR_ID).getDefenderID(i4).getEconomicLosses(), CFG.core.getWar(WAR_ID).getParticipation_DefenderID(i4), CFG.core.getWar(WAR_ID).getProvinces_Defender_OwnTotal(i4), CFG.core.getWar(WAR_ID).getProvinces_Defender_Own(i4), CFG.PADD * 2, tY, CFG.BUTTON_W * 2, !CFG.SPECTATOR_MODE && CFG.core.getWar(WAR_ID).getIsAggressor(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())){
+            menuElements.add(new Button_Stats_WarDetails_Right(CFG.core.getWar(WAR_ID).getDefenderID(i4).getCivID(), Math.max(0, CFG.core.getWar(WAR_ID).getDefenderID(i4).getCivilianDeaths()), Math.max(0, CFG.core.getWar(WAR_ID).getDefenderID(i4).getEconomicLosses()), CFG.core.getWar(WAR_ID).getParticipation_DefenderID(i4), CFG.core.getWar(WAR_ID).getProvinces_Defender_OwnTotal(i4), CFG.core.getWar(WAR_ID).getProvinces_Defender_Own(i4), CFG.PADD * 2, tY, CFG.BUTTON_W * 2, !CFG.SPECTATOR_MODE && CFG.core.getWar(WAR_ID).getIsAggressor(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())){
 
                 @Override
                 public int getPosXE() {

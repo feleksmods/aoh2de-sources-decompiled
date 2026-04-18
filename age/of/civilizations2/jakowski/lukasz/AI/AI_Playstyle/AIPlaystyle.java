@@ -5444,7 +5444,9 @@ lbl120:
                         continue block55;
                     }
                     case 19: {
-                        if (CFG.core.getCiv(message.fromCivID).getCivDiploGD().getIsEmbassyClosed(nCivID)) {
+                        if (CFG.core.getCiv((int)message.fromCivID).civGD.numOfUnions >= GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions >= GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
+                            message.onDecline(nCivID);
+                        } else if (CFG.core.getCiv(message.fromCivID).getCivDiploGD().getIsEmbassyClosed(nCivID)) {
                             message.onDecline(nCivID);
                         } else if (civ.civGD.civPlans.isPreparingForTheWar(message.fromCivID)) {
                             message.onDecline(nCivID);
@@ -5464,7 +5466,11 @@ lbl120:
                                 if (sameRivals) {
                                     message.onAccept(nCivID);
                                 } else if (CFG.core.getCiv(nCivID).getRelationD(message.fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_ALLY_MIN_RELATION && (float)CFG.core.getCiv(message.fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_ALLY_NUM_OF_PROVINCES_MODIFIER) {
-                                    message.onAccept(nCivID);
+                                    if (CFG.core.getCiv((int)message.fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
+                                        message.onAccept(nCivID);
+                                    } else {
+                                        message.onDecline(nCivID);
+                                    }
                                 } else {
                                     message.onDecline(nCivID);
                                 }
@@ -5481,8 +5487,28 @@ lbl120:
                             } else {
                                 message.onDecline(nCivID);
                             }
+                        } else if (CFG.core.getCiv((int)message.fromCivID).civGD.numOfUnions == 0 && CFG.core.getCiv((int)nCivID).civGD.numOfUnions == 0) {
+                            if (CFG.core.getCiv(nCivID).getRelationD(message.fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_MIN_RELATION && (float)CFG.core.getCiv(message.fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_NUM_OF_PROVINCES_MODIFIER) {
+                                message.onAccept(nCivID);
+                            } else {
+                                message.onDecline(nCivID);
+                            }
+                        } else if (CFG.core.getCiv(nCivID).getNumOfProvs() <= GameValues.gvAiDiplomacy.UNION_SECOND_UNION_MAX_PROVINCES) {
+                            if (CFG.core.getCiv((int)message.fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
+                                if (CFG.core.getCiv(nCivID).getRelationD(message.fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_ALLY_MIN_RELATION && (float)CFG.core.getCiv(message.fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_ALLY_NUM_OF_PROVINCES_MODIFIER) {
+                                    message.onAccept(nCivID);
+                                } else {
+                                    message.onDecline(nCivID);
+                                }
+                            } else {
+                                message.onDecline(nCivID);
+                            }
                         } else if (CFG.core.getCiv(nCivID).getRelationD(message.fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_MIN_RELATION && (float)CFG.core.getCiv(message.fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_NUM_OF_PROVINCES_MODIFIER) {
-                            message.onAccept(nCivID);
+                            if (CFG.core.getCiv((int)message.fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
+                                message.onAccept(nCivID);
+                            } else {
+                                message.onDecline(nCivID);
+                            }
                         } else {
                             message.onDecline(nCivID);
                         }
@@ -6525,15 +6551,16 @@ lbl120:
                 int randValue = CFG.oR.nextInt(100);
                 if (randValue < GameValues.gvAiInvest.INVEST_FOREIGN_FRIENDLY_CIV) {
                     if (CFG.core.getCiv(civID).getFriendlyCivsSize() > 0) {
+                        int maxInvestGold;
                         int randProvince;
                         int randFriendly = CFG.oR.nextInt(CFG.core.getCiv(civID).getFriendlyCivsSize());
-                        if (CFG.core.getCiv(CFG.core.getCiv((int)civID).getFriendlyCiv((int)randFriendly).iCivID).getNumOfProvs() > 0 && !CFG.core.getProv(randProvince = CFG.core.getCiv(CFG.core.getCiv((int)civID).getFriendlyCiv((int)randFriendly).iCivID).getProvID(CFG.oR.nextInt(CFG.core.getCiv(CFG.core.getCiv((int)civID).getFriendlyCiv((int)randFriendly).iCivID).getNumOfProvs()))).getSeaProv() && CFG.core.getProv(randProvince).getWastelandLvl() < 0 && CFG.core.getProv(randProvince).getCivId() != civID && CFG.core.getProv(randProvince).getCivId() > 0) {
-                            int maxInvestGold = (int)Math.min(CFG.core.getCiv(civID).getGold(), (long)GameManager.invest_MaxEconomy_Gold(randProvince, civID));
+                        if (CFG.core.getCiv(CFG.core.getCiv((int)civID).getFriendlyCiv((int)randFriendly).iCivID).getNumOfProvs() > 0 && !CFG.core.getProv(randProvince = CFG.core.getCiv(CFG.core.getCiv((int)civID).getFriendlyCiv((int)randFriendly).iCivID).getProvID(CFG.oR.nextInt(CFG.core.getCiv(CFG.core.getCiv((int)civID).getFriendlyCiv((int)randFriendly).iCivID).getNumOfProvs()))).getSeaProv() && CFG.core.getProv(randProvince).getWastelandLvl() < 0 && CFG.core.getProv(randProvince).getCivId() != civID && CFG.core.getProv(randProvince).getCivId() > 0 && (maxInvestGold = (int)Math.max(0L, Math.min(CFG.core.getCiv(civID).getGold(), (long)GameManager.invest_MaxEconomy_Gold(randProvince, civID)))) > 0) {
                             GameManager.investForeignEconomy(civID, randProvince, (int)((float)maxInvestGold * GameValues.gvAiInvest.INVEST_FOREIGN_MAX_GOLD_MIN + (float)CFG.oR.nextInt((int)Math.max(1.0, Math.ceil((float)maxInvestGold * GameValues.gvAiInvest.INVEST_FOREIGN_MAX_GOLD_RAND)))));
                         }
                     }
                 } else if (randValue < GameValues.gvAiInvest.INVEST_FOREIGN_NEIGHBOURING_CIV) {
                     if (CFG.core.getCiv((int)civID).civNeighbors.civsSize > 0) {
+                        int maxInvestGold;
                         int randProvince;
                         int randCiv;
                         ArrayList<Integer> possibleCivs = new ArrayList<Integer>();
@@ -6541,16 +6568,15 @@ lbl120:
                             if (!(CFG.core.getCiv(civID).getRelationD(CFG.core.getCiv((int)civID).civNeighbors.civs.get((int)i).civID) >= (float)GameValues.gvAiInvest.INVEST_FOREIGN_MIN_RELATION) || CFG.core.getCiv(civID).areSanctionsAdded(civID, CFG.core.getCiv((int)civID).civNeighbors.civs.get((int)i).civID) || CFG.core.getCiv(CFG.core.getCiv((int)civID).civNeighbors.civs.get((int)i).civID).areSanctionsAdded(CFG.core.getCiv((int)civID).civNeighbors.civs.get((int)i).civID, civID)) continue;
                             possibleCivs.add(CFG.core.getCiv((int)civID).civNeighbors.civs.get((int)i).civID);
                         }
-                        if (!possibleCivs.isEmpty() && CFG.core.getCiv((Integer)possibleCivs.get(randCiv = CFG.oR.nextInt(possibleCivs.size()))).getNumOfProvs() > 0 && !CFG.core.getProv(randProvince = CFG.core.getCiv((Integer)possibleCivs.get(randCiv)).getProvID(CFG.oR.nextInt(CFG.core.getCiv((Integer)possibleCivs.get(randCiv)).getNumOfProvs()))).getSeaProv() && CFG.core.getProv(randProvince).getWastelandLvl() < 0 && CFG.core.getProv(randProvince).getCivId() != civID && CFG.core.getProv(randProvince).getCivId() > 0) {
-                            int maxInvestGold = (int)Math.min(CFG.core.getCiv(civID).getGold(), (long)GameManager.invest_MaxEconomy_Gold(randProvince, civID));
+                        if (!possibleCivs.isEmpty() && CFG.core.getCiv((Integer)possibleCivs.get(randCiv = CFG.oR.nextInt(possibleCivs.size()))).getNumOfProvs() > 0 && !CFG.core.getProv(randProvince = CFG.core.getCiv((Integer)possibleCivs.get(randCiv)).getProvID(CFG.oR.nextInt(CFG.core.getCiv((Integer)possibleCivs.get(randCiv)).getNumOfProvs()))).getSeaProv() && CFG.core.getProv(randProvince).getWastelandLvl() < 0 && CFG.core.getProv(randProvince).getCivId() != civID && CFG.core.getProv(randProvince).getCivId() > 0 && (maxInvestGold = (int)Math.max(0L, Math.min(CFG.core.getCiv(civID).getGold(), (long)GameManager.invest_MaxEconomy_Gold(randProvince, civID)))) > 0) {
                             GameManager.investForeignEconomy(civID, randProvince, (int)((float)maxInvestGold * GameValues.gvAiInvest.INVEST_FOREIGN_MAX_GOLD_MIN + (float)CFG.oR.nextInt((int)Math.max(1.0, Math.ceil((float)maxInvestGold * GameValues.gvAiInvest.INVEST_FOREIGN_MAX_GOLD_RAND)))));
                         }
                         possibleCivs.clear();
                     }
                 } else {
+                    int maxInvestGold;
                     int randProvince = CFG.oR.nextInt(CFG.core.getProvinSize());
-                    if (!CFG.core.getProv(randProvince).getSeaProv() && CFG.core.getProv(randProvince).getWastelandLvl() < 0 && CFG.core.getProv(randProvince).getCivId() != civID && CFG.core.getProv(randProvince).getCivId() > 0) {
-                        int maxInvestGold = (int)Math.min(CFG.core.getCiv(civID).getGold(), (long)GameManager.invest_MaxEconomy_Gold(randProvince, civID));
+                    if (!CFG.core.getProv(randProvince).getSeaProv() && CFG.core.getProv(randProvince).getWastelandLvl() < 0 && CFG.core.getProv(randProvince).getCivId() != civID && CFG.core.getProv(randProvince).getCivId() > 0 && (maxInvestGold = (int)Math.max(0L, Math.min(CFG.core.getCiv(civID).getGold(), (long)GameManager.invest_MaxEconomy_Gold(randProvince, civID)))) > 0) {
                         GameManager.investForeignEconomy(civID, randProvince, (int)((float)maxInvestGold * GameValues.gvAiInvest.INVEST_FOREIGN_MAX_GOLD_MIN + (float)CFG.oR.nextInt((int)Math.max(1.0, Math.ceil((float)maxInvestGold * GameValues.gvAiInvest.INVEST_FOREIGN_MAX_GOLD_RAND)))));
                     }
                 }
@@ -6562,6 +6588,9 @@ lbl120:
     }
 
     public static boolean unionResponseAI(int fromCivID, int nCivID) {
+        if (CFG.core.getCiv((int)fromCivID).civGD.numOfUnions >= GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions >= GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
+            return false;
+        }
         if (CFG.core.getCiv(fromCivID).getCivDiploGD().getIsEmbassyClosed(nCivID)) {
             return false;
         }
@@ -6585,7 +6614,10 @@ lbl120:
                 if (sameRivals) {
                     return true;
                 }
-                return CFG.core.getCiv(nCivID).getRelationD(fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_ALLY_MIN_RELATION && (float)CFG.core.getCiv(fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_ALLY_NUM_OF_PROVINCES_MODIFIER;
+                if (CFG.core.getCiv(nCivID).getRelationD(fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_ALLY_MIN_RELATION && (float)CFG.core.getCiv(fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_ALLY_NUM_OF_PROVINCES_MODIFIER) {
+                    return CFG.core.getCiv((int)fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS;
+                }
+                return false;
             }
             if (CFG.core.getCiv(nCivID).getNumOfProvs() <= GameValues.gvAiDiplomacy.UNION_SECOND_UNION_MAX_PROVINCES) {
                 if (CFG.core.getCiv((int)fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
@@ -6595,7 +6627,19 @@ lbl120:
             }
             return false;
         }
-        return CFG.core.getCiv(nCivID).getRelationD(fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_MIN_RELATION && (float)CFG.core.getCiv(fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_NUM_OF_PROVINCES_MODIFIER;
+        if (CFG.core.getCiv((int)fromCivID).civGD.numOfUnions == 0 && CFG.core.getCiv((int)nCivID).civGD.numOfUnions == 0) {
+            return CFG.core.getCiv(nCivID).getRelationD(fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_MIN_RELATION && (float)CFG.core.getCiv(fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_NUM_OF_PROVINCES_MODIFIER;
+        }
+        if (CFG.core.getCiv(nCivID).getNumOfProvs() <= GameValues.gvAiDiplomacy.UNION_SECOND_UNION_MAX_PROVINCES) {
+            if (CFG.core.getCiv((int)fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS) {
+                return CFG.core.getCiv(nCivID).getRelationD(fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_ALLY_MIN_RELATION && (float)CFG.core.getCiv(fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_ALLY_NUM_OF_PROVINCES_MODIFIER;
+            }
+            return false;
+        }
+        if (CFG.core.getCiv(nCivID).getRelationD(fromCivID) > (float)GameValues.gvAiDiplomacy.UNION_MIN_RELATION && (float)CFG.core.getCiv(fromCivID).getNumOfProvs() >= (float)CFG.core.getCiv(nCivID).getNumOfProvs() * GameValues.gvAiDiplomacy.UNION_NUM_OF_PROVINCES_MODIFIER) {
+            return CFG.core.getCiv((int)fromCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS && CFG.core.getCiv((int)nCivID).civGD.numOfUnions < GameValues.gvAiDiplomacy.UNION_MAX_NUM_OF_UNIONS;
+        }
+        return false;
     }
 
     public static boolean offerVassalization_AIResponse(int fromCivID, int toCivID) {

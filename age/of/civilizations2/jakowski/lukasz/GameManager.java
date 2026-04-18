@@ -174,6 +174,9 @@ public class GameManager {
                 if (CFG.core.getCiv(civID).areSanctionsAdded(civID, CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), civID)) {
                     return false;
                 }
+                if ((nMoney = (int)Math.min((long)nMoney, CFG.core.getCiv(civID).getGold())) <= 0) {
+                    return false;
+                }
                 CFG.core.getCiv(civID).setMovementPoints(CFG.core.getCiv(civID).getMovemPoints() - GameValues.gvInvestForeign.INVEST_ECO_COST_MOVEMENT_POINTS);
                 CFG.core.getCiv(civID).setGold(CFG.core.getCiv(civID).getGold() - (long)nMoney);
                 int ecoPoints = GameManager.invest_EconomyByGold(provinceID, nMoney);
