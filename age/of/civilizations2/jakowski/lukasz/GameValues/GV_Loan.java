@@ -6,9 +6,9 @@ public class GV_Loan {
     public int LOAN_MIN_DURATION = 5;
     public int LOAN_MAX_DURATION = 30;
     public float LOAN_MAX_VALUE_BASED_ON_INCOME_MODIFIER = 0.6f;
-    public float LOAN_INTEREST_BASE_VALUE = 7.25f;
-    public float LOAN_INTEREST_EXTRA_PER_LOAN = 0.75f;
-    public float LOAN_INTEREST_BASE_PER_DURATION = 8.0f;
+    public float LOAN_INTEREST_BASE_VALUE = 2.25f;
+    public float LOAN_INTEREST_EXTRA_PER_LOAN = 0.5f;
+    public float LOAN_INTEREST_BASE_PER_DURATION = 3.0f;
     public float LOAN_INTEREST_BASE_PER_DURATION_PER_LOAN = 0.25f;
     public float DEBT_RELIEF_RELATIONS_INCREASE = 4.2f;
     public boolean ENABLE_REQUEST_LOAN = true;

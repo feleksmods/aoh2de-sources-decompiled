@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class Message_LoanRequest
 extends Message {
     public Message_LoanRequest(int fromCivID, int iGold, int iTurns) {
-        super(fromCivID, iGold);
+        super(fromCivID, Math.max(1, iGold));
         this.iValue2 = iTurns;
         this.messageType = MessageType.LOAN_REQUEST;
         this.numOfTurnsLeft = 2;
@@ -65,6 +65,14 @@ extends Message {
         nData.add(new ME_Hover_2Type_Space());
         nElements.add(new MEHover_2E(nData));
         nData.clear();
+        try {
+            if ((long)this.iValue > CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold()) {
+                this.iValue = Math.max(1000, (int)CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold());
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
         nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Gold") + ": "));
         nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + this.iValue), CFG.COLOR_GOLD));
         nData.add(new ME_Hover_2Type_Image(Images.topGold(), CFG.PADD, 0));
