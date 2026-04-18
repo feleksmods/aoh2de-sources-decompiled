@@ -1799,7 +1799,7 @@ public class GameManager {
                 CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(iToCivID, iFromCivID));
             }
             if (ultimatum.demandChangeOfGovernment && CFG.core.getCiv(iFromCivID).getIdeology() != CFG.core.getCiv(iToCivID).getIdeology()) {
-                CFG.core.getCiv(iFromCivID).setIdeology(CFG.core.getCiv(iToCivID).getIdeology());
+                CFG.core.updateCivilizationIdeology(iFromCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(iFromCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(iToCivID).getIdeology()).getExtraTag());
             }
             if (ultimatum.demandMilitaryAccess) {
                 CFG.core.setMilitaryAccess(iToCivID, iFromCivID, Math.max(CFG.core.getMilitaryAccess(iToCivID, iFromCivID), GameValues.gvDipMilitaryAccess.DIPLOMACY_MAX_NUMBER_OF_TURNS_FOR_MILITARY_ACCESS));
@@ -1989,8 +1989,15 @@ public class GameManager {
                             CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).addWarReparationsGets(peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.get(j));
                             CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.get(j)).addWarReparationsPay(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
                         }
-                        if (peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID > 0 && CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
-                            CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).setIdeology(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology());
+                        if (peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID > 0) {
+                            try {
+                                if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
+                                    CFG.core.updateCivilizationIdeology(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()).getExtraTag());
+                                }
+                            }
+                            catch (Exception j2) {
+                                // empty catch block
+                            }
                         }
                         if (peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID <= 0 || CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getReligionID() == CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID).getReligionID()) continue;
                         CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).setReligionID(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID).getReligionID());
@@ -2026,8 +2033,15 @@ public class GameManager {
                             CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).addWarReparationsGets(peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.get(j));
                             CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.get(j)).addWarReparationsPay(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
                         }
-                        if (peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID > 0 && CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
-                            CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).setIdeology(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology());
+                        if (peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID > 0) {
+                            try {
+                                if (CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
+                                    CFG.core.updateCivilizationIdeology(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()).getExtraTag());
+                                }
+                            }
+                            catch (Exception j3) {
+                                // empty catch block
+                            }
                         }
                         if (peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID <= 0 || CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getReligionID() == CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID).getReligionID()) continue;
                         CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).setReligionID(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID).getReligionID());
@@ -2275,12 +2289,12 @@ public class GameManager {
                     if (tWarID >= 0) {
                         int i10;
                         boolean everyoneAtPeace = true;
-                        block67: for (i10 = 0; i10 < CFG.core.getWar(tWarID).getDefendersSize(); ++i10) {
+                        block71: for (i10 = 0; i10 < CFG.core.getWar(tWarID).getDefendersSize(); ++i10) {
                             for (int j = 0; j < CFG.core.getWar(tWarID).getAggressorsSize(); ++j) {
                                 if (!CFG.core.getCivsAtWar(CFG.core.getWar(tWarID).getDefenderID(i10).getCivID(), CFG.core.getWar(tWarID).getAggressorID(j).getCivID())) continue;
                                 everyoneAtPeace = false;
                                 i10 = CFG.core.getWar(tWarID).getDefendersSize();
-                                continue block67;
+                                continue block71;
                             }
                         }
                         if (everyoneAtPeace) {

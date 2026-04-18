@@ -73,8 +73,20 @@ extends Event_Outcome {
                 String tempTag = CFG.core.getCiv(this.getCivID()).getCivTag();
                 CFG.core.getCiv(this.getCivID()).setCivTag(CFG.core.getCiv(civAlreadyIsAdded).getCivTag());
                 CFG.core.getCiv(civAlreadyIsAdded).setCivTag(tempTag);
-                CFG.core.getCiv(this.getCivID()).loadFlag();
-                CFG.core.getCiv(civAlreadyIsAdded).loadFlag();
+                Core.addSimpleTask(new Core.SimpleTask("loadFlag" + this.getCivID(), this.getCivID()){
+
+                    @Override
+                    public void update() {
+                        CFG.core.getCiv(this.id).loadFlag();
+                    }
+                });
+                Core.addSimpleTask(new Core.SimpleTask("loadFlag" + civAlreadyIsAdded, civAlreadyIsAdded){
+
+                    @Override
+                    public void update() {
+                        CFG.core.getCiv(this.id).loadFlag();
+                    }
+                });
                 for (i3 = 0; i3 < CFG.core.getCiv(this.getCivID()).getCivRegionsSize(); ++i3) {
                     CFG.core.getCiv(this.getCivID()).getCivRegion(i3).buildScaleOfText();
                 }
@@ -120,6 +132,13 @@ extends Event_Outcome {
                 CFG.core.getCiv(this.getCivID()).setCivTag(this.getText());
                 CFG.core.getCiv(this.getCivID()).setCivName(CFG.lang.getCiv(CFG.core.getCiv(this.getCivID()).getCivTag()));
                 CFG.core.getCiv(this.getCivID()).loadFlag();
+                Core.addSimpleTask(new Core.SimpleTask("loadFlag" + this.getCivID(), this.getCivID()){
+
+                    @Override
+                    public void update() {
+                        CFG.core.getCiv(this.id).loadFlag();
+                    }
+                });
                 for (i = 0; i < CFG.core.getCiv(this.getCivID()).getCivRegionsSize(); ++i) {
                     CFG.core.getCiv(this.getCivID()).getCivRegion(i).buildScaleOfText();
                 }

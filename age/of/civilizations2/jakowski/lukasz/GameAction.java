@@ -64,7 +64,7 @@ public class GameAction {
     public int eRTO_START = 0;
     public int eRTO_START2 = 0;
     public int eRTO_START3 = 0;
-    public boolean ELF = true;
+    public static boolean ELF = true;
     public int diceAggressors;
     public int diceDefenders;
     public int diceAggressorsCivID;
@@ -1392,7 +1392,7 @@ public class GameAction {
     }
 
     public final void startUprising() {
-        if (this.ELF) {
+        if (ELF) {
             return;
         }
         ArrayList<Integer> tempPossibleUprising = new ArrayList<Integer>();

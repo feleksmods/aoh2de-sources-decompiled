@@ -3641,33 +3641,7 @@ public class CFG {
                         } else if (menus.getInCreateNewGame()) {
                             CFG.updateActiveCivInfo_CreateNewGame();
                         }
-                    }
-                }
-            };
-            keyboardDelete = new Keyboard_Action(){
-
-                @Override
-                public void action() {
-                    keybMess = keybMess.length() > 1 ? keybMess.substring(0, keybMess.length() - 1) : "";
-                }
-            };
-            CFG.updateKeyboard_DefaultWrite();
-        } else if (Keyboard.changeCivilizationNameMode > 0 && menus.getInGameView()) {
-            keyboardSave = new Keyboard_Action(){
-
-                @Override
-                public void action() {
-                    if (keybMess.length() > 0) {
-                        core.getCiv(Keyboard.changeCivilizationNameMode).setCivName(keybMess);
-                        core.setActiveProvID(core.getActiveProvID());
-                        for (int i = 0; i < core.getCiv(Keyboard.changeCivilizationNameMode).getCivRegionsSize(); ++i) {
-                            core.getCiv(Keyboard.changeCivilizationNameMode).getCivRegion(i).buildScaleOfText();
-                        }
-                        if (menus.getInGameView()) {
-                            CFG.updateActiveCivilizationInfoInGame();
-                        } else if (menus.getInCreateNewGame()) {
-                            CFG.updateActiveCivInfo_CreateNewGame();
-                        }
+                        Keyboard.changeCivilizationNameMode = -1;
                     }
                 }
             };
@@ -3768,6 +3742,7 @@ public class CFG {
                         catch (Exception exception) {
                             // empty catch block
                         }
+                        Keyboard.changeProvinceNameMode = -1;
                     }
                 }
             };

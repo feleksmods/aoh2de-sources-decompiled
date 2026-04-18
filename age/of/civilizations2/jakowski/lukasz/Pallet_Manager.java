@@ -119,6 +119,7 @@ public class Pallet_Manager {
             this.loadCivilizationStandardColors();
         } else {
             for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
+                if (CFG.core.getCiv(i).getPuppetOfCiv() != i) continue;
                 FileHandle file = null;
                 try {
                     if (this.isInternal.get(nPaletteID - 1).booleanValue()) {
@@ -163,6 +164,9 @@ public class Pallet_Manager {
     public final void loadCivilizationPalletColor(int nPaletteID, int nCivID) {
         try {
             FileHandle file;
+            if (CFG.core.getCiv(nCivID).getPuppetOfCiv() != nCivID) {
+                return;
+            }
             if (this.isInternal.get(nPaletteID - 1).booleanValue()) {
                 file = FileManager.loadFile("game/pallets_of_civs_colors/" + this.lPalletsTags.get(nPaletteID - 1) + "/" + CFG.core.getCiv(nCivID).getCivTag());
             } else {

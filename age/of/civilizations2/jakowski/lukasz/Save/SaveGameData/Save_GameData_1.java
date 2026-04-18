@@ -72,6 +72,7 @@ implements Serializable {
     public List<String> provinceNamesChanged = new ArrayList<String>();
     public List<Integer> civNamesChangedID = new ArrayList<Integer>();
     public List<String> civNamesChanged = new ArrayList<String>();
+    public int AGE_OF_CHAOS_TURNS;
 
     public final void buildData() {
         this.iTurnID = GameCalendar.TURNID;
@@ -95,6 +96,7 @@ implements Serializable {
         this.FOG_OF_WAR = CFG.FOG_OF_WAR;
         this.SPECTATOR_MODE = CFG.SPECTATOR_MODE;
         this.AGE_OF_CHAOS_MODE = CFG.AGE_OF_CHAOS_MODE;
+        this.AGE_OF_CHAOS_TURNS = CFG.AGE_OF_CHAOS_TURNS;
         this.LEADERS_CAN_DIE = CFG.LEADERS_CAN_DIE;
         this.ENABLE_NUKES = CFG.ENABLE_NUKES;
         this.MIN_ARMY_REQUIRED_TO_ATTACK = CFG.MIN_ARMY_REQUIRED_TO_ATTACK;

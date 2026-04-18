@@ -1410,6 +1410,7 @@ public class Core {
             CFG.FOG_OF_WAR = tempSavedGame.FOG_OF_WAR;
             CFG.SPECTATOR_MODE = tempSavedGame.SPECTATOR_MODE;
             CFG.AGE_OF_CHAOS_MODE = tempSavedGame.AGE_OF_CHAOS_MODE;
+            CFG.AGE_OF_CHAOS_TURNS = tempSavedGame.AGE_OF_CHAOS_TURNS;
             CFG.ENABLE_NUKES = tempSavedGame.ENABLE_NUKES;
             CFG.LEADERS_CAN_DIE = tempSavedGame.LEADERS_CAN_DIE;
             CFG.MIN_ARMY_REQUIRED_TO_ATTACK = tempSavedGame.MIN_ARMY_REQUIRED_TO_ATTACK;
@@ -9193,6 +9194,9 @@ lbl94:
     }
 
     public final void revoltDeclareIndependence() {
+        if (GameAction.ELF) {
+            return;
+        }
         for (int i = 1 + GameCalendar.TURNID % GameValues.gvRebelsIndependence.UPDATE_EVERY_X_TURNS; i < CFG.core.getCivsSize(); i += GameValues.gvRebelsIndependence.UPDATE_EVERY_X_TURNS) {
             if (CFG.core.getCiv(i).getNumOfProvs() <= 0 || !CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)i).getIdeology()).REVOLUTIONARY || GameCalendar.TURNID - CFG.core.getCiv((int)i).civGD.iRevolt_SinceTurn < GameValues.gvRebelsIndependence.INDEPENDENCE_MIN_TURNS_SINCE_REVOLT_BASE + CFG.oR.nextInt(GameValues.gvRebelsIndependence.INDEPENDENCE_MIN_TURNS_SINCE_REVOLT_RANDOM) || GameCalendar.TURNID - CFG.core.getCiv((int)i).civGD.iRevolt_LastTurnLostProvince < GameValues.gvRebelsIndependence.INDEPENDENCE_MIN_TURNS_SINCE_LAST_PROVINCE_LOST && GameCalendar.TURNID - CFG.core.getCiv((int)i).civGD.iRevolt_SinceTurn <= GameValues.gvRebelsIndependence.INDEPENDENCE_MAX_TURNS_BEFORE_FORCED_INDEPENDENCE) continue;
             try {
