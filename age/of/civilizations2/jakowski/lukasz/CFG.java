@@ -3754,6 +3754,26 @@ public class CFG {
                 }
             };
             CFG.updateKeyboard_DefaultWrite();
+        } else if (Keyboard.changeAllianceNameMode >= 0 && menus.getInGameView()) {
+            keyboardSave = new Keyboard_Action(){
+
+                @Override
+                public void action() {
+                    if (keybMess.length() > 0) {
+                        core.getAlliance(Keyboard.changeAllianceNameMode).setAllianceName(keybMess);
+                        menus.rebuildInGame_Alliance(Keyboard.changeAllianceNameMode);
+                        Keyboard.changeAllianceNameMode = -1;
+                    }
+                }
+            };
+            keyboardDelete = new Keyboard_Action(){
+
+                @Override
+                public void action() {
+                    keybMess = keybMess.length() > 1 ? keybMess.substring(0, keybMess.length() - 1) : "";
+                }
+            };
+            CFG.updateKeyboard_DefaultWrite();
         } else if (menus.getInCreateScenario_Events() && !menus.getVisibleCreateScenario_Events_Edit()) {
             keyboardSave = new Keyboard_Action(){
 

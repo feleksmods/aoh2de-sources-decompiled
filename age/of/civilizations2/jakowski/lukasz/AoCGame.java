@@ -24,6 +24,7 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Options.Menu_InGame_Options;
 import age.of.civilizations2.jakowski.lukasz.Menus.Top.Menu_CreateNewGame_Top;
 import age.of.civilizations2.jakowski.lukasz.Menus.Turn.Menu_NextPlayerTurn;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_2;
+import age.of.civilizations2.jakowski.lukasz.Menus.Z_Rest2.Menu_InGame_View_Army;
 import age.of.civilizations2.jakowski.lukasz.Platform;
 import age.of.civilizations2.jakowski.lukasz.ProvinceBorder;
 import age.of.civilizations2.jakowski.lukasz.RTS;
@@ -1105,35 +1106,41 @@ public class AoCGame {
                                 }
                             } else if (keycode == 142) {
                                 CFG.menus.setVisibleInGame_Playlist(!CFG.menus.getVisibleInGame_Playlist());
-                            } else if (keycode != 8) {
-                                if (keycode == 45) {
-                                    if (CFG.chooseProvinceMode) {
-                                        CFG.core.resetChooseProvinceData();
-                                        CFG.core.checkProvinceActionMenu();
-                                        return true;
-                                    }
-                                } else if (keycode == 51) {
-                                    if (CFG.menus.getInGame_ProvinceRecruit_Visible()) {
-                                        CFG.menus.setVisible_InGame_ProviRecruit(false);
-                                        CFG.core.checkProvinceActionMenu();
-                                        return true;
-                                    }
-                                } else if (keycode == 33) {
-                                    if (CFG.menus.getInGame_ProvincemMore_Visible()) {
-                                        CFG.menus.setVisible_InGame_ProvinceMore(false, false);
-                                        return true;
-                                    }
-                                } else if (keycode == 46) {
-                                    if (CFG.menus.getInGame_ProvinceDisband_Visible()) {
-                                        CFG.menus.setVisible_InGame_ProvinceDisband(false);
-                                        CFG.core.checkProvinceActionMenu();
-                                        return true;
-                                    }
-                                } else if (keycode == 48 && CFG.regroupArmyMode) {
-                                    CFG.core.resetRegroupArmy_Data();
+                            } else if (keycode == 8) {
+                                Menu_InGame_View_Army.acMass();
+                            } else if (keycode == 9) {
+                                Menu_InGame_View_Army.mvFR();
+                            } else if (keycode == 10) {
+                                Menu_InGame_View_Army.acRegroup();
+                            } else if (keycode == 11) {
+                                CFG.menus.rebuildInGame_CancelMoveArmies();
+                            } else if (keycode == 45) {
+                                if (CFG.chooseProvinceMode) {
+                                    CFG.core.resetChooseProvinceData();
                                     CFG.core.checkProvinceActionMenu();
                                     return true;
                                 }
+                            } else if (keycode == 51) {
+                                if (CFG.menus.getInGame_ProvinceRecruit_Visible()) {
+                                    CFG.menus.setVisible_InGame_ProviRecruit(false);
+                                    CFG.core.checkProvinceActionMenu();
+                                    return true;
+                                }
+                            } else if (keycode == 33) {
+                                if (CFG.menus.getInGame_ProvincemMore_Visible()) {
+                                    CFG.menus.setVisible_InGame_ProvinceMore(false, false);
+                                    return true;
+                                }
+                            } else if (keycode == 46) {
+                                if (CFG.menus.getInGame_ProvinceDisband_Visible()) {
+                                    CFG.menus.setVisible_InGame_ProvinceDisband(false);
+                                    CFG.core.checkProvinceActionMenu();
+                                    return true;
+                                }
+                            } else if (keycode == 48 && CFG.regroupArmyMode) {
+                                CFG.core.resetRegroupArmy_Data();
+                                CFG.core.checkProvinceActionMenu();
+                                return true;
                             }
                             if (CFG.gameAction.getActiveTurnStateID() == GameAction.TurnStates.INPUT_ORDERS) {
                                 if (keycode == 53) {

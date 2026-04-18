@@ -118,7 +118,8 @@ public class Pallet_Manager {
         if (nPaletteID == 0) {
             this.loadCivilizationStandardColors();
         } else {
-            for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
+            int i;
+            for (i = 1; i < CFG.core.getCivsSize(); ++i) {
                 if (CFG.core.getCiv(i).getPuppetOfCiv() != i) continue;
                 FileHandle file = null;
                 try {
@@ -149,6 +150,24 @@ public class Pallet_Manager {
                 catch (GdxRuntimeException ex) {
                     this.loadCivilizationStandardColor(i);
                 }
+            }
+            try {
+                for (i = 1; i < CFG.core.getCivsSize(); ++i) {
+                    if (i == CFG.core.getCiv(i).getPuppetOfCiv()) continue;
+                    try {
+                        Color nC = CFG.getColorMixed_2(CFG.core.getCiv(i).getColor(1.0f), CFG.core.getCiv(CFG.core.getCiv(i).getPuppetOfCiv()).getColor(1.0f));
+                        CFG.core.getCiv(i).setR((int)(nC.r * 255.0f));
+                        CFG.core.getCiv(i).setG((int)(nC.g * 255.0f));
+                        CFG.core.getCiv(i).setB((int)(nC.b * 255.0f));
+                        continue;
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
+                }
+            }
+            catch (Exception exception) {
+                // empty catch block
             }
         }
     }
@@ -199,8 +218,27 @@ public class Pallet_Manager {
     }
 
     public final void loadCivilizationStandardColors() {
-        for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
+        int i;
+        for (i = 1; i < CFG.core.getCivsSize(); ++i) {
             this.loadCivilizationStandardColor(i);
+        }
+        try {
+            for (i = 1; i < CFG.core.getCivsSize(); ++i) {
+                if (i == CFG.core.getCiv(i).getPuppetOfCiv()) continue;
+                try {
+                    Color nC = CFG.getColorMixed_2(CFG.core.getCiv(i).getColor(1.0f), CFG.core.getCiv(CFG.core.getCiv(i).getPuppetOfCiv()).getColor(1.0f));
+                    CFG.core.getCiv(i).setR((int)(nC.r * 255.0f));
+                    CFG.core.getCiv(i).setG((int)(nC.g * 255.0f));
+                    CFG.core.getCiv(i).setB((int)(nC.b * 255.0f));
+                    continue;
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
         }
     }
 

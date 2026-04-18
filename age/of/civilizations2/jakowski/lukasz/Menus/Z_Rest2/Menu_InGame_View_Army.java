@@ -44,7 +44,7 @@ extends Menu {
     public static long lTime = 0L;
     public static boolean hideAnimation = true;
     private int iCivID = 0;
-    public int provinceID = 0;
+    public static int provinceID = 0;
 
     public static final int getButtonHeight() {
         return (int)(CFG.isAndroid() ? Math.max((float)CFG.BUTTON_H * 0.8f, (float)(CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 6)) : Math.max((float)CFG.BUTTON_H * 0.8f, (float)(CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 6)));
@@ -239,7 +239,7 @@ extends Menu {
                 tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
             }
             try {
-                this.provinceID = CFG.core.getActiveProvID();
+                provinceID = CFG.core.getActiveProvID();
                 int buttonH = CFG.BUTTON_H * 4 / 5;
                 int row = 0;
                 menuElements.add(new Button_Build(CFG.lang.get("RecruitMercenaries"), Images.mercenaries, 0, 0, 0, tY, tempW, true, false, 0, 0.0f){
@@ -268,23 +268,7 @@ extends Menu {
 
                     @Override
                     public void actionElem(int iID) {
-                        try {
-                            if (CFG.core.getActiveProvID() >= 0) {
-                                Menu_InGameProvAction.clickRecruit();
-                                if (!Core.AMRCT.isEmpty()) {
-                                    for (int i = 0; i < CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvincesSize(); ++i) {
-                                        if (CFG.core.getProv(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i)).isOccupied() || Core.ISIP(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i))) continue;
-                                        Core.MRPRV(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i));
-                                    }
-                                    CFG.gameAction.IEU();
-                                    Core.dARA(CFG.menus.getInGame_ProvRecruitSlider().getCurr());
-                                    CFG.menus.updateInGame_ActionInfo_Recruit();
-                                }
-                            }
-                        }
-                        catch (Exception exception) {
-                            // empty catch block
-                        }
+                        Menu_InGame_View_Army.acMass();
                     }
 
                     @Override
@@ -302,6 +286,16 @@ extends Menu {
                         nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("MassRecruitDesc")));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
+                        if (CFG.getIsDesktop()) {
+                            nData.add(new ME_Hover_2Type_Space());
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Shortcut") + ": "));
+                            nData.add(new ME_Hover_2Type_Text("1", CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                            nData.add(new ME_Hover_2Type_Image(Images.key, CFG.PADD, 0));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                        }
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
 
@@ -316,21 +310,30 @@ extends Menu {
 
                     @Override
                     public void actionElem(int iID) {
-                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : Menu_InGame_View_Army.this.provinceID;
-                        CFG.menus.rebuildInGame_RegroupArmies(toProvinceID);
+                        Menu_InGame_View_Army.acRegroup();
                     }
 
                     @Override
                     public void buildElemHover() {
                         ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
                         ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : Menu_InGame_View_Army.this.provinceID;
+                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : provinceID;
                         nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), 0, CFG.PADD));
                         nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("RegroupArmies") + ": "));
                         nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getProv(toProvinceID).getProvName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                         nData.add(new ME_Hover_2Type_Image_Big(Images.diploArmy, CFG.PADD, 0));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
+                        if (CFG.getIsDesktop()) {
+                            nData.add(new ME_Hover_2Type_Space());
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Shortcut") + ": "));
+                            nData.add(new ME_Hover_2Type_Text("3", CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                            nData.add(new ME_Hover_2Type_Image(Images.key, CFG.PADD, 0));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                        }
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
 
@@ -358,6 +361,16 @@ extends Menu {
                         nData.add(new ME_Hover_2Type_Image_Big(Images.diploArmy, CFG.PADD, 0));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
+                        if (CFG.getIsDesktop()) {
+                            nData.add(new ME_Hover_2Type_Space());
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Shortcut") + ": "));
+                            nData.add(new ME_Hover_2Type_Text("4", CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                            nData.add(new ME_Hover_2Type_Image(Images.key, CFG.PADD, 0));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                        }
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
 
@@ -372,34 +385,14 @@ extends Menu {
 
                     @Override
                     public void actionElem(int iID) {
-                        try {
-                            CFG.LPHE.clear();
-                            if (TouchManager.lMABX.size() > 1) {
-                                for (int c = 0; c < TouchManager.lMABX.size(); ++c) {
-                                    CFG.LPHE.add(TouchManager.lMABX.get(c));
-                                }
-                                CFG.OUDH = 0;
-                                CFG.menus.rebuildMenu_InGame_Infobox(CFG.lang.get("MoveToFrontLine"), CFG.lang.get("ChooseAProvince"), Images.infoDiplomacy);
-                            } else if (CFG.core.getActiveProvID() < 0) {
-                                CFG.toastM.addM(CFG.lang.get("ChooseAProvince"), CFG.COLOR_NEGATIVE_2);
-                            } else if (CFG.core.getProv(CFG.core.getActiveProvID()).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) <= 0) {
-                                CFG.toastM.addM(CFG.lang.get("Army") + ": 0 - " + CFG.lang.get("ChooseAProvince"), CFG.COLOR_NEGATIVE_2);
-                            } else {
-                                CFG.LPHE.add(CFG.core.getActiveProvID());
-                                CFG.OUDH = 0;
-                                CFG.menus.rebuildMenu_InGame_Infobox(CFG.lang.get("MoveToFrontLine"), CFG.lang.get("ChooseAProvince"), Images.infoDiplomacy);
-                            }
-                        }
-                        catch (Exception ex) {
-                            CFG.exceptionStack(ex);
-                        }
+                        Menu_InGame_View_Army.mvFR();
                     }
 
                     @Override
                     public void buildElemHover() {
                         ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
                         ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : Menu_InGame_View_Army.this.provinceID;
+                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : provinceID;
                         nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), 0, CFG.PADD));
                         nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("MoveToFrontLine") + ": "));
                         nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("SelectCivilization"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
@@ -407,6 +400,16 @@ extends Menu {
                         nData.add(new ME_Hover_2Type_Image_Big(Images.diploArmy, CFG.PADD, 0));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
+                        if (CFG.getIsDesktop()) {
+                            nData.add(new ME_Hover_2Type_Space());
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Shortcut") + ": "));
+                            nData.add(new ME_Hover_2Type_Text("2", CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                            nData.add(new ME_Hover_2Type_Image(Images.key, CFG.PADD, 0));
+                            nElements.add(new MEHover_2E(nData));
+                            nData.clear();
+                        }
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
 
@@ -422,7 +425,7 @@ extends Menu {
                     @Override
                     public void actionElem(int iID) {
                         Menu_InGame_SendArmy.toProvinceID = -1;
-                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : Menu_InGame_View_Army.this.provinceID;
+                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : provinceID;
                         CFG.menus.rebuildInGame_SendArmy(toProvinceID);
                     }
 
@@ -441,7 +444,7 @@ extends Menu {
                         nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("SendVolunteerArmyText")));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
-                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : Menu_InGame_View_Army.this.provinceID;
+                        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : provinceID;
                         nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Province") + ": "));
                         nData.add(new ME_Hover_2Type_Text(CFG.core.getProv(toProvinceID).getProvName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                         nData.add(new ME_Hover_2Type_Flag(CFG.core.getProv(toProvinceID).getCivId(), CFG.PADD, 0));
@@ -639,5 +642,54 @@ extends Menu {
             CFG.setRenderO(true);
         }
         hideAnimation = nHideAnimation;
+    }
+
+    public static void mvFR() {
+        try {
+            CFG.LPHE.clear();
+            if (TouchManager.lMABX.size() >= 1) {
+                for (int c = 0; c < TouchManager.lMABX.size(); ++c) {
+                    CFG.LPHE.add(TouchManager.lMABX.get(c));
+                }
+                CFG.OUDH = 0;
+                CFG.menus.rebuildMenu_InGame_Infobox(CFG.lang.get("MoveToFrontLine"), CFG.lang.get("ChooseAProvince"), Images.infoDiplomacy);
+            } else if (CFG.core.getActiveProvID() < 0) {
+                CFG.toastM.addM(CFG.lang.get("ChooseAProvince"), CFG.COLOR_NEGATIVE_2);
+            } else if (CFG.core.getProv(CFG.core.getActiveProvID()).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) <= 0) {
+                CFG.toastM.addM(CFG.lang.get("Army") + ": 0 - " + CFG.lang.get("ChooseAProvince"), CFG.COLOR_NEGATIVE_2);
+            } else {
+                CFG.LPHE.add(CFG.core.getActiveProvID());
+                CFG.OUDH = 0;
+                CFG.menus.rebuildMenu_InGame_Infobox(CFG.lang.get("MoveToFrontLine"), CFG.lang.get("ChooseAProvince"), Images.infoDiplomacy);
+            }
+        }
+        catch (Exception ex) {
+            CFG.exceptionStack(ex);
+        }
+    }
+
+    public static void acRegroup() {
+        int toProvinceID = CFG.core.getActiveProvID() >= 0 ? CFG.core.getActiveProvID() : provinceID;
+        CFG.menus.rebuildInGame_RegroupArmies(toProvinceID);
+    }
+
+    public static void acMass() {
+        try {
+            if (CFG.core.getActiveProvID() >= 0) {
+                Menu_InGameProvAction.clickRecruit();
+                if (!Core.AMRCT.isEmpty()) {
+                    for (int i = 0; i < CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvincesSize(); ++i) {
+                        if (CFG.core.getProv(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i)).isOccupied() || Core.ISIP(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i))) continue;
+                        Core.MRPRV(CFG.core.getProv(CFG.core.getActiveProvID()).getNeighProvinces(i));
+                    }
+                    CFG.gameAction.IEU();
+                    Core.dARA(CFG.menus.getInGame_ProvRecruitSlider().getCurr());
+                    CFG.menus.updateInGame_ActionInfo_Recruit();
+                }
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
     }
 }
