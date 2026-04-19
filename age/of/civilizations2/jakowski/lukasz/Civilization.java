@@ -2464,6 +2464,20 @@ public class Civilization {
         try {
             if (nOpinion > (float)GameValues.gvRelations.MAX_RELATION_VALUE) {
                 nOpinion = GameValues.gvRelations.MAX_RELATION_VALUE;
+            } else if (nOpinion < (float)(GameValues.gvRelations.MIN_RELATION_VALUE + 5)) {
+                nOpinion = GameValues.gvRelations.MIN_RELATION_VALUE + 5;
+            }
+            this.civGD.relation.put(iID, Float.valueOf(nOpinion));
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
+    }
+
+    public final void setRelationWar(int iID, float nOpinion) {
+        try {
+            if (nOpinion > (float)GameValues.gvRelations.MAX_RELATION_VALUE) {
+                nOpinion = GameValues.gvRelations.MAX_RELATION_VALUE;
             } else if (nOpinion < (float)GameValues.gvRelations.MIN_RELATION_VALUE) {
                 nOpinion = GameValues.gvRelations.MIN_RELATION_VALUE;
             }

@@ -243,8 +243,6 @@ extends Thread {
                 for (int j = CFG.core.getPlayer((int)i).playerGD.migrationF.size() - 1; j >= 0; --j) {
                     int civ = CFG.core.getPlayer((int)i).playerGD.migrationF.get(j);
                     boolean remove = true;
-                    CFG.core.getCiv(civ).setRelationD(CFG.core.getPlayer(i).getCivId(), CFG.core.getCiv(civ).getRelationD(CFG.core.getPlayer(i).getCivId()) + GameValues.gvPopRelocate.MIGRATE_RELATIONS_CHANGE_PER_TURN);
-                    CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).setRelationD(civ, CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getRelationD(civ) + GameValues.gvPopRelocate.MIGRATE_RELATIONS_CHANGE_PER_TURN);
                     for (int k = 0; k < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getNumOfProvs(); ++k) {
                         for (int o = CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getProvID(k)).getPop().getNatsSize() - 1; o >= 0; --o) {
                             int maxPop;

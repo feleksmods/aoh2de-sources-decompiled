@@ -5117,8 +5117,8 @@ lbl94:
                 this.joinWar(iAgressorCivID, iCivB, this.getWarID(iCivB, CFG.core.getCiv((int)iAgressorCivID).civGD.vassals.get((int)i2).iCivID));
                 return;
             }
-            this.setCivRelationOfCivB(iAgressorCivID, iCivB, GameValues.gvDiplomacy.RELATION_AT_WAR);
-            this.setCivRelationOfCivB(iCivB, iAgressorCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
+            this.setCivRelationOfCivBWar(iAgressorCivID, iCivB, GameValues.gvDiplomacy.RELATION_AT_WAR);
+            this.setCivRelationOfCivBWar(iCivB, iAgressorCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
             this.addWarData(iAgressorCivID, iCivB);
             try {
                 Render.addDiploAnimation(iCivB, CFG.core.getCiv(iAgressorCivID).getCapitalProvID(), Images.mapWar);
@@ -5213,8 +5213,8 @@ lbl94:
         this.war_CheckDiplomacy(iCivA, iWarAgainstCivID);
         if (nWarID >= 0 && nWarID < this.getWarsSize()) {
             int i;
-            this.setCivRelationOfCivB(iCivA, iWarAgainstCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
-            this.setCivRelationOfCivB(iWarAgainstCivID, iCivA, GameValues.gvDiplomacy.RELATION_AT_WAR);
+            this.setCivRelationOfCivBWar(iCivA, iWarAgainstCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
+            this.setCivRelationOfCivBWar(iWarAgainstCivID, iCivA, GameValues.gvDiplomacy.RELATION_AT_WAR);
             try {
                 Render.addDiploAnimation(iWarAgainstCivID, CFG.core.getCiv(iCivA).getCapitalProvID(), Images.mapWar);
             }
@@ -12909,6 +12909,18 @@ lbl94:
             this.getCiv(iCivA).setRelationD(iCivB, nOpinion);
             if ((int)nOpinion <= GameValues.gvDiplomacy.RELATION_AT_WAR) {
                 this.getCiv(iCivB).setRelationD(iCivA, nOpinion);
+            }
+        }
+        catch (Exception ex) {
+            CFG.exceptionStack(ex);
+        }
+    }
+
+    public final void setCivRelationOfCivBWar(int iCivA, int iCivB, float nOpinion) {
+        try {
+            this.getCiv(iCivA).setRelationWar(iCivB, nOpinion);
+            if ((int)nOpinion <= GameValues.gvDiplomacy.RELATION_AT_WAR) {
+                this.getCiv(iCivB).setRelationWar(iCivA, nOpinion);
             }
         }
         catch (Exception ex) {

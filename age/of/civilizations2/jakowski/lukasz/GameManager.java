@@ -3265,10 +3265,6 @@ public class GameManager {
         }
         CFG.core.getCiv(onCivID).addNewSanctions(new Civilization_Sanctions(byCivID, onCivID, GameManager.getSanctionsImpact(byCivID, onCivID), Math.max(GameValues.gvSanctions.SANCTIONS_MIN_TURNS, GameCalendar.TURNID + turns)));
         CFG.core.getCiv(byCivID).addNewSanctions(new Civilization_Sanctions(onCivID, byCivID, GameManager.getSanctionsImpact(onCivID, byCivID), Math.max(GameValues.gvSanctions.SANCTIONS_MIN_TURNS, GameCalendar.TURNID + turns)));
-        if (!CFG.core.getCivsAtWar(byCivID, onCivID)) {
-            CFG.core.getCiv(byCivID).setRelationD(onCivID, CFG.core.getCiv(byCivID).getRelationD(onCivID) + GameValues.gvSanctions.RELATIONS_CHANGE);
-            CFG.core.getCiv(onCivID).setRelationD(byCivID, CFG.core.getCiv(onCivID).getRelationD(byCivID) + GameValues.gvSanctions.RELATIONS_CHANGE);
-        }
         if (CFG.core.getCiv(onCivID).getIsPlayer()) {
             CFG.core.getCiv((int)onCivID).getCivDiploGD().messageBox.addMessage(new Message_Sanctioned(byCivID));
         }

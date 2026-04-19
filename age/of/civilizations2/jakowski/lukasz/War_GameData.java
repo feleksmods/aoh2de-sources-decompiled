@@ -39,8 +39,8 @@ implements Serializable {
             this.lAggressors.add(new WarCiv_GameData(nCivID));
             for (i = 0; i < this.getDefendersSize(); ++i) {
                 if (CFG.core.getCivsAtWar(nCivID, this.getDefenderID(i).getCivID())) continue;
-                CFG.core.setCivRelationOfCivB(nCivID, this.getDefenderID(i).getCivID(), GameValues.gvDiplomacy.RELATION_AT_WAR);
-                CFG.core.setCivRelationOfCivB(this.getDefenderID(i).getCivID(), nCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
+                CFG.core.setCivRelationOfCivBWar(nCivID, this.getDefenderID(i).getCivID(), GameValues.gvDiplomacy.RELATION_AT_WAR);
+                CFG.core.setCivRelationOfCivBWar(this.getDefenderID(i).getCivID(), nCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
             }
             this.iLastFight_InTurns = 0;
             this.iLastTurn_ConqueredProvince = GameCalendar.TURNID;
@@ -81,8 +81,8 @@ implements Serializable {
             this.lDefenders.add(new WarCiv_GameData(nCivID));
             for (i = 0; i < this.getAggressorsSize(); ++i) {
                 if (CFG.core.getCivsAtWar(nCivID, this.getAggressorID(i).getCivID())) continue;
-                CFG.core.setCivRelationOfCivB(nCivID, this.getAggressorID(i).getCivID(), GameValues.gvDiplomacy.RELATION_AT_WAR);
-                CFG.core.setCivRelationOfCivB(this.getAggressorID(i).getCivID(), nCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
+                CFG.core.setCivRelationOfCivBWar(nCivID, this.getAggressorID(i).getCivID(), GameValues.gvDiplomacy.RELATION_AT_WAR);
+                CFG.core.setCivRelationOfCivBWar(this.getAggressorID(i).getCivID(), nCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
             }
             this.iLastFight_InTurns = 0;
             this.iLastTurn_ConqueredProvince = GameCalendar.TURNID;

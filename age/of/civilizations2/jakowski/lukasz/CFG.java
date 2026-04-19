@@ -4951,8 +4951,8 @@ public class CFG {
                     continue;
                 }
                 core.war_CheckDiplomacy(i2, nCivA);
-                core.setCivRelationOfCivB(i2, nCivA, GameValues.gvDiplomacy.RELATION_AT_WAR);
-                core.setCivRelationOfCivB(nCivA, i2, GameValues.gvDiplomacy.RELATION_AT_WAR);
+                core.setCivRelationOfCivBWar(i2, nCivA, GameValues.gvDiplomacy.RELATION_AT_WAR);
+                core.setCivRelationOfCivBWar(nCivA, i2, GameValues.gvDiplomacy.RELATION_AT_WAR);
                 core.getWar(nWarID).updateAfterUnion(nCivA, nCivB);
                 continue;
             }
