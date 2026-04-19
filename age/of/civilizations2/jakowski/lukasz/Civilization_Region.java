@@ -16,7 +16,7 @@ public class Civilization_Region {
     private int iRegionID;
     private List<Integer> lProvinces;
     private int iProvincesSize;
-    private boolean isSupplied = false;
+    private boolean isSupplied = true;
     private boolean seaAccess = false;
     private boolean seaAccess_HavePort = false;
     private boolean haveNotOccupiedProvince = false;

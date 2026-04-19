@@ -18,8 +18,10 @@ import age.of.civilizations2.jakowski.lukasz.MapA.BuildingsManager;
 import age.of.civilizations2.jakowski.lukasz.MapA.Mountains.Mountain;
 import age.of.civilizations2.jakowski.lukasz.MapA.Wonders.Wonder;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_CivilizationView;
+import age.of.civilizations2.jakowski.lukasz.Messages.Province.NotSupplied.Message_ProvincesNotSupplied;
 import age.of.civilizations2.jakowski.lukasz.Messages.Province.NotSupplied.Message_ProvincesNotSupplied_LostControl;
 import age.of.civilizations2.jakowski.lukasz.Messages.Province.NotSupplied.Message_ProvincesNotSupplied_LostControl_EnemyLost;
+import age.of.civilizations2.jakowski.lukasz.Messages.Province.NotSupplied.Message_ProvincesNotSupplied_Straves;
 import age.of.civilizations2.jakowski.lukasz.Point_XY2;
 import age.of.civilizations2.jakowski.lukasz.ProvinceBorder;
 import age.of.civilizations2.jakowski.lukasz.Province_Army;
@@ -4213,6 +4215,9 @@ public class Province {
             this.provGD.isNotSuppliedForYTurns = -1;
         } else {
             ++this.provGD.isNotSuppliedForYTurns;
+            if (CFG.core.getCiv(this.getCivId()).getIsPlayer()) {
+                CFG.core.getCiv((int)this.getCivId()).getCivDiploGD().messageBox.addMessage(new Message_ProvincesNotSupplied(this.getCivId(), this.getProvID()));
+            }
             if (this.provGD.isNotSuppliedForYTurns > GameValues.gvProvinceNotSupplied.NOT_SUPPLIED_PROVINCE_STARVATION_START_TURN_THRESHOLD) {
                 for (int i = this.getCivsSize() - 1; i >= 0; --i) {
                     if (this.getArmyID(i) <= 0) continue;
@@ -4220,6 +4225,8 @@ public class Province {
                     if ((armyStrave = Math.min(armyStrave, this.getArmyID(i))) <= 0) continue;
                     CFG.core.getCiv(this.getCivId(i)).setNumberOfUnits(CFG.core.getCiv(this.getCivId(i)).getNumberOfUnits() - armyStrave);
                     this.updateArmy4(this.getCivId(i), this.getArmyID(i) - armyStrave);
+                    if (!CFG.core.getCiv(this.getCivId()).getIsPlayer()) continue;
+                    CFG.core.getCiv((int)this.getCivId()).getCivDiploGD().messageBox.addMessage(new Message_ProvincesNotSupplied_Straves(this.getCivId(), this.getProvID(), armyStrave));
                 }
             }
             if (this.provGD.isNotSuppliedForYTurns >= GameValues.gvProvinceNotSupplied.NOT_SUPPLIED_PROVINCE_LOSE_CONTROL_AFTER_TURNS && this.isOccupied() && CFG.core.getProvinceArmy(this.getProvID()) <= 0) {
