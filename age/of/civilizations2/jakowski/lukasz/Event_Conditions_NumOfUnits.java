@@ -47,7 +47,7 @@ extends Event_Conditions {
         try {
             return CFG.core.getCiv(this.getCivID()).getNumberOfUnits() >= this.getValue();
         }
-        catch (IndexOutOfBoundsException ex) {
+        catch (Exception ex) {
             return false;
         }
     }

@@ -72,7 +72,7 @@ extends Menu {
                 for (i = 0; i < iSize; ++i) {
                     try {
                         if (CFG.eventsManager.events.lEvents.get(CFG.core.getCiv((int)Menu_InGame_Missions.nCivID).iDMAS.get(i)).getRepeatable() || !CFG.eventsManager.events.lEvents.get(CFG.core.getCiv((int)Menu_InGame_Missions.nCivID).iDMAS.get(i)).getWasFired()) {
-                            menuElements.add(new Button_DiplomacyAction_TextRight(Images.diploMessage, CFG.lang.get(CFG.eventsManager.events.lEvents.get(CFG.core.getCiv((int)Menu_InGame_Missions.nCivID).iDMAS.get(i)).getEventName()), 0, 0, tY, CFG.BUTTON_W, tempElemH, true, "", CFG.eventsManager.canRunMissionID(i, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) ? Images.iconTrue : Images.iconFalse){
+                            menuElements.add(new Button_DiplomacyAction_TextRight(Images.diploMessage, CFG.lang.get(CFG.eventsManager.events.lEvents.get(CFG.core.getCiv((int)Menu_InGame_Missions.nCivID).iDMAS.get(i)).getEventName()), 0, 0, tY, CFG.BUTTON_W, tempElemH, true, "", CFG.eventsManager.canRunMissionID(CFG.core.getCiv((int)Menu_InGame_Missions.nCivID).iDMAS.get(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) ? Images.iconTrue : Images.iconFalse){
                                 public int id;
                                 {
                                     this.id = 0;
@@ -80,7 +80,7 @@ extends Menu {
 
                                 @Override
                                 public void actionElem(int iID) {
-                                    if (CFG.eventsManager.runMissionPlayer(this.id, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
+                                    if (CFG.eventsManager.runMissionPlayer(CFG.core.getCiv((int)Menu_InGame_Missions.nCivID).iDMAS.get(this.id), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
                                         Menu_InGame_Missions.this.setVisibleM(false);
                                     }
                                 }

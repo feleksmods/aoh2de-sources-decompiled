@@ -1267,13 +1267,23 @@ public class AI {
     }
 
     public void aiBecomesAVassal() {
-        try {
-            if (GameCalendar.TURNID < GameValues.gvAiVassals.BECOME_VASSAL_MAX_TURN_ID && GameCalendar.TURNID % GameValues.gvAiVassals.BECOME_VASSAL_MODULO_TURN == GameValues.gvAiVassals.BECOME_VASSAL_TURN_CHECK_IF) {
+        block7: {
+            try {
+                if (GameCalendar.TURNID >= GameValues.gvAiVassals.BECOME_VASSAL_MAX_TURN_ID || GameCalendar.TURNID % GameValues.gvAiVassals.BECOME_VASSAL_MODULO_TURN != GameValues.gvAiVassals.BECOME_VASSAL_TURN_CHECK_IF) break block7;
                 for (int i = 0; i < CFG.core.getPlayersSize(); ++i) {
                     if (CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getNumOfProvs() <= 0 || CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civGD.iVassalsSize >= GameValues.gvAiVassals.BECOME_VASSAL_VASSALS_LIMIT || CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getPuppetOfCiv() != CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getCivId() || CFG.oR.nextInt(1000) > GameValues.gvAiVassals.BECOME_VASSAL_CHANCE_1000) continue;
                     ArrayList<Integer> possibleCivs = new ArrayList<Integer>();
                     for (int a = 0; a < CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civsSize; ++a) {
-                        if (CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getIdeology()).REVOLUTIONARY || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getIsPlayer() || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getPuppetOfCiv() != CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getNumOfProvs() >= GameValues.gvAiVassals.BECOME_VASSAL_MAX_PROVINCES || !((float)CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getNumOfProvs() < (float)CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getNumOfProvs() * GameValues.gvAiVassals.BECOME_VASSAL_LORD_PROVINCES_MODIFIER) || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getRankScore() >= CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getRankScore() || !(CFG.core.getCivRelationOfCivB(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID, CFG.core.getPlayer(i).getCivId()) >= (float)GameValues.gvAiVassals.BECOME_VASSAL_MIN_RELATION)) continue;
+                        if (CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getIdeology()).REVOLUTIONARY) continue;
+                        try {
+                            if (CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getNumOfProvs() <= 0) {
+                                continue;
+                            }
+                        }
+                        catch (Exception exception) {
+                            // empty catch block
+                        }
+                        if (CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getIsPlayer() || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getPuppetOfCiv() != CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getNumOfProvs() >= GameValues.gvAiVassals.BECOME_VASSAL_MAX_PROVINCES || !((float)CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getNumOfProvs() < (float)CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getNumOfProvs() * GameValues.gvAiVassals.BECOME_VASSAL_LORD_PROVINCES_MODIFIER) || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID).getRankScore() >= CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getRankScore() || !(CFG.core.getCivRelationOfCivB(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID, CFG.core.getPlayer(i).getCivId()) >= (float)GameValues.gvAiVassals.BECOME_VASSAL_MIN_RELATION)) continue;
                         possibleCivs.add(CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)a).civID);
                     }
                     if (possibleCivs.isEmpty()) continue;
@@ -1281,9 +1291,9 @@ public class AI {
                     CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).getCivDiploGD().messageBox.addMessage(new Message_BecomeVassal((Integer)possibleCivs.get(randID), CFG.core.getPlayer(i).getCivId()));
                 }
             }
-        }
-        catch (Exception exception) {
-            // empty catch block
+            catch (Exception exception) {
+                // empty catch block
+            }
         }
     }
 

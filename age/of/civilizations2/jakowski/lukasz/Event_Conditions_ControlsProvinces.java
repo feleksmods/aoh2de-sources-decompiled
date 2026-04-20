@@ -63,7 +63,7 @@ extends Event_Conditions {
         float numOfControlledProvinces = 0.0f;
         try {
             for (int i = 0; i < this.lProvinces.size(); ++i) {
-                if (CFG.core.getProv(this.lProvinces.get(i)).getCivId() != this.getCivID() && CFG.core.getProv(this.lProvinces.get(i)).getTrueOwnerOfProv() != this.getCivID()) continue;
+                if (CFG.core.getProv(this.lProvinces.get(i)).getCivId() != this.getCivID() || CFG.core.getProv(this.lProvinces.get(i)).getTrueOwnerOfProv() != this.getCivID()) continue;
                 numOfControlledProvinces += 1.0f;
             }
         }

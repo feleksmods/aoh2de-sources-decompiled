@@ -232,6 +232,7 @@ public class Core {
         }
     };
     private List<Integer> prIV = new ArrayList<Integer>();
+    public static int maxWastelandLvl = 99;
     public float fDashedLine_Percentage_HighlitedProvinceBorder = 0.0f;
     private long lDashedLineTime_Percentage_HighlitedProvinceBorder;
     private boolean highlightedProvinceBorder_BackAnimation = false;
@@ -2497,49 +2498,53 @@ public class Core {
     }
 
     public final void buildWastelandLevels() {
-        ArrayList<Integer> tWasteland = new ArrayList<Integer>();
-        for (int i = 0; i < this.getProvinSize(); ++i) {
-            if (this.getProv(i).getWastelandLvl() < 0 || this.getProv(i).getSeaProv()) continue;
-            tWasteland.add(i);
-            this.getProv(i).setWastelandLvl(0);
+        try {
+            ArrayList<Integer> tWasteland = new ArrayList<Integer>();
+            for (int i = 0; i < this.getProvinSize(); ++i) {
+                if (this.getProv(i).getWastelandLvl() < 0 || this.getProv(i).getSeaProv()) continue;
+                tWasteland.add(i);
+                this.getProv(i).setWastelandLvl(0);
+            }
+            this.buildWastelandLevels(tWasteland, 0, tWasteland.size());
+            tWasteland.clear();
+            tWasteland = null;
         }
-        this.buildWastelandLevels(tWasteland, 0, tWasteland.size());
+        catch (Exception ex) {
+            CFG.exceptionStack(ex);
+        }
     }
 
-    private final void buildWastelandLevels(List<Integer> tWasteland, int nLevel, int nWastelandSize) {
-        block7: {
-            try {
-                boolean rec = false;
-                for (int i = 0; i < nWastelandSize; ++i) {
-                    if (this.getProv(tWasteland.get(i)).getWastelandLvl() != nLevel || this.getProv(tWasteland.get(i)).getNeighSeaProvincesSize() > 0) {
-                        tWasteland.remove(i);
-                        --i;
-                        nWastelandSize = tWasteland.size();
-                        continue;
-                    }
-                    boolean incLevel = true;
-                    for (int j = 0; j < this.getProv(tWasteland.get(i)).getNeighProvincesSize(); ++j) {
-                        if (this.getProv(this.getProv(tWasteland.get(i)).getNeighProvinces(j)).getWastelandLvl() >= nLevel) continue;
-                        incLevel = false;
-                        break;
-                    }
-                    if (incLevel) {
-                        this.getProv(tWasteland.get(i)).setWastelandLvl(nLevel + 1);
-                        rec = true;
-                        continue;
-                    }
+    public final void buildWastelandLevels(List<Integer> tWasteland, int nLevel, int nWastelandSize) {
+        try {
+            boolean rec = false;
+            for (int i = 0; i < nWastelandSize; ++i) {
+                if (this.getProv(tWasteland.get(i)).getWastelandLvl() != nLevel || this.getProv(tWasteland.get(i)).getNeighSeaProvincesSize() > 0) {
                     tWasteland.remove(i);
                     --i;
                     nWastelandSize = tWasteland.size();
+                    continue;
                 }
-                if (rec) {
-                    this.buildWastelandLevels(tWasteland, nLevel + 1, nWastelandSize);
+                boolean incLevel = true;
+                for (int j = 0; j < this.getProv(tWasteland.get(i)).getNeighProvincesSize(); ++j) {
+                    if (this.getProv(this.getProv(tWasteland.get(i)).getNeighProvinces(j)).getWastelandLvl() >= nLevel) continue;
+                    incLevel = false;
+                    break;
                 }
+                if (incLevel) {
+                    this.getProv(tWasteland.get(i)).setWastelandLvl(nLevel + 1);
+                    rec = true;
+                    continue;
+                }
+                tWasteland.remove(i);
+                --i;
+                nWastelandSize = tWasteland.size();
             }
-            catch (StackOverflowError ex) {
-                if (!CFG.LOGs) break block7;
-                CFG.exceptionStack(ex);
+            if (rec && nLevel < maxWastelandLvl) {
+                this.buildWastelandLevels(tWasteland, nLevel + 1, nWastelandSize);
             }
+        }
+        catch (StackOverflowError ex) {
+            CFG.exceptionStack(ex);
         }
     }
 
