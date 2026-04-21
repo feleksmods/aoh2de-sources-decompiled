@@ -4,7 +4,7 @@ import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.Event_Conditions;
 import age.of.civilizations2.jakowski.lukasz.View;
 
-public class Event_Conditions_Stability
+public class Event_Conditions_Investments
 extends Event_Conditions {
     private static final long serialVersionUID = -5690722306211998319L;
     public int iCivID = -1;
@@ -45,7 +45,7 @@ extends Event_Conditions {
     @Override
     public boolean outCondition() {
         try {
-            return CFG.core.getCiv((int)this.getCivID()).fStability * 100.0f >= (float)this.getValue();
+            return CFG.core.getCiv((int)this.getCivID()).civGD.numberOfInvestments >= (float)this.getValue();
         }
         catch (Exception ex) {
             return false;
@@ -55,15 +55,15 @@ extends Event_Conditions {
     @Override
     public String getConditionText() {
         try {
-            return CFG.lang.get("Stability") + " >= " + this.getValue() + ", " + CFG.core.getCiv(this.getCivID()).getCivName();
+            return CFG.lang.get("Investments") + " " + CFG.lang.get("Economy") + " >= " + this.getValue() + ", " + CFG.core.getCiv(this.getCivID()).getCivName();
         }
         catch (Exception ex) {
-            return CFG.lang.get("Stability");
+            return CFG.lang.get("Investments") + " " + CFG.lang.get("Economy");
         }
     }
 
     @Override
     public final void editViewID() {
-        CFG.menus.setMenuID(View.eCREATE_SCENARIO_EVENTS_COND_STABILITY);
+        CFG.menus.setMenuID(View.eCREATE_SCENARIO_EVENTS_COND_INVESTS);
     }
 }
