@@ -28,7 +28,7 @@ public class Graph_Vertical
 extends MenuElemUI {
     private List<Graph_Vertical_Data> lValues;
     private int iValuesSize = 0;
-    private int iValuesTotal = 0;
+    private long iValuesTotal = 0L;
     private int iDataWidth = 0;
     private Graph_Vertical_Info verticalInfo;
     private Graph_Vertical_Data_Type GRAPH_DATA_TYPE;
@@ -37,8 +37,8 @@ extends MenuElemUI {
     private String sTextX;
     private String sTextY;
     private int iWidthTextY;
-    private int iMinPoint;
-    private int iMaxPoint;
+    private long iMinPoint;
+    private long iMaxPoint;
     private float fAvaragePoint;
     private int iAvaragePosY;
     private byte bDecimal = 0;
@@ -61,14 +61,14 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     for (int j = 0; j < ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValuesSize(); ++j) {
-                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * Graph_Vertical.this.verticalInfo.getSortedID(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValueDataTypeID(j) - 1) + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * Graph_Vertical.this.verticalInfo.getSortedID(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValueDataTypeID(j) - 1) + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
-                    Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue() + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 4) + "%]", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                    Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue()) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 4) + "%]", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                 }
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -87,16 +87,16 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     try {
-                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(0) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(0), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), 4) + "%]", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 0 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
-                        if (((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1) > 0) {
-                            Graph_Vertical.this.drawStatisticsValueWithFlag(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), 4) + "%]", ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValueDataTypeID(1), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 1 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(0)) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(0), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), 4) + "%]", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 0 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        if (((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1) > 0L) {
+                            Graph_Vertical.this.drawStatisticsValueWithFlag(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1)) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), 4) + "%]", ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValueDataTypeID(1), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 1 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                         } else {
-                            Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 1 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                            Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(1)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 1 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                         }
-                        if (((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2) > 0) {
-                            Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), 4) + "%]", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 2 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        if (((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2) > 0L) {
+                            Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2)) + " [" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), 4) + "%]", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 2 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                         } else {
-                            Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 2 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                            Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(2)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * 2 + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                         }
                         Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 5) + "%", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
@@ -126,7 +126,7 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     for (int j = 0; j < ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValuesSize(); ++j) {
-                        Graph_Vertical.this.drawStatisticsValueWithFlag(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValueDataTypeID(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValueWithFlag(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j)), ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValueDataTypeID(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
                     Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 5) + "%", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                 }
@@ -157,7 +157,7 @@ extends MenuElemUI {
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -226,14 +226,14 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     for (int j = 0; j < ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValuesSize(); ++j) {
-                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
                     Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 5) + "%", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                 }
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL_WORLDS_POPULATION + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL_WORLDS_POPULATION + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -252,14 +252,14 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     for (int j = 0; j < ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValuesSize(); ++j) {
-                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
                     Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 5) + "%", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                 }
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -278,14 +278,14 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     for (int j = 0; j < ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValuesSize(); ++j) {
-                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
                     Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 5) + "%", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                 }
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -311,7 +311,7 @@ extends MenuElemUI {
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -337,7 +337,7 @@ extends MenuElemUI {
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -363,7 +363,7 @@ extends MenuElemUI {
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -383,14 +383,14 @@ extends MenuElemUI {
                 @Override
                 public void draw(SpriteBatch oSB, int i, int tempOffsetX, int iTranslateX, int iTranslateY) {
                     for (int j = 0; j < ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValuesSize(); ++j) {
-                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
+                        Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getNumberWthSpaces("" + ((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(j)), Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + Graph_Vertical.this.getStatisticsWidth() * 2 + Graph_Vertical.this.getStatisticsWidth() * j + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                     }
                     Graph_Vertical.this.drawStatisticsValue(oSB, "" + CFG.getPercentageOld(((Graph_Vertical_Data)Graph_Vertical.this.lValues.get(i)).getValue(), Graph_Vertical.this.iValuesTotal, 5) + "%", Graph_Vertical.this.getPosXE() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) + tempOffsetX + iTranslateX, Graph_Vertical.this.getPosY() + ((int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) + CFG.PADD * 2) * (i + 1) + iTranslateY);
                 }
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -416,7 +416,7 @@ extends MenuElemUI {
 
                 @Override
                 public String getTotal() {
-                    return CFG.sTOTAL + " [" + Graph_Vertical.this.iValuesTotal + "]";
+                    return CFG.sTOTAL + " [" + CFG.getNumberWthSpaces("" + Graph_Vertical.this.iValuesTotal) + "]";
                 }
 
                 @Override
@@ -853,7 +853,7 @@ extends MenuElemUI {
                 this.lValues.get(i).buildPopulationOfCivilizationAllAroundTheWorldData(nOfCivID);
             }
             for (i = this.lValues.size() - 1; i >= 0; --i) {
-                if (this.lValues.get(i).getValue() != 0) continue;
+                if (this.lValues.get(i).getValue() != 0L) continue;
                 this.lValues.remove(i);
             }
             this.iValuesSize = this.lValues.size();
@@ -937,7 +937,7 @@ extends MenuElemUI {
                 this.lValues.get(i).buildPopulationOfCivByNationalitiesData(nOfCivID);
             }
             for (i = this.lValues.size() - 1; i >= 0; --i) {
-                if (this.lValues.get(i).getValue() != 0) continue;
+                if (this.lValues.get(i).getValue() != 0L) continue;
                 this.lValues.remove(i);
             }
             this.iValuesSize = this.lValues.size();
@@ -963,7 +963,7 @@ extends MenuElemUI {
             this.iMinPoint = this.iMaxPoint = this.lValues.get(0).getValue();
         }
         catch (IndexOutOfBoundsException ex) {
-            this.iMinPoint = 0;
+            this.iMinPoint = 0L;
         }
         this.fAvaragePoint = 0.0f;
         long tempAvarage = 0L;
@@ -975,9 +975,9 @@ extends MenuElemUI {
             if (this.iMinPoint > this.lValues.get(i4).getValue()) {
                 this.iMinPoint = this.lValues.get(i4).getValue();
             }
-            if (this.lValues.get(i4).getValue() <= 0) continue;
+            if (this.lValues.get(i4).getValue() <= 0L) continue;
             ++tempAvarageSize;
-            tempAvarage += (long)this.lValues.get(i4).getValue();
+            tempAvarage += this.lValues.get(i4).getValue();
         }
         this.fAvaragePoint = (float)tempAvarage / (float)tempAvarageSize;
         this.iAvaragePosY = (int)((float)(this.getHeightE() - (int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) - CFG.PADD * 2) - (float)(this.getHeightE() - (int)((float)CFG.TEXT_HEIGHT_DEFAULT * 0.7f) - CFG.PADD * 2) * (100.0f * this.fAvaragePoint) / (float)(this.iMaxPoint - this.iMinPoint) / 100.0f);
@@ -988,7 +988,7 @@ extends MenuElemUI {
     }
 
     public final void countValuesTotal() {
-        this.iValuesTotal = 0;
+        this.iValuesTotal = 0L;
         for (int i = 0; i < this.iValuesSize; ++i) {
             this.iValuesTotal += this.lValues.get(i).getValue();
         }

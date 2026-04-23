@@ -13,7 +13,7 @@ import java.util.List;
 public class MenuElemUI {
     public TypeOfMenuElemUI typeOfMenuElemUI;
     public int fontID = 0;
-    private int iPosX;
+    public int iPosX;
     private int iPosY;
     private int iWidth;
     private int iHeight;

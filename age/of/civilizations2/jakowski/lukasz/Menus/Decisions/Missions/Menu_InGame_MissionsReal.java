@@ -224,8 +224,10 @@ extends Menu {
 
                 @Override
                 public void actionElem(int iID) {
-                    Menu_SK.goBack = View.eINGAME;
-                    CFG.menus.setMenuID(View.eSK);
+                    if (CFG.getIsDesktop()) {
+                        Menu_SK.goBack = View.eINGAME;
+                        CFG.menus.setMenuID(View.eSK);
+                    }
                 }
 
                 @Override

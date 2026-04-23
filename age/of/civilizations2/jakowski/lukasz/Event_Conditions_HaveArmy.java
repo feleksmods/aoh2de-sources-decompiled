@@ -70,7 +70,7 @@ extends Event_Conditions {
         catch (IndexOutOfBoundsException ex) {
             return false;
         }
-        return !((float)numOut / (float)this.lProvinces.size() > (float)this.getValue() / 100.0f);
+        return (float)numOut / (float)this.lProvinces.size() >= (float)this.getValue() / 100.0f;
     }
 
     @Override

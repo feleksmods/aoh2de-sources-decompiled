@@ -117,7 +117,7 @@ public class Graph_Vertical_Data {
         IMGManager.getIMG(Images.flagRectSmall).drawO(oSB, iPosX, iPosY + iHeight - tempValuesHeight - CFG.PADD - CFG.CIV_FLAG_HEIGHT);
     }
 
-    public final void buildHeights(int nGraphHeight, int nMaxValue) {
+    public final void buildHeights(int nGraphHeight, long nMaxValue) {
         for (int i = 0; i < this.lValues.size(); ++i) {
             this.lValues.get(i).setHeight((int)((float)this.lValues.get(i).getValue() / (float)nMaxValue * (float)nGraphHeight));
         }
@@ -153,35 +153,35 @@ public class Graph_Vertical_Data {
         int i;
         int i2;
         this.lValues.clear();
-        ArrayList<Integer> numOfPopulation = new ArrayList<Integer>();
+        ArrayList<Long> numOfPopulation = new ArrayList<Long>();
         for (i2 = 0; i2 < CFG.core.getCivsSize(); ++i2) {
-            numOfPopulation.add(0);
+            numOfPopulation.add(0L);
         }
         for (i2 = 0; i2 < CFG.core.getCiv(this.iCivID).getNumOfProvs(); ++i2) {
             for (int j = 0; j < CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getNatsSize(); ++j) {
-                numOfPopulation.set(CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getCivID(j), (Integer)numOfPopulation.get(CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getCivID(j)) + CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getPopulationID(j));
+                numOfPopulation.set(CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getCivID(j), (Long)numOfPopulation.get(CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getCivID(j)) + (long)CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i2)).getPop().getPopulationID(j));
             }
         }
         int nSecondBiggestPopulationID = 0;
-        int nRestOfPopulation = 0;
+        long nRestOfPopulation = 0L;
         for (i = nSecondBiggestPopulationID + 1; i < CFG.core.getCivsSize(); ++i) {
-            if ((Integer)numOfPopulation.get(nSecondBiggestPopulationID) >= (Integer)numOfPopulation.get(i) || i == this.iCivID) continue;
+            if ((Long)numOfPopulation.get(nSecondBiggestPopulationID) >= (Long)numOfPopulation.get(i) || i == this.iCivID) continue;
             nSecondBiggestPopulationID = i;
         }
         for (i = 0; i < CFG.core.getCivsSize(); ++i) {
             if (i == nSecondBiggestPopulationID || i == this.iCivID) continue;
-            nRestOfPopulation += ((Integer)numOfPopulation.get(i)).intValue();
+            nRestOfPopulation += ((Long)numOfPopulation.get(i)).longValue();
         }
-        this.lValues.add(new Graph_Vertical_Data_Value_Population((Integer)numOfPopulation.get(this.iCivID), this.iCivID));
-        this.lValues.add(new Graph_Vertical_Data_Value_Population((Integer)numOfPopulation.get(nSecondBiggestPopulationID), nSecondBiggestPopulationID));
+        this.lValues.add(new Graph_Vertical_Data_Value_Population((Long)numOfPopulation.get(this.iCivID), this.iCivID));
+        this.lValues.add(new Graph_Vertical_Data_Value_Population((Long)numOfPopulation.get(nSecondBiggestPopulationID), nSecondBiggestPopulationID));
         this.lValues.add(new Graph_Vertical_Data_Value_Population(nRestOfPopulation, 0));
     }
 
     public final void buildPopulationOfCivilizationAllAroundTheWorldData(int nOfCivID) {
         this.lValues.clear();
-        int nPopulation = 0;
+        long nPopulation = 0L;
         for (int i = 0; i < CFG.core.getCiv(this.iCivID).getNumOfProvs(); ++i) {
-            nPopulation += CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i)).getPop().getPopulationOfCivID(nOfCivID);
+            nPopulation += (long)CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i)).getPop().getPopulationOfCivID(nOfCivID);
         }
         this.lValues.add(new Graph_Vertical_Data_Value_PopulationAllAroundTheWorld(nPopulation, nOfCivID));
     }
@@ -238,9 +238,9 @@ public class Graph_Vertical_Data {
 
     public final void buildArmyByProvincesData() {
         this.lValues.clear();
-        int nArmySize = 0;
+        long nArmySize = 0L;
         for (int i = 0; i < CFG.core.getProv(this.iCivID).getCivsSize(); ++i) {
-            nArmySize += CFG.core.getProv(this.iCivID).getArmyID(i);
+            nArmySize += (long)CFG.core.getProv(this.iCivID).getArmyID(i);
         }
         this.lValues.add(new Graph_Vertical_Data_Value_PopulationByProvinces(nArmySize, this.iCivID));
         this.iCivID = CFG.core.getProv(this.iCivID).getCivId();
@@ -254,18 +254,18 @@ public class Graph_Vertical_Data {
 
     public final void buildEconomyData() {
         this.lValues.clear();
-        int nEconomy = 0;
+        long nEconomy = 0L;
         for (int i = 0; i < CFG.core.getCiv(this.iCivID).getNumOfProvs(); ++i) {
-            nEconomy += CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i)).getEco();
+            nEconomy += (long)CFG.core.getProv(CFG.core.getCiv(this.iCivID).getProvID(i)).getEco();
         }
         this.lValues.add(new Graph_Vertical_Data_Value_Population(nEconomy, this.iCivID));
     }
 
     public final void buildPopulationOfCivByNationalitiesData(int nCivID) {
         this.lValues.clear();
-        int nPopulation = 0;
+        long nPopulation = 0L;
         for (int i = 0; i < CFG.core.getCiv(nCivID).getNumOfProvs(); ++i) {
-            nPopulation += CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getPop().getPopulationOfCivID(this.iCivID);
+            nPopulation += (long)CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getPop().getPopulationOfCivID(this.iCivID);
         }
         this.lValues.add(new Graph_Vertical_Data_Value_Population(nPopulation, this.iCivID));
     }
@@ -274,8 +274,8 @@ public class Graph_Vertical_Data {
         return this.iCivID;
     }
 
-    public final int getValue() {
-        int tOut = 0;
+    public final long getValue() {
+        long tOut = 0L;
         for (int i = 0; i < this.lValues.size(); ++i) {
             tOut += this.lValues.get(i).getValue();
         }
@@ -298,7 +298,7 @@ public class Graph_Vertical_Data {
         return this.lValues.size();
     }
 
-    public final int getValue(int i) {
+    public final long getValue(int i) {
         return this.lValues.get(i).getValue();
     }
 

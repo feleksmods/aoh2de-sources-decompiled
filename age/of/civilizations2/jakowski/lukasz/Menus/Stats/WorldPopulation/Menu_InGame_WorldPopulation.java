@@ -214,14 +214,14 @@ extends Menu {
             }
         });
         int tPosY = CFG.PADD + tElemHeight;
-        ArrayList<Integer> tPopulation = new ArrayList<Integer>();
+        ArrayList<Long> tPopulation = new ArrayList<Long>();
         ArrayList tCivilizations = new ArrayList();
         ArrayList<Integer> tProvinces = new ArrayList<Integer>();
         ArrayList<Integer> tLargestCity = new ArrayList<Integer>();
         ArrayList tMostPopulous2 = new ArrayList();
         ArrayList<Integer> tMostPopulousID = new ArrayList<Integer>();
         for (i4 = 0; i4 < CFG.map.getMapContinents().getContinentsSize(); ++i4) {
-            tPopulation.add(0);
+            tPopulation.add(0L);
             tCivilizations.add(new ArrayList());
             tProvinces.add(0);
             tLargestCity.add(-1);
@@ -230,19 +230,19 @@ extends Menu {
         }
         for (i4 = 0; i4 < CFG.core.getProvinSize(); ++i4) {
             if (CFG.core.getProv(i4).getWastelandLvl() >= 0 || CFG.core.getProv(i4).getSeaProv()) continue;
-            tPopulation.set(CFG.core.getProv(i4).getContinent(), (Integer)tPopulation.get(CFG.core.getProv(i4).getContinent()) + CFG.core.getProv(i4).getPop().getPops());
+            tPopulation.set(CFG.core.getProv(i4).getContinent(), (Long)tPopulation.get(CFG.core.getProv(i4).getContinent()) + (long)CFG.core.getProv(i4).getPop().getPops());
             tProvinces.set(CFG.core.getProv(i4).getContinent(), (Integer)tProvinces.get(CFG.core.getProv(i4).getContinent()) + 1);
             if (CFG.core.getProv(i4).getCivId() > 0) {
                 boolean tAdd2 = true;
                 for (int j = 0; j < ((List)tCivilizations.get(CFG.core.getProv(i4).getContinent())).size(); ++j) {
                     if (((Integer)((List)tCivilizations.get(CFG.core.getProv(i4).getContinent())).get(j)).intValue() != CFG.core.getProv(i4).getCivId()) continue;
                     tAdd2 = false;
-                    ((List)tMostPopulous2.get(CFG.core.getProv(i4).getContinent())).set(j, (Integer)((List)tMostPopulous2.get(CFG.core.getProv(i4).getContinent())).get(j) + CFG.core.getProv(i4).getPop().getPops());
+                    ((List)tMostPopulous2.get(CFG.core.getProv(i4).getContinent())).set(j, (Long)((List)tMostPopulous2.get(CFG.core.getProv(i4).getContinent())).get(j) + (long)CFG.core.getProv(i4).getPop().getPops());
                     break;
                 }
                 if (tAdd2) {
                     ((List)tCivilizations.get(CFG.core.getProv(i4).getContinent())).add(CFG.core.getProv(i4).getCivId());
-                    ((List)tMostPopulous2.get(CFG.core.getProv(i4).getContinent())).add(CFG.core.getProv(i4).getPop().getPops());
+                    ((List)tMostPopulous2.get(CFG.core.getProv(i4).getContinent())).add(Long.valueOf(CFG.core.getProv(i4).getPop().getPops()));
                 }
             }
             if ((Integer)tLargestCity.get(CFG.core.getProv(i4).getContinent()) < 0) {
@@ -254,18 +254,18 @@ extends Menu {
         }
         for (i4 = 0; i4 < tMostPopulous2.size(); ++i4) {
             for (int j = 1; j < ((List)tMostPopulous2.get(i4)).size(); ++j) {
-                if ((Integer)((List)tMostPopulous2.get(i4)).get(j) <= (Integer)((List)tMostPopulous2.get(i4)).get((Integer)tMostPopulousID.get(i4))) continue;
+                if ((Long)((List)tMostPopulous2.get(i4)).get(j) <= (Long)((List)tMostPopulous2.get(i4)).get((Integer)tMostPopulousID.get(i4))) continue;
                 tMostPopulousID.set(i4, j);
             }
         }
-        int tTotalPop = 0;
+        long tTotalPop = 0L;
         int tCivsTotal = 0;
         int tProvincesTotal = 0;
         int tLargestCityTotal = -1;
         int tMostPopulousTotal = 1;
         int tempMostPopulation = (int)Math.max(1L, CFG.core.getCiv(tMostPopulousTotal).countPop());
         for (i3 = 0; i3 < tPopulation.size(); ++i3) {
-            tTotalPop += ((Integer)tPopulation.get(i3)).intValue();
+            tTotalPop += ((Long)tPopulation.get(i3)).longValue();
             tProvincesTotal += ((Integer)tProvinces.get(i3)).intValue();
             if (tLargestCityTotal < 0) {
                 if ((Integer)tLargestCity.get(i3) < 0) continue;
@@ -503,7 +503,7 @@ extends Menu {
             while (tempIDs.size() > 0) {
                 tAdd = 0;
                 for (i = 1; i < tempIDs.size(); ++i) {
-                    if ((Integer)tPopulation.get((Integer)tempIDs.get(tAdd)) >= (Integer)tPopulation.get((Integer)tempIDs.get(i))) continue;
+                    if ((Long)tPopulation.get((Integer)tempIDs.get(tAdd)) >= (Long)tPopulation.get((Integer)tempIDs.get(i))) continue;
                     tAdd = i;
                 }
                 tSorted.add((Integer)tempIDs.get(tAdd));
@@ -534,7 +534,7 @@ extends Menu {
                 tAdd = 0;
                 for (i = 1; i < tempIDs.size(); ++i) {
                     try {
-                        if ((Integer)((List)tMostPopulous2.get((Integer)tempIDs.get(tAdd))).get((Integer)tMostPopulousID.get((Integer)tempIDs.get(tAdd))) >= (Integer)((List)tMostPopulous2.get((Integer)tempIDs.get(i))).get((Integer)tMostPopulousID.get((Integer)tempIDs.get(i)))) continue;
+                        if ((Long)((List)tMostPopulous2.get((Integer)tempIDs.get(tAdd))).get((Integer)tMostPopulousID.get((Integer)tempIDs.get(tAdd))) >= (Long)((List)tMostPopulous2.get((Integer)tempIDs.get(i))).get((Integer)tMostPopulousID.get((Integer)tempIDs.get(i)))) continue;
                         tAdd = i;
                         continue;
                     }

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Graph_Vertical_Data_Value_PopulationAllAroundTheWorld
 extends Graph_Vertical_Data_Value {
-    public Graph_Vertical_Data_Value_PopulationAllAroundTheWorld(int iValue, int iColorDataID) {
+    public Graph_Vertical_Data_Value_PopulationAllAroundTheWorld(long iValue, int iColorDataID) {
         super(iValue, iColorDataID);
     }
 

@@ -157,8 +157,8 @@ public class Core {
     private int iPlayersSize = 0;
     private List<City> lCities = null;
     private List<Mountain> lMountains = null;
-    private List<Alliance> lAlliances = null;
-    private int iAlliancesSize = 0;
+    public List<Alliance> lAlliances = null;
+    public int iAlliancesSize = 0;
     private List<War_GameData> lWars = null;
     private int iWarsSize = 0;
     public List<PeaceTreaty_GameData_MessageData> lPeaceTreaties = null;
@@ -10528,13 +10528,18 @@ lbl94:
     }
 
     public final void checkAlliances() {
-        for (int i = this.lAlliances.size() - 1; i > 0; --i) {
-            if (this.lAlliances.get(i).getCivilizationsSize() != 0) continue;
-            this.lAlliances.remove(i);
-            for (int j = 1; j < this.iCivsSize; ++j) {
-                if (this.getCiv(j).getAlliance() < i) continue;
-                this.getCiv(j).setAlliance(this.getCiv(j).getAlliance() - 1);
+        try {
+            for (int i = this.lAlliances.size() - 1; i > 0; --i) {
+                if (this.lAlliances.get(i).getCivilizationsSize() != 0) continue;
+                this.lAlliances.remove(i);
+                for (int j = 1; j < this.iCivsSize; ++j) {
+                    if (this.getCiv(j).getAlliance() < i) continue;
+                    this.getCiv(j).setAlliance(this.getCiv(j).getAlliance() - 1);
+                }
             }
+        }
+        catch (Exception exception) {
+            // empty catch block
         }
         this.iAlliancesSize = this.lAlliances.size();
     }
@@ -11145,7 +11150,7 @@ lbl94:
                 }
             }
             try {
-                if (Menu_InitGame.DJE) {
+                if (CFG.getIsDesktop() && !Menu_InitGame.DJE) {
                     EventsJ.saveEventsJ();
                 }
             }

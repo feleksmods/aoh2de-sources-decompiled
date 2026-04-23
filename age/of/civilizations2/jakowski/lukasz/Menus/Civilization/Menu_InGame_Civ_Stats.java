@@ -294,7 +294,8 @@ extends Menu {
                 this.menuElemHover = new ME_Hover_v2(nElements);
             }
         });
-        menuElements.add(new TextLeftSide_Ideology("", menuW - CFG.PADD * 2 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 2 - CFG.PADD){
+        int ideologyW = Math.max(CFG.BUTTON_W / 2, menuW - (IMGManager.getIMG(Images.noLeader).getWidth() + CFG.PADD * 7 + CFG.graphCircleDraw.getWidth() * 2 + CFG.graphCircleDraw.getWidth() / 2));
+        menuElements.add(new TextLeftSide_Ideology("", menuW - CFG.PADD * 2 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 2 - CFG.PADD, ideologyW){
 
             @Override
             public void buildElemHover() {
@@ -329,7 +330,7 @@ extends Menu {
                 this.menuElemHover = new ME_Hover_v2(nElements);
             }
         });
-        menuElements.add(new TextLeftSide_Religion("", menuW - CFG.PADD * 2 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT){
+        menuElements.add(new TextLeftSide_Religion("", menuW - CFG.PADD * 2 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT, ideologyW){
 
             @Override
             public void buildElemHover() {

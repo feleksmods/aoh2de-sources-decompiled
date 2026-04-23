@@ -1653,7 +1653,6 @@ public class CFG {
                     leaderFrameSize = activeCivLeader.size();
                 }
                 catch (Exception ex) {
-                    CFG.exceptionStack(ex);
                     CFG.disposeActiveCivLeader();
                 }
             }

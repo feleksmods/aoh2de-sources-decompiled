@@ -30,6 +30,7 @@ public class Menu_InGame_CreateAVassal_Info_Stats
 extends Menu {
     public Menu_InGame_CreateAVassal_Info_Stats() {
         ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
+        int menuW = CFG.CIV_INFO_MENU_WIDTH;
         menuElements.add(new TextCivInfo(null, CFG.PADD * 3, CFG.PADD * 3){
 
             @Override
@@ -37,7 +38,7 @@ extends Menu {
                 this.menuElemHover = CFG.core.getHover_PopulationOfCiv_CreateAVassal();
             }
         });
-        menuElements.add(new TextLeftSide_Icon("0", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, CFG.PADD * 3, Images.pop){
+        menuElements.add(new TextLeftSide_Icon("0", menuW - CFG.PADD * 3 - 2, CFG.PADD * 3, Images.pop){
 
             @Override
             public void buildElemHover() {
@@ -56,7 +57,7 @@ extends Menu {
                 this.menuElemHover = CFG.core.getHover_CapitalCity_ByProvinceID(CFG.createVassalData.iCapitalProvinceID);
             }
         });
-        menuElements.add(new TextLeftSide("-", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD)){
+        menuElements.add(new TextLeftSide("-", menuW - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD)){
 
             @Override
             public void buildElemHover() {
@@ -70,7 +71,7 @@ extends Menu {
                 this.menuElemHover = CFG.core.getHover_LargestCity(Menu_InGame_CreateAVassal_Info_Stats.this.getMenuElem(5).getCurr());
             }
         });
-        menuElements.add(new TextLeftSide("-", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 2){
+        menuElements.add(new TextLeftSide("-", menuW - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 2){
             int iCurrent;
 
             @Override
@@ -100,16 +101,16 @@ extends Menu {
             }
         });
         menuElements.add(new TextCivInfo(null, CFG.PADD * 3, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 3 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3){});
-        menuElements.add(new TextLeftSide_Icon("" + (float)((int)(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel() * GameValues.gvVassal.RELEASE_VASSAL_PERC_OF_TECH_BASE * 100.0f)) / 100.0f, CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 3 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3, Images.technology){});
+        menuElements.add(new TextLeftSide_Icon("" + (float)((int)(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel() * GameValues.gvVassal.RELEASE_VASSAL_PERC_OF_TECH_BASE * 100.0f)) / 100.0f, menuW - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 3 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3, Images.technology){});
         menuElements.add(new TextCivInfo(null, CFG.PADD * 3, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 4 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3));
-        menuElements.add(new TextLeftSide_Icon("0", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 4 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3, Images.economy){
+        menuElements.add(new TextLeftSide_Icon("0", menuW - CFG.PADD * 3 - 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 4 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3, Images.economy){
 
             @Override
             public Color getColor(boolean isActive) {
                 return isActive ? CFG.COLOR_ECONOMY_ACTIVE : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_ECONOMY_HOVER : CFG.COLOR_ECONOMY) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
             }
         });
-        menuElements.add(new TextLeftSide_Happiness("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 2 - CFG.PADD){
+        menuElements.add(new TextLeftSide_Happiness("", menuW - CFG.PADD * 3 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 2 - CFG.PADD){
 
             @Override
             public void buildElemHover() {
@@ -123,7 +124,8 @@ extends Menu {
             }
         });
         ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setCurr(0);
-        menuElements.add(new TextLeftSide_Ideology("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 3 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT){
+        int ideologyW = Math.max(CFG.BUTTON_W / 2, menuW - (CFG.PADD * 5 + CFG.graphCircleDraw.getWidth() * 2 + CFG.graphCircleDraw.getWidth() / 2));
+        menuElements.add(new TextLeftSide_Ideology("", menuW - CFG.PADD * 3 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT, ideologyW){
 
             @Override
             public void buildElemHover() {
@@ -138,10 +140,10 @@ extends Menu {
             }
         });
         ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setCurr(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getIdeology());
-        menuElements.add(new Button_PlayAsVassal("", CFG.PADD, CFG.PADD * 2, CFG.PADD * 4 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 5 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3, CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 4, CFG.BUTTON_H * 3 / 4, true, CFG.createVassalData != null ? CFG.createVassalData.playAsVassal : false));
-        menuElements.add(new Button_Transparent(0, 0, CFG.CIV_INFO_MENU_WIDTH, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), true));
+        menuElements.add(new Button_PlayAsVassal("", CFG.PADD, CFG.PADD * 2, CFG.PADD * 4 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 5 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 3, menuW - CFG.PADD * 4, CFG.BUTTON_H * 3 / 4, true, CFG.createVassalData != null ? CFG.createVassalData.playAsVassal : false));
+        menuElements.add(new Button_Transparent(0, 0, menuW, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), true));
         int tempPosY = ButtonFlagBig.getButtonH() + CFG.PADD * 4 + CFG.BUTTON_H + CFG.PADD * 3;
-        this.initMenu(null, 0 + AoCGame.LEFT, tempPosY, CFG.CIV_INFO_MENU_WIDTH, Math.min(CFG.GAMEHEIGHT - tempPosY - CFG.map.getMpB().getMinimapHeight() - CFG.PADD * 2 - CFG.BUTTON_H - CFG.PADD, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD * 2), menuElements, true, false);
+        this.initMenu(null, 0 + AoCGame.LEFT, tempPosY, menuW, Math.min(CFG.GAMEHEIGHT - tempPosY - CFG.map.getMpB().getMinimapHeight() - CFG.PADD * 2 - CFG.BUTTON_H - CFG.PADD, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD * 2), menuElements, true, false);
         this.updateLang();
     }
 

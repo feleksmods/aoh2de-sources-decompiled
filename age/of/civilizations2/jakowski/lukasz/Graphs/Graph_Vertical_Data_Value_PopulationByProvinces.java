@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Graph_Vertical_Data_Value_PopulationByProvinces
 extends Graph_Vertical_Data_Value {
-    public Graph_Vertical_Data_Value_PopulationByProvinces(int iValue, int iColorDataID) {
+    public Graph_Vertical_Data_Value_PopulationByProvinces(long iValue, int iColorDataID) {
         super(iValue, iColorDataID);
     }
 

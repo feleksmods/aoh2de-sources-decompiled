@@ -466,14 +466,14 @@ public class AI {
         this.updateMinRivals();
         this.PLAYABLE_PROVINCES = 0;
         nTime = System.nanoTime();
-        block8: for (i = 0; i < CFG.core.getProvinSize(); ++i) {
+        block10: for (i = 0; i < CFG.core.getProvinSize(); ++i) {
             if (CFG.core.getProv(i).getSeaProv()) continue;
             if (CFG.core.getProv(i).getWastelandLvl() >= 0) {
                 if (!GameCalendar.getColonizationOfWastelandIsEnabled()) continue;
                 for (int j2 = 0; j2 < CFG.core.getProv(i).getNeighSeaProvincesSize(); ++j2) {
                     if (CFG.core.getProv(CFG.core.getProv(i).getNeighSeaProvinces(j2)).getLvlOfPort() != -2) continue;
                     this.addWastelandProvsWithSeaAccess(i);
-                    continue block8;
+                    continue block10;
                 }
                 continue;
             }
@@ -483,9 +483,14 @@ public class AI {
         nTime = System.nanoTime();
         for (i = 1; i < CFG.core.getCivsSize(); ++i) {
             Civilization civ2 = CFG.core.getCiv(i);
-            for (j = 0; j < civ2.getCivRegionsSize(); ++j) {
-                if (civ2.getCivRegion(j).getProvincesSize() <= 0) continue;
-                civ2.getCivRegion((int)j).iAveragePotential /= civ2.getCivRegion(j).getProvincesSize();
+            try {
+                for (j = 0; j < civ2.getCivRegionsSize(); ++j) {
+                    if (civ2.getCivRegion(j).getProvincesSize() <= 0) continue;
+                    civ2.getCivRegion((int)j).iAveragePotential /= civ2.getCivRegion(j).getProvincesSize();
+                }
+            }
+            catch (Exception j3) {
+                // empty catch block
             }
             civ2.armiesPositionSize = civ2.armiesPosition.size();
             civ2.iAveragePopulation = civ2.getNumOfProvs() > 0 ? (civ2.iAveragePopulation /= (long)civ2.getNumOfProvs()) : 1L;
@@ -530,8 +535,8 @@ public class AI {
             civ3.uFOL = false;
             if (civ3.getNumOfProvs() <= 0) continue;
             int puppetOf = civ3.getPuppetOfCiv();
-            for (int j3 = 0; j3 < civ3.getCivRegionsSize(); ++j3) {
-                Civilization_Region region = civ3.getCivRegion(j3);
+            for (int j4 = 0; j4 < civ3.getCivRegionsSize(); ++j4) {
+                Civilization_Region region = civ3.getCivRegion(j4);
                 for (int k = 0; k < region.getProvincesSize(); ++k) {
                     int provinceId = region.getProvince(k);
                     Province province = CFG.core.getProv(provinceId);
@@ -545,7 +550,7 @@ public class AI {
                         if (CFG.core.getCivsAreAllied(i, neighborCivId) || puppetOf == neighborCivId || neighborCiv.getPuppetOfCiv() == i || neighborCiv.getPuppetOfCiv() == puppetOf) continue;
                         boolean addNew = true;
                         for (AI_Frontline frontline : civ3.lFrontLines) {
-                            if (frontline.iRegionID != j3 || frontline.iWithCivID != neighborCivId) continue;
+                            if (frontline.iRegionID != j4 || frontline.iWithCivID != neighborCivId) continue;
                             addNew = false;
                             frontline.lProvinces.add(provinceId);
                             if (!province.getBordersWithEnemy()) break;
@@ -553,7 +558,7 @@ public class AI {
                             break;
                         }
                         if (!addNew) continue;
-                        civ3.lFrontLines.add(new AI_Frontline(provinceId, j3, neighborCivId, province.getBordersWithEnemy()));
+                        civ3.lFrontLines.add(new AI_Frontline(provinceId, j4, neighborCivId, province.getBordersWithEnemy()));
                     }
                 }
             }
@@ -561,11 +566,11 @@ public class AI {
         nTime = System.nanoTime();
         for (i = 1; i < CFG.core.getCivsSize(); ++i) {
             if (CFG.core.getCiv(i).getNumOfProvs() <= 0) continue;
-            for (int j4 = 0; j4 < CFG.core.getCiv((int)i).civGD.civPlans.iWarPrepsSize; ++j4) {
+            for (int j5 = 0; j5 < CFG.core.getCiv((int)i).civGD.civPlans.iWarPrepsSize; ++j5) {
                 for (int f = 0; f < CFG.core.getCiv((int)i).lFrontLines.size(); ++f) {
-                    if (CFG.core.getCiv((int)i).lFrontLines.get((int)f).iWithCivID != CFG.core.getCiv((int)i).civGD.civPlans.warPreps.get((int)j4).onCivID) continue;
+                    if (CFG.core.getCiv((int)i).lFrontLines.get((int)f).iWithCivID != CFG.core.getCiv((int)i).civGD.civPlans.warPreps.get((int)j5).onCivID) continue;
                     for (int e = 0; e < CFG.core.getCiv((int)i).lFrontLines.get((int)f).lProvinces.size(); ++e) {
-                        CFG.core.getProv(CFG.core.getCiv((int)i).lFrontLines.get((int)f).lProvinces.get(e)).addDangerLvl((int)((float)GameValues.gvAiProvince.DANGER_EXTRA_AT_WAR * (GameValues.gvAiProvince.DANGER_PREPARE_FOR_WAR_BASE + GameValues.gvAiProvince.DANGER_PREPARE_FOR_WAR_TURNS_LEFT / (float)CFG.core.getCiv((int)i).civGD.civPlans.warPreps.get((int)j4).iNumOfTurnsLeft)));
+                        CFG.core.getProv(CFG.core.getCiv((int)i).lFrontLines.get((int)f).lProvinces.get(e)).addDangerLvl((int)((float)GameValues.gvAiProvince.DANGER_EXTRA_AT_WAR * (GameValues.gvAiProvince.DANGER_PREPARE_FOR_WAR_BASE + GameValues.gvAiProvince.DANGER_PREPARE_FOR_WAR_TURNS_LEFT / (float)CFG.core.getCiv((int)i).civGD.civPlans.warPreps.get((int)j5).iNumOfTurnsLeft)));
                     }
                 }
             }

@@ -214,14 +214,14 @@ extends Menu {
             }
         });
         int tPosY = CFG.PADD + tElemHeight;
-        ArrayList<Integer> tEconomy = new ArrayList<Integer>();
+        ArrayList<Long> tEconomy = new ArrayList<Long>();
         ArrayList tCivilizations = new ArrayList();
         ArrayList<Integer> tProvinces = new ArrayList<Integer>();
         ArrayList<Integer> tLargestCity = new ArrayList<Integer>();
         ArrayList tMostEconomy2 = new ArrayList();
         ArrayList<Integer> tMostEconomyID = new ArrayList<Integer>();
         for (i4 = 0; i4 < CFG.map.getMapContinents().getContinentsSize(); ++i4) {
-            tEconomy.add(0);
+            tEconomy.add(0L);
             tCivilizations.add(new ArrayList());
             tProvinces.add(0);
             tLargestCity.add(-1);
@@ -230,19 +230,19 @@ extends Menu {
         }
         for (i4 = 0; i4 < CFG.core.getProvinSize(); ++i4) {
             if (CFG.core.getProv(i4).getWastelandLvl() >= 0 || CFG.core.getProv(i4).getSeaProv()) continue;
-            tEconomy.set(CFG.core.getProv(i4).getContinent(), (Integer)tEconomy.get(CFG.core.getProv(i4).getContinent()) + CFG.core.getProv(i4).getEco());
+            tEconomy.set(CFG.core.getProv(i4).getContinent(), (Long)tEconomy.get(CFG.core.getProv(i4).getContinent()) + (long)CFG.core.getProv(i4).getEco());
             tProvinces.set(CFG.core.getProv(i4).getContinent(), (Integer)tProvinces.get(CFG.core.getProv(i4).getContinent()) + 1);
             if (CFG.core.getProv(i4).getCivId() > 0) {
                 boolean tAdd2 = true;
                 for (int j = 0; j < ((List)tCivilizations.get(CFG.core.getProv(i4).getContinent())).size(); ++j) {
                     if (((Integer)((List)tCivilizations.get(CFG.core.getProv(i4).getContinent())).get(j)).intValue() != CFG.core.getProv(i4).getCivId()) continue;
                     tAdd2 = false;
-                    ((List)tMostEconomy2.get(CFG.core.getProv(i4).getContinent())).set(j, (Integer)((List)tMostEconomy2.get(CFG.core.getProv(i4).getContinent())).get(j) + CFG.core.getProv(i4).getEco());
+                    ((List)tMostEconomy2.get(CFG.core.getProv(i4).getContinent())).set(j, (Long)((List)tMostEconomy2.get(CFG.core.getProv(i4).getContinent())).get(j) + (long)CFG.core.getProv(i4).getEco());
                     break;
                 }
                 if (tAdd2) {
                     ((List)tCivilizations.get(CFG.core.getProv(i4).getContinent())).add(CFG.core.getProv(i4).getCivId());
-                    ((List)tMostEconomy2.get(CFG.core.getProv(i4).getContinent())).add(CFG.core.getProv(i4).getEco());
+                    ((List)tMostEconomy2.get(CFG.core.getProv(i4).getContinent())).add(Long.valueOf(CFG.core.getProv(i4).getEco()));
                 }
             }
             if ((Integer)tLargestCity.get(CFG.core.getProv(i4).getContinent()) < 0) {
@@ -254,18 +254,18 @@ extends Menu {
         }
         for (i4 = 0; i4 < tMostEconomy2.size(); ++i4) {
             for (int j = 1; j < ((List)tMostEconomy2.get(i4)).size(); ++j) {
-                if ((Integer)((List)tMostEconomy2.get(i4)).get(j) <= (Integer)((List)tMostEconomy2.get(i4)).get((Integer)tMostEconomyID.get(i4))) continue;
+                if ((Long)((List)tMostEconomy2.get(i4)).get(j) <= (Long)((List)tMostEconomy2.get(i4)).get((Integer)tMostEconomyID.get(i4))) continue;
                 tMostEconomyID.set(i4, j);
             }
         }
-        int tTotalPop = 0;
+        long tTotalPop = 0L;
         int tCivsTotal = 0;
         int tProvincesTotal = 0;
         int tLargestCityTotal = -1;
         int tMostPopulousTotal = 1;
         int tempMostPopulation = (int)Math.max(1L, CFG.core.getCiv(tMostPopulousTotal).countEco());
         for (i3 = 0; i3 < tEconomy.size(); ++i3) {
-            tTotalPop += ((Integer)tEconomy.get(i3)).intValue();
+            tTotalPop += ((Long)tEconomy.get(i3)).longValue();
             tProvincesTotal += ((Integer)tProvinces.get(i3)).intValue();
             if (tLargestCityTotal < 0) {
                 if ((Integer)tLargestCity.get(i3) < 0) continue;
@@ -537,7 +537,7 @@ extends Menu {
             while (tempIDs.size() > 0) {
                 tAdd = 0;
                 for (i = 1; i < tempIDs.size(); ++i) {
-                    if ((Integer)tEconomy.get((Integer)tempIDs.get(tAdd)) >= (Integer)tEconomy.get((Integer)tempIDs.get(i))) continue;
+                    if ((Long)tEconomy.get((Integer)tempIDs.get(tAdd)) >= (Long)tEconomy.get((Integer)tempIDs.get(i))) continue;
                     tAdd = i;
                 }
                 tSorted.add((Integer)tempIDs.get(tAdd));
@@ -568,7 +568,7 @@ extends Menu {
                 tAdd = 0;
                 for (i = 1; i < tempIDs.size(); ++i) {
                     try {
-                        if ((Integer)((List)tMostEconomy2.get((Integer)tempIDs.get(tAdd))).get((Integer)tMostEconomyID.get((Integer)tempIDs.get(tAdd))) >= (Integer)((List)tMostEconomy2.get((Integer)tempIDs.get(i))).get((Integer)tMostEconomyID.get((Integer)tempIDs.get(i)))) continue;
+                        if ((Long)((List)tMostEconomy2.get((Integer)tempIDs.get(tAdd))).get((Integer)tMostEconomyID.get((Integer)tempIDs.get(tAdd))) >= (Long)((List)tMostEconomy2.get((Integer)tempIDs.get(i))).get((Integer)tMostEconomyID.get((Integer)tempIDs.get(i)))) continue;
                         tAdd = i;
                         continue;
                     }

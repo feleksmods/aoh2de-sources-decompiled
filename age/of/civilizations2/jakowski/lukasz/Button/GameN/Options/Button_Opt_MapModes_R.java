@@ -96,7 +96,13 @@ extends Button_Opt {
         }
         Renderer.drawText(oSB, CFG.FONT_REGULAR_SMALL, this.sPosID, this.getPosXE() + this.getWidthE() - CFG.PADD - this.iPosIDWidth + iTranslateX, this.getPosY() + this.getHeightE() - CFG.PADD * 2 - CFG.TEXT_HEIGHT_DEFAULT_SMALL + iTranslateY, CFG.COLOR_BUTTON_GAME_TEXT);
         if (this.getTextPosElem() < 0) {
-            if (isActive) {
+            if (this.imgID >= 0 && IMGManager.getIMG(this.imgID).getWidth() + (CFG.PADD + CFG.PADD / 2) * 2 >= this.getWidthE() / 2 - this.getTextWidthU() / 2) {
+                if (isActive) {
+                    Renderer.drawText(oSB, this.fontID, this.getTextToDrawElem(), this.getPosXE() + (CFG.PADD + CFG.PADD / 2) * 2 + IMGManager.getIMG(this.imgID).getWidth() + iTranslateX, this.getPosY() + CFG.PADD / 2 + (this.getHeightE() - CFG.PADD) / 2 - this.getTextHeight() / 2 + iTranslateY, this.getColorE(isActive));
+                } else {
+                    Renderer.drawTextWithShadow(oSB, this.fontID, this.getTextToDrawElem(), this.getPosXE() + (CFG.PADD + CFG.PADD / 2) * 2 + IMGManager.getIMG(this.imgID).getWidth() + iTranslateX, this.getPosY() + CFG.PADD / 2 + (this.getHeightE() - CFG.PADD) / 2 - this.getTextHeight() / 2 + iTranslateY, this.getColorE(isActive));
+                }
+            } else if (isActive) {
                 Renderer.drawText(oSB, this.fontID, this.getTextToDrawElem(), this.getPosXE() + this.getWidthE() / 2 - this.getTextWidthU() / 2 + iTranslateX, this.getPosY() + CFG.PADD / 2 + (this.getHeightE() - CFG.PADD) / 2 - this.getTextHeight() / 2 + iTranslateY, this.getColorE(isActive));
             } else {
                 Renderer.drawTextWithShadow(oSB, this.fontID, this.getTextToDrawElem(), this.getPosXE() + this.getWidthE() / 2 - this.getTextWidthU() / 2 + iTranslateX, this.getPosY() + CFG.PADD / 2 + (this.getHeightE() - CFG.PADD) / 2 - this.getTextHeight() / 2 + iTranslateY, this.getColorE(isActive));

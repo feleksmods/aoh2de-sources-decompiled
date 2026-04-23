@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Graph_Vertical_Data_Value {
-    private int iValue;
+    private long iValue;
     public int iHeight;
     public static final float ALPHA = 0.35f;
     public static final float ALPHA_GRADIENT = 0.7f;
@@ -14,7 +14,7 @@ public class Graph_Vertical_Data_Value {
     public static final Color COLOR_VALUE_BORDER = new Color(0.9f, 0.9f, 0.9f, 0.1f);
     public int iColorDataID = 0;
 
-    public Graph_Vertical_Data_Value(int iValue, int iColorDataID) {
+    public Graph_Vertical_Data_Value(long iValue, int iColorDataID) {
         this.iValue = iValue;
         this.iColorDataID = iColorDataID;
     }
@@ -33,7 +33,7 @@ public class Graph_Vertical_Data_Value {
         IMGManager.getIMG(Images.gradient).drawO(oSB, nPosX, nPosY - nHeight - nAnimationHeight - IMGManager.getIMG(Images.gradient).getHeight(), nWidth, nAnimationHeight, false, true);
     }
 
-    public final int getValue() {
+    public final long getValue() {
         return this.iValue;
     }
 

@@ -39,6 +39,7 @@ public class Menu_Civilization_Info_Stats
 extends Menu {
     public Menu_Civilization_Info_Stats() {
         ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
+        int menuW = CFG.CIV_INFO_MENU_WIDTH;
         menuElements.add(new TextCivInfo(null, CFG.PADD * 2 + 2, CFG.PADD * 2){
 
             @Override
@@ -46,7 +47,7 @@ extends Menu {
                 this.menuElemHover = CFG.core.getHover_PopulationOfCiv(CFG.getActiveCivInfoId());
             }
         });
-        menuElements.add(new TextLeftSide_Icon("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 2, CFG.PADD * 2, Images.pop){
+        menuElements.add(new TextLeftSide_Icon("", menuW - CFG.PADD * 2, CFG.PADD * 2, Images.pop){
 
             @Override
             public void buildElemHover() {
@@ -65,7 +66,7 @@ extends Menu {
                 this.menuElemHover = CFG.core.getHover_CapitalCity(CFG.getActiveCivInfoId());
             }
         });
-        menuElements.add(new TextLeftSide_Icon("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 2, CFG.PADD * 2 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD), Images.city){
+        menuElements.add(new TextLeftSide_Icon("", menuW - CFG.PADD * 2, CFG.PADD * 2 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD), Images.city){
 
             @Override
             public void buildElemHover() {
@@ -79,7 +80,7 @@ extends Menu {
                 this.menuElemHover = CFG.core.getHover_LargestCity(Menu_Civilization_Info_Stats.this.getMenuElem(7).getCurr());
             }
         });
-        menuElements.add(new TextLeftSide("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 2, CFG.PADD * 2 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 2){
+        menuElements.add(new TextLeftSide("", menuW - CFG.PADD * 2, CFG.PADD * 2 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 2){
             int iCurrent;
 
             @Override
@@ -111,7 +112,7 @@ extends Menu {
             }
         });
         int tier2_H = CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4;
-        int tier2_W = (CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 4 - 2 - CFG.PADD * 2) / 3;
+        int tier2_W = (menuW - CFG.PADD * 4 - 2 - CFG.PADD * 2) / 3;
         menuElements.add(new TextIcon_Horizontal("3.2", CFG.FONT_BOLD_SMALL, Images.topMovementPoints, CFG.PADD * 2 + tier2_W * 2 + CFG.PADD * 2, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 3 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 2, tier2_W, tier2_H, CFG.PADD * 4){
 
             @Override
@@ -204,7 +205,7 @@ extends Menu {
                 }
             }
         });
-        menuElements.add(new Text(null, -1, 0, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 5 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 4, CFG.CIV_INFO_MENU_WIDTH, Menu_InGame_Civ_DiplomacyORActions.getButtonHeight(), CFG.FONT_BOLD_SMALL){
+        menuElements.add(new Text(null, -1, 0, CFG.PADD * 3 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 5 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 4, menuW, Menu_InGame_Civ_DiplomacyORActions.getButtonHeight(), CFG.FONT_BOLD_SMALL){
 
             @Override
             public void drawE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive, boolean scrollableY) {
@@ -212,7 +213,7 @@ extends Menu {
                 Renderer.drawTextWithShadow(oSB, this.fontID, this.getTextE(), this.getPosXE() + this.getWidthE() / 2 - this.getTextWidthU() / 2 + iTranslateX, this.getPosY() + this.getHeightE() / 2 - this.getTextHeight() / 2 + iTranslateY, CFG.COLOR_TEXT_CIV_INFO_TITLE);
             }
         });
-        menuElements.add(new Difficulty_Level(IMGManager.getIMG(Images.difficultyHeaven).getWidth() + CFG.PADD * 3 + 2, CFG.PADD * 4 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 6 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 6 - (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 2) + Menu_InGame_Civ_DiplomacyORActions.getButtonHeight(), CFG.CIV_INFO_MENU_WIDTH - (IMGManager.getIMG(Images.difficultyHeaven).getWidth() + CFG.PADD * 3 + 2) - IMGManager.getIMG(Images.difficultyHell).getWidth() - CFG.PADD * 3, CFG.TEXT_HEIGHT_DEFAULT * 2 + CFG.PADD * 3 - CFG.PADD * 4, 0.65f){
+        menuElements.add(new Difficulty_Level(IMGManager.getIMG(Images.difficultyHeaven).getWidth() + CFG.PADD * 3 + 2, CFG.PADD * 4 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 6 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 6 - (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 2) + Menu_InGame_Civ_DiplomacyORActions.getButtonHeight(), menuW - (IMGManager.getIMG(Images.difficultyHeaven).getWidth() + CFG.PADD * 3 + 2) - IMGManager.getIMG(Images.difficultyHell).getWidth() - CFG.PADD * 3, CFG.TEXT_HEIGHT_DEFAULT * 2 + CFG.PADD * 3 - CFG.PADD * 4, 0.65f){
 
             @Override
             public void buildElemHover() {
@@ -239,7 +240,7 @@ extends Menu {
                 super.drawE(oSB, iTranslateX, iTranslateY, isActive, scrollableY);
             }
         });
-        menuElements.add(new TextLeftSide_Happiness("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 3 - CFG.PADD * 2){
+        menuElements.add(new TextLeftSide_Happiness("", menuW - CFG.PADD * 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 3 - CFG.PADD * 2){
 
             @Override
             public void buildElemHover() {
@@ -253,22 +254,23 @@ extends Menu {
                 this.menuElemHover = new ME_Hover_v2(nElements);
             }
         });
-        menuElements.add(new TextLeftSide_Ideology("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 2 - CFG.PADD){
+        int ideologyW = Math.max(CFG.BUTTON_W / 2, menuW - (IMGManager.getIMG(Images.noLeader).getWidth() + CFG.PADD * 7 + CFG.graphCircleDraw.getWidth() * 2 + CFG.graphCircleDraw.getWidth() / 2));
+        menuElements.add(new TextLeftSide_Ideology("", menuW - CFG.PADD * 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 2 - CFG.PADD, ideologyW){
 
             @Override
             public void buildElemHover() {
                 this.menuElemHover = CFG.ideologiesMgr.getIdeologyHover(CFG.getActiveCivInfoId());
             }
         });
-        menuElements.add(new TextLeftSide_Religion("", CFG.CIV_INFO_MENU_WIDTH - CFG.PADD * 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT){
+        menuElements.add(new TextLeftSide_Religion("", menuW - CFG.PADD * 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT, ideologyW){
 
             @Override
             public void buildElemHover() {
                 this.menuElemHover = CFG.religionManager.getReligionHover(this.getCurr());
             }
         });
-        menuElements.add(new Button_Transparent(0, 0, CFG.CIV_INFO_MENU_WIDTH, ((MenuElemUI)menuElements.get(menuElements.size() - 4)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 4)).getHeightE() + CFG.PADD, true));
-        this.initMenu(null, CFG.GAMEWIDTH - CFG.CIV_INFO_MENU_WIDTH, (Menu_Civilization_Info.getUseMenu_UI2() ? Menu_Civilization_Info.getMenuY_UI2() + Menu_Civilization_Info.getMenuH_UI2() : IMGManager.getIMG(Images.topBar).getHeight() + CFG.PADD * 2) + ButtonFlagBig.getButtonH() + CFG.PADD * 4, CFG.CIV_INFO_MENU_WIDTH, CFG.PADD * 4 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 7 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 8 - (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 2) + Menu_InGame_Civ_DiplomacyORActions.getButtonHeight(), menuElements, false, false);
+        menuElements.add(new Button_Transparent(0, 0, menuW, ((MenuElemUI)menuElements.get(menuElements.size() - 4)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 4)).getHeightE() + CFG.PADD, true));
+        this.initMenu(null, CFG.GAMEWIDTH - menuW, (Menu_Civilization_Info.getUseMenu_UI2() ? Menu_Civilization_Info.getMenuY_UI2() + Menu_Civilization_Info.getMenuH_UI2() : IMGManager.getIMG(Images.topBar).getHeight() + CFG.PADD * 2) + ButtonFlagBig.getButtonH() + CFG.PADD * 4, menuW, CFG.PADD * 4 + (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD) * 7 + CFG.PADD + CFG.graphCircleDraw.getWidth() + CFG.PADD * 8 - (CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 2) + Menu_InGame_Civ_DiplomacyORActions.getButtonHeight(), menuElements, false, false);
         this.updateLang();
         try {
             float fScale = ((float)(this.getMenuElem(6).getPosY() + this.getMenuElem(6).getHeightE() - this.getMenuElem(0).getPosY() + CFG.PADD * 2) - 2.0f) / (float)IMGManager.getIMG(Images.noLeader).getHeight();

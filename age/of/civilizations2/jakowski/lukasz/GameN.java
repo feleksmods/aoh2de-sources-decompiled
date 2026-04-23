@@ -10,13 +10,16 @@ public class GameN {
     public static boolean GLDRCA = false;
 
     public static void updateLeaderDeath() {
-        if (CFG.getIsDesktop()) {
-            for (int i = (CFG.core.getCivsSize() - 1) % GameValues.gvLeader.LEADER_DEATH_UPDATE_CIVS_X; i < CFG.core.getCivsSize(); ++i) {
-                GameN.updateLeaderDeath(i);
-            }
-        } else {
-            for (int i = (CFG.core.getCivsSize() - 1) % GameValues.gvLeader.LEADER_DEATH_UPDATE_CIVS_X; i < CFG.core.getCivsSize(); ++i) {
-                GameN.updateLeaderDeath2(i);
+        block4: {
+            if (!CFG.LEADERS_CAN_DIE) break block4;
+            if (CFG.getIsDesktop()) {
+                for (int i = (CFG.core.getCivsSize() - 1) % GameValues.gvLeader.LEADER_DEATH_UPDATE_CIVS_X; i < CFG.core.getCivsSize(); ++i) {
+                    GameN.updateLeaderDeath(i);
+                }
+            } else {
+                for (int i = (CFG.core.getCivsSize() - 1) % GameValues.gvLeader.LEADER_DEATH_UPDATE_CIVS_X; i < CFG.core.getCivsSize(); ++i) {
+                    GameN.updateLeaderDeath2(i);
+                }
             }
         }
     }

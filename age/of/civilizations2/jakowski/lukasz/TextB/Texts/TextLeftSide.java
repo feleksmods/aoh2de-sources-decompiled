@@ -18,6 +18,16 @@ extends Text {
         this.updateTextPosition();
     }
 
+    public TextLeftSide(String sText, int iPosX, int iPosY, int iWidth) {
+        this.fontID = CFG.FONT_BOLD_SMALL;
+        this.typeOfMenuElemUI = MenuElemUI.TypeOfMenuElemUI.TEXT;
+        this.setPosX(iPosX);
+        this.setPosY(iPosY);
+        this.setTextE(sText);
+        this.setWidthE(iWidth);
+        this.updateTextPosition();
+    }
+
     @Override
     public void drawE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive, boolean scrollableY) {
         Renderer.drawTextWithShadow(oSB, this.fontID, this.sText, this.getPosXE() + iTranslateX, this.getPosY() + (this.getHeightE() - this.iTextHeight) / 2 + iTranslateY, this.getColor(isActive));

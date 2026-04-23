@@ -50,26 +50,31 @@ public class TechManager {
     }
 
     private static void updateResearchOfCiv(int i, int iterration) {
-        if (CFG.core.getCiv(i).getNumOfProvs() > 0 && CFG.core.getCiv(i).getResearchProgressT() > (float)TechManager.getResearchNextLevel(i)) {
-            int tID;
-            CFG.core.getCiv(i).setResearchProgressT(CFG.core.getCiv(i).getResearchProgressT() - (float)TechManager.getResearchNextLevel(i));
-            CFG.core.getCiv(i).setTechLevel_INT(CFG.core.getCiv(i).getTechLevelINT() + 1);
-            CFG.core.getCiv(i).setGoldenAge_Science(CFG.core.getCiv(i).getGoldenAge_Science() + GameValues.gvGoldenAgeScience.RESEARCHED_TECHNOLOGY_GOLDEN_AGE_SCIENCE_SCORE);
-            CFG.core.getCiv((int)i).getCivDiploGD().messageBox.addMessage(new Message_TechResearched(i));
-            if (CFG.core.getCiv(i).getIsPlayer() && (tID = CFG.core.getPlayerIDbyCivID(i)) >= 0 && tID < CFG.core.getPlayersSize()) {
-                CFG.core.getPlayer(tID).buildMetProvinces_BasedOnDistance();
+        try {
+            if (CFG.core.getCiv(i).getNumOfProvs() > 0 && CFG.core.getCiv(i).getResearchProgressT() > (float)TechManager.getResearchNextLevel(i)) {
+                int tID;
+                CFG.core.getCiv(i).setResearchProgressT(CFG.core.getCiv(i).getResearchProgressT() - (float)TechManager.getResearchNextLevel(i));
+                CFG.core.getCiv(i).setTechLevel_INT(CFG.core.getCiv(i).getTechLevelINT() + 1);
+                CFG.core.getCiv(i).setGoldenAge_Science(CFG.core.getCiv(i).getGoldenAge_Science() + GameValues.gvGoldenAgeScience.RESEARCHED_TECHNOLOGY_GOLDEN_AGE_SCIENCE_SCORE);
+                CFG.core.getCiv((int)i).getCivDiploGD().messageBox.addMessage(new Message_TechResearched(i));
+                if (CFG.core.getCiv(i).getIsPlayer() && (tID = CFG.core.getPlayerIDbyCivID(i)) >= 0 && tID < CFG.core.getPlayersSize()) {
+                    CFG.core.getPlayer(tID).buildMetProvinces_BasedOnDistance();
+                }
+                for (int a = 0; a < CFG.core.getCiv(i).getNumOfProvs(); ++a) {
+                    CFG.core.getProv(CFG.core.getCiv(i).getProvID(a)).setHappi(CFG.core.getProv(CFG.core.getCiv(i).getProvID(a)).getHappi() + GameValues.gvTechnology.TECH_RESEARCHED_HAPPINESS_ALL_PROVINCES_BONUS);
+                }
+                if (CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)i).getIdeology()).CAN_BECOME_CIVILIZED >= 0 && CFG.core.getCiv(i).getCapitalProvID() >= 0 && i == CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getCivId()) {
+                    CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).setEco(CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getEco() + GameValues.gvTribal.TECH_RESEARCHED_ECONOMY_CAPITAL + CFG.oR.nextInt(GameValues.gvTribal.TECH_RESEARCHED_ECONOMY_RANDOM_CAPITAL));
+                    CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).setDevLvl(CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getDeveLvl() + GameValues.gvTribal.TECH_RESEARCHED_DEVELOPMENT_CAPITAL);
+                    CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).setHappi(CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getHappi() + GameValues.gvTribal.TECH_RESEARCHED_HAPPINESS_CAPITAL);
+                }
+                if (iterration++ < 5) {
+                    TechManager.updateResearchOfCiv(i, iterration);
+                }
             }
-            for (int a = 0; a < CFG.core.getCiv(i).getNumOfProvs(); ++a) {
-                CFG.core.getProv(CFG.core.getCiv(i).getProvID(a)).setHappi(CFG.core.getProv(CFG.core.getCiv(i).getProvID(a)).getHappi() + GameValues.gvTechnology.TECH_RESEARCHED_HAPPINESS_ALL_PROVINCES_BONUS);
-            }
-            if (CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)i).getIdeology()).CAN_BECOME_CIVILIZED >= 0 && CFG.core.getCiv(i).getCapitalProvID() >= 0 && i == CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getCivId()) {
-                CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).setEco(CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getEco() + GameValues.gvTribal.TECH_RESEARCHED_ECONOMY_CAPITAL + CFG.oR.nextInt(GameValues.gvTribal.TECH_RESEARCHED_ECONOMY_RANDOM_CAPITAL));
-                CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).setDevLvl(CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getDeveLvl() + GameValues.gvTribal.TECH_RESEARCHED_DEVELOPMENT_CAPITAL);
-                CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).setHappi(CFG.core.getProv(CFG.core.getCiv(i).getCapitalProvID()).getHappi() + GameValues.gvTribal.TECH_RESEARCHED_HAPPINESS_CAPITAL);
-            }
-            if (iterration++ < 5) {
-                TechManager.updateResearchOfCiv(i, iterration);
-            }
+        }
+        catch (Exception exception) {
+            // empty catch block
         }
     }
 

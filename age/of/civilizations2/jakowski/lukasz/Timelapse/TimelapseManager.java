@@ -36,7 +36,7 @@ public class TimelapseManager {
     public Timelapse_Stats_History_GameData timelapseStatsHistory = new Timelapse_Stats_History_GameData();
     public Timelapse_Stats_Economy_GameData timelapseStatsEconomy = new Timelapse_Stats_Economy_GameData();
     public static int SOURCE = 0;
-    public static final int[] TIME_REQUIRED_TO_ACTION = new int[]{1, 2000, 1500, 1000, 750, 500, 250};
+    public static final int[] TIME_REQUIRED_TO_ACTION = new int[]{1, 1000, 500, 250, 100, 50, 25};
     public static final int MAX_SPEED = 6;
     public static int SPEED = 1;
     public static boolean PAUSE = true;

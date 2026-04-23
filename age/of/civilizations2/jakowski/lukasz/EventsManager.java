@@ -43,6 +43,7 @@ public class EventsManager {
     public boolean runMissionPlayer(int i, int civID) {
         if (this.canRunMissionID(i, civID)) {
             Menu_InGame_Event.EVENT_ID = i;
+            CFG.LOG("Fired1: " + this.events.lEvents.get(i).getEventName());
             this.events.lEvents.get(i).setWasFired(!this.events.lEvents.get(i).getRepeatable());
             CFG.menus.rebuildInGame_Event();
             return true;
@@ -138,12 +139,14 @@ public class EventsManager {
         if (this.events.lEvents.get(i).getCivID() > 0) {
             try {
                 CFG.core.getCiv(this.events.lEvents.get(i).getCivID()).addEventToRunId(i);
+                CFG.LOG("Fired2: " + this.events.lEvents.get(i).getEventName() + ", civID: " + this.events.lEvents.get(i).getCivID() + ", " + CFG.core.getCiv(this.events.lEvents.get(i).getCivID()).getCivName());
                 this.events.lEvents.get(i).setWasFired(!this.events.lEvents.get(i).getRepeatable());
             }
             catch (IndexOutOfBoundsException indexOutOfBoundsException) {}
         } else if (this.events.lEvents.get(i).getCivID() == 0) {
             try {
                 CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).addEventToRunId(i);
+                CFG.LOG("Fired3: " + this.events.lEvents.get(i).getEventName());
                 this.events.lEvents.get(i).setWasFired(!this.events.lEvents.get(i).getRepeatable());
             }
             catch (IndexOutOfBoundsException indexOutOfBoundsException) {
@@ -161,6 +164,7 @@ public class EventsManager {
         }
         if (tID >= 0) {
             CFG.core.getCiv(this.events.lEvents.get(tID).getCivID()).addEventToRunId(tID);
+            CFG.LOG("Fired4: " + this.events.lEvents.get(tID).getEventName());
             this.events.lEvents.get(tID).setWasFired(!this.events.lEvents.get(tID).getRepeatable());
         }
     }
@@ -173,6 +177,19 @@ public class EventsManager {
             }
             for (i = 0; i < this.events.iEventsSize; ++i) {
                 if (!this.events.lEvents.get((int)i).isMission || this.events.lEvents.get(i).getCivID() <= 0) continue;
+                CFG.core.getCiv((int)this.events.lEvents.get((int)i).getCivID()).iDMAS.add(i);
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
+    }
+
+    public void FXABF(int id) {
+        try {
+            CFG.core.getCiv((int)id).iDMAS.clear();
+            for (int i = 0; i < this.events.iEventsSize; ++i) {
+                if (!this.events.lEvents.get((int)i).isMission || this.events.lEvents.get(id).getCivID() <= 0 || this.events.lEvents.get(id).getCivID() != id) continue;
                 CFG.core.getCiv((int)this.events.lEvents.get((int)i).getCivID()).iDMAS.add(i);
             }
         }
@@ -214,10 +231,12 @@ public class EventsManager {
         for (int i = 0; i < this.events.iEventsSize; ++i) {
             int k;
             int j;
-            if (this.events.lEvents.get(i).getCivID() == nID_A) {
-                this.events.lEvents.get(i).setCivID(nID_B);
-            } else if (this.events.lEvents.get(i).getCivID() == nID_B) {
-                this.events.lEvents.get(i).setCivID(nID_A);
+            if (!this.events.lEvents.get((int)i).isMission) {
+                if (this.events.lEvents.get(i).getCivID() == nID_A) {
+                    this.events.lEvents.get(i).setCivID(nID_B);
+                } else if (this.events.lEvents.get(i).getCivID() == nID_B) {
+                    this.events.lEvents.get(i).setCivID(nID_A);
+                }
             }
             for (j = 0; j < this.events.lEvents.get((int)i).lTriggers.size(); ++j) {
                 for (k = 0; k < this.events.lEvents.get((int)i).lTriggers.get((int)j).lConditions.size(); ++k) {

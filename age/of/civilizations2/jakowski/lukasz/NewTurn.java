@@ -220,6 +220,12 @@ extends Thread {
             catch (Exception i5) {
                 // empty catch block
             }
+            try {
+                NewTurn.updateAlliances();
+            }
+            catch (Exception i5) {
+                // empty catch block
+            }
             ++SaveGameManager.iTurnsSinceLastSave;
             if (SaveGameManager.gameWillBeSavedInThisTurn()) {
                 SaveGameManager.trySaveGame();
@@ -1021,6 +1027,49 @@ extends Thread {
         }
         catch (Exception ex) {
             CFG.exceptionStack(ex);
+        }
+    }
+
+    public static void updateAlliances() {
+        block9: {
+            try {
+                if (GameCalendar.TURNID % 14 != 0) break block9;
+                for (int i = CFG.core.getAlliancesSize() - 1; i > 0; --i) {
+                    int j;
+                    if (CFG.core.getAlliance(i).getCivilizationsSize() == 0) {
+                        CFG.core.lAlliances.remove(i);
+                        CFG.core.iAlliancesSize = CFG.core.lAlliances.size();
+                        for (int j2 = 1; j2 < CFG.core.getCivsSize(); ++j2) {
+                            if (CFG.core.getCiv(j2).getAlliance() < i) continue;
+                            CFG.core.getCiv(j2).setAlliance(CFG.core.getCiv(j2).getAlliance() - 1);
+                        }
+                        continue;
+                    }
+                    int numOfCivsInAlliance = 0;
+                    for (j = CFG.core.getAlliance(i).getCivilizationsSize() - 1; j >= 0; --j) {
+                        if (CFG.core.getAlliance(i).getCivilization(j) <= 0 || CFG.core.getAlliance(i).getCivilization(j) >= CFG.core.getCivsSize()) continue;
+                        if (CFG.core.getCiv(CFG.core.getAlliance(i).getCivilization(j)).isAtWarC()) {
+                            numOfCivsInAlliance += 5;
+                            continue;
+                        }
+                        if (CFG.core.getCiv(CFG.core.getAlliance(i).getCivilization(j)).getNumOfProvs() <= 0) continue;
+                        ++numOfCivsInAlliance;
+                    }
+                    if (numOfCivsInAlliance > true) continue;
+                    for (j = CFG.core.getAlliance(i).getCivilizationsSize() - 1; j >= 0; --j) {
+                        CFG.core.getCiv(CFG.core.getAlliance(i).getCivilization(j)).setAlliance(0);
+                    }
+                    CFG.core.lAlliances.remove(i);
+                    CFG.core.iAlliancesSize = CFG.core.lAlliances.size();
+                    for (j = 1; j < CFG.core.getCivsSize(); ++j) {
+                        if (CFG.core.getCiv(j).getAlliance() < i) continue;
+                        CFG.core.getCiv(j).setAlliance(CFG.core.getCiv(j).getAlliance() - 1);
+                    }
+                }
+            }
+            catch (Exception exr) {
+                CFG.exceptionStack(exr);
+            }
         }
     }
 

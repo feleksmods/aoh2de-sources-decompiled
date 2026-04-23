@@ -156,7 +156,7 @@ extends Menu {
             }
         });
         int tPosY = CFG.PADD + tElemHeight;
-        ArrayList<Integer> tPopulation = new ArrayList<Integer>();
+        ArrayList<Long> tPopulation = new ArrayList<Long>();
         ArrayList<Integer> tCivilizations = new ArrayList<Integer>();
         ArrayList<Integer> tProvinces = new ArrayList<Integer>();
         ArrayList<Integer> tLargestCity = new ArrayList<Integer>();
@@ -169,7 +169,7 @@ extends Menu {
                 break;
             }
             if (!tAdd2) continue;
-            tPopulation.add(0);
+            tPopulation.add(0L);
             tCivilizations.add(CFG.core.getProv(i3).getCivId());
             tProvinces.add(0);
             tLargestCity.add(i3);
@@ -181,17 +181,17 @@ extends Menu {
                 if (((Integer)tCivilizations.get(j)).intValue() != CFG.core.getProv(i3).getCivId()) continue;
                 tCivID = j;
             }
-            tPopulation.set(tCivID, (Integer)tPopulation.get(tCivID) + CFG.core.getProv(i3).getPop().getPops());
+            tPopulation.set(tCivID, (Long)tPopulation.get(tCivID) + (long)CFG.core.getProv(i3).getPop().getPops());
             tProvinces.set(tCivID, (Integer)tProvinces.get(tCivID) + 1);
             if (CFG.core.getProv((Integer)tLargestCity.get(tCivID)).getPop().getPops() >= CFG.core.getProv(i3).getPop().getPops()) continue;
             tLargestCity.set(tCivID, i3);
         }
-        int tTotalPop = 0;
+        long tTotalPop = 0L;
         boolean tCivsTotal = false;
         int tProvincesTotal = 0;
         int tLargestCityTotal = -1;
         for (int i4 = 0; i4 < tCivilizations.size(); ++i4) {
-            tTotalPop += ((Integer)tPopulation.get(i4)).intValue();
+            tTotalPop += ((Long)tPopulation.get(i4)).longValue();
             tProvincesTotal += ((Integer)tProvinces.get(i4)).intValue();
             if (tLargestCityTotal < 0) {
                 if ((Integer)tLargestCity.get(i4) < 0) continue;
@@ -350,7 +350,7 @@ extends Menu {
             while (tempIDs.size() > 0) {
                 tAdd = 0;
                 for (i = 1; i < tempIDs.size(); ++i) {
-                    if ((Integer)tPopulation.get((Integer)tempIDs.get(tAdd)) >= (Integer)tPopulation.get((Integer)tempIDs.get(i))) continue;
+                    if ((Long)tPopulation.get((Integer)tempIDs.get(tAdd)) >= (Long)tPopulation.get((Integer)tempIDs.get(i))) continue;
                     tAdd = i;
                 }
                 tSorted.add((Integer)tempIDs.get(tAdd));
