@@ -37,8 +37,7 @@ jobs:
             -docencoding UTF-8 \
             -charset UTF-8 \
             -Xdoclint:none \
-            -J-Xmaxerrs -J10000 \
-            -J-Xmaxwarns -J10000 \
+            -quiet \
             -subpackages age:aoc
 
       - name: Deploy to GitHub Pages
