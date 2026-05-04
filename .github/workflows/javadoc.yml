@@ -22,6 +22,12 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: Clean decompiled code
+        run: |
+          find . -name "*.java" -exec sed -i 's/\*\* GOTO.*;//g' {} +
+          find . -name "*.java" -exec sed -i 's/lbl[0-9]*://g' {} +
+          find . -name "*.java" -exec sed -i 's/ArrayList<[0-9]*>/ArrayList/g' {} +
+          find . -name "*.java" -exec sed -i 's/[0-9]\.get/0 .get/g' {} +
 
       - name: Generate Javadoc
         run: |
