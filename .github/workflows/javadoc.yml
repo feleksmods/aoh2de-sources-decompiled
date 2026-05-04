@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -21,16 +22,18 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
       - name: Generate Javadoc
         run: |
-            mkdir -p docs/javadoc
-            javadoc -d docs/javadoc \
-                -encoding UTF-8 \
-                -docencoding UTF-8 \
-                -charset UTF-8 \
-                -Xdoclint:none \
-                -sourcepath src/main/java \
-                -subpackages age.of.civilizations2:aoc.kingdoms:me.felek
+          mkdir -p docs/javadoc
+          javadoc -d docs/javadoc \
+            -encoding UTF-8 \
+            -docencoding UTF-8 \
+            -charset UTF-8 \
+            -Xdoclint:none \
+            -sourcepath . \
+            -subpackages age:aoc:me
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
