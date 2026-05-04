@@ -3,7 +3,7 @@ name: Generate Javadoc
 on:
   push:
     branches:
-      - java-main
+      - main
 
 permissions:
   contents: write
