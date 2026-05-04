@@ -21,7 +21,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-
       - name: Generate Javadoc
         run: |
             mkdir -p docs/javadoc
@@ -32,8 +31,7 @@ jobs:
                 -Xdoclint:none \
                 -sourcepath src/main/java \
                 -subpackages age.of.civilizations2:aoc.kingdoms:me.felek
-            
-        - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: docs/javadoc
