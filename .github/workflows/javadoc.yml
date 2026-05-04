@@ -32,7 +32,7 @@ jobs:
             -charset UTF-8 \
             -Xdoclint:none \
             -sourcepath . \
-            -subpackages age:aoc:me
+            -subpackages age:aoc
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
