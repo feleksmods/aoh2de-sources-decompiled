@@ -33,6 +33,7 @@ import age.of.civilizations2.jakowski.lukasz.IMGManager;
 import age.of.civilizations2.jakowski.lukasz.Image;
 import age.of.civilizations2.jakowski.lukasz.Images;
 import age.of.civilizations2.jakowski.lukasz.LeaderOfCiv_GameData;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainter;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_Event;
 import age.of.civilizations2.jakowski.lukasz.Messages.Info.Message_AssimilationEnd;
 import age.of.civilizations2.jakowski.lukasz.Messages.Info.Message_FestivalIsOver;
@@ -2908,6 +2909,15 @@ public class Civilization {
         this.iFVS = false;
     }
 
+    public final void setFlag_FlagPainter() {
+        if (this.civFlag != null) {
+            this.civFlag.dispose();
+        }
+        this.civFlag = new Image(new Texture(Menu_InGame_FlagPainter.pixmap));
+        this.isFlagNearest = false;
+        this.iFVS = false;
+    }
+
     public final CivBonus_GameData getBonus(int i) {
         return this.civGD.bonusesCiv.get(i);
     }
@@ -3160,9 +3170,7 @@ public class Civilization {
         try {
             CFG.historyManager.addHistoryLog(new HistoryLog_FriendlyCivs(this.getCivId(), nCivID));
         }
-        catch (NullPointerException nullPointerException) {
-        }
-        catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+        catch (Exception exception) {
             // empty catch block
         }
         return true;

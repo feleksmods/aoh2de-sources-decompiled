@@ -454,6 +454,33 @@ extends Menu {
                     }
                 });
                 ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setCurr(++row % 2);
+                ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setHeightE(buttonH);
+                menuElements.add(new Button_Build(CFG.lang.get("DisbandAllSelected"), Images.diploArmyDisband, 0, 0, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), tempW, true, false, 0, 0.0f){
+
+                    @Override
+                    public void actionElem(int iID) {
+                        CFG.menus.rebuildInGame_DisbandAllArmies();
+                    }
+
+                    @Override
+                    public void buildElemHover() {
+                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), 0, CFG.PADD));
+                        nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("DisbandAllSelectedArmies"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                        nData.add(new ME_Hover_2Type_Image_Big(Images.diploArmyDisband, CFG.PADD, 0));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("DisbandAllSelectedArmiesDesc")));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        this.menuElemHover = new ME_Hover_v2(nElements);
+                    }
+                });
+                ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setCurr(++row % 2);
                 ++row;
                 ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setHeightE(buttonH);
                 tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();

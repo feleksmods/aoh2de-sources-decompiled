@@ -4,8 +4,8 @@ import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.TouchManager;
 
 public class Touch {
-    private static int mousePosX = 0;
-    private static int mousePosY = 0;
+    public static int mousePosX = 0;
+    public static int mousePosY = 0;
     public static boolean sAMD = false;
 
     public static final void setMousePosXY(int nMousePosX, int nMousePosY) {

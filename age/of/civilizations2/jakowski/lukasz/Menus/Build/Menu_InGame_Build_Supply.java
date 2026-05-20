@@ -128,8 +128,8 @@ extends Menu {
 
             @Override
             public void drawT(SpriteBatch oSB, int iTranslateX, int nPosX, int nPosY, int nWidth, boolean sliderMenuIsActive) {
-                IMGManager.getIMG(Images.dialog_title).draw2O(oSB, nPosX - 2 + iTranslateX, nPosY - this.getHeightT() - IMGManager.getIMG(Images.dialog_title).getHeight(), nWidth + 4 - IMGManager.getIMG(Images.dialog_title).getWidth(), this.getHeightT());
-                IMGManager.getIMG(Images.dialog_title).draw2O(oSB, nPosX + nWidth + 2 - IMGManager.getIMG(Images.dialog_title).getWidth() + iTranslateX, nPosY - this.getHeightT() - IMGManager.getIMG(Images.dialog_title).getHeight(), IMGManager.getIMG(Images.dialog_title).getWidth(), this.getHeightT(), true, false);
+                IMGManager.getIMG(Images.dialog_title).draw2O(oSB, nPosX - 2 - Core.PADDING + iTranslateX, nPosY - Core.PADDING - this.getHeightT() - IMGManager.getIMG(Images.dialog_title).getHeight(), nWidth + 4 - IMGManager.getIMG(Images.dialog_title).getWidth() + Core.PADDING * 2, this.getHeightT() + Core.PADDING);
+                IMGManager.getIMG(Images.dialog_title).draw2O(oSB, nPosX + Core.PADDING + nWidth + 2 - IMGManager.getIMG(Images.dialog_title).getWidth() + iTranslateX, nPosY - this.getHeightT() - Core.PADDING - IMGManager.getIMG(Images.dialog_title).getHeight(), IMGManager.getIMG(Images.dialog_title).getWidth(), this.getHeightT() + Core.PADDING, true, false);
                 oSB.setColor(new Color(0.41960785f, 0.5568628f, 0.13725491f, 0.165f));
                 IMGManager.getIMG(Images.line32Off1).drawO(oSB, nPosX + iTranslateX, nPosY - this.getHeightT() + 2 - IMGManager.getIMG(Images.line32Off1).getHeight(), nWidth, this.getHeightT() - 2, false, true);
                 oSB.setColor(new Color(0.41960785f, 0.5568628f, 0.13725491f, 0.375f));

@@ -12,6 +12,8 @@ import age.of.civilizations2.jakowski.lukasz.Flag_Overlay_GameData;
 import age.of.civilizations2.jakowski.lukasz.IMGManager;
 import age.of.civilizations2.jakowski.lukasz.Image;
 import age.of.civilizations2.jakowski.lukasz.Images;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainter;
+import age.of.civilizations2.jakowski.lukasz.Save.SaveGameManager;
 import age.of.civilizations2.jakowski.lukasz.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -533,6 +535,26 @@ public class FlagManager {
         oSB.setColor(Color.WHITE);
         tempImage.getTexture().dispose();
         tempImage = null;
+    }
+
+    public final void saveFlagTextureFlagPainter(SpriteBatch oSB) {
+        try {
+            if (CFG.getIsDesktop()) {
+                if (Menu_InGame_FlagPainter.civID >= 0 && Menu_InGame_FlagPainter.civID < CFG.core.getCivsSize()) {
+                    CFG.core.getCiv(Menu_InGame_FlagPainter.civID).setFlag_FlagPainter();
+                }
+                if (SaveGameManager.saveTag != null) {
+                    if (FileManager.IS_MAC) {
+                        PixmapIO.writePNG(Gdx.files.external("saves/games/" + CFG.map.getFileActiveMapPath() + SaveGameManager.saveTag + "/flags/" + CFG.core.getCiv(Menu_InGame_FlagPainter.civID).getCivTag() + ".png"), Menu_InGame_FlagPainter.pixmap);
+                    } else {
+                        PixmapIO.writePNG(Gdx.files.local("saves/games/" + CFG.map.getFileActiveMapPath() + SaveGameManager.saveTag + "/flags/" + CFG.core.getCiv(Menu_InGame_FlagPainter.civID).getCivTag() + ".png"), Menu_InGame_FlagPainter.pixmap);
+                    }
+                }
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
     }
 
     public static class ConfigDivisionsData {

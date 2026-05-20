@@ -66,7 +66,7 @@ public class KNAM {
 
     public KNAM(int iDPO) {
         this.iDPO = iDPO;
-        if (CFG.core.getProv(iDPO).getCitSize() > 0) {
+        if (CFG.core.getProv(iDPO).getCitiesSize() > 0) {
             this.oXS = CFG.core.getProv(iDPO).getCit(0).getPoX() * CFG.map.getMpB().getMapSc3();
             this.eZY = CFG.core.getProv(iDPO).getCit(0).getPosY() * CFG.map.getMpB().getMapSc3();
         } else {

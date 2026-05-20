@@ -10,7 +10,9 @@ import age.of.civilizations2.jakowski.lukasz.MapA.Minimap;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.MEHover_2E;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Image;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Space;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_TextDesc;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateScenarios.Menu_CreateScenario;
 import age.of.civilizations2.jakowski.lukasz.Sliders.Slide;
@@ -91,6 +93,30 @@ extends Menu_CreateScenario {
                 return CFG.SCENARIO_EDITOR_OCCUPATION;
             }
         });
+        menuElements.add(new Button_Game_Checkbox(null, -1, CFG.PADD, CFG.BUTTON_H + CFG.PADD * 3, CFG.BUTTON_W * 2, true, CFG.SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL){
+
+            @Override
+            public boolean getCheckboxSt() {
+                return CFG.SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL;
+            }
+
+            @Override
+            public void buildElemHover() {
+                ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("AssignNeutralProvincesOnly"), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Image(Images.provinces, CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Space());
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("AssignNeutralProvincesOnlyDesc")));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                this.menuElemHover = new ME_Hover_v2(nElements);
+            }
+        });
         this.initMenu(null, 0, 0, CFG.GAMEWIDTH, CFG.GAMEHEIGHT, menuElements);
         this.updateLang();
     }
@@ -110,9 +136,12 @@ extends Menu_CreateScenario {
         this.getMenuElem(6).setTextE(CFG.lang.get("Undo"));
         this.getMenuElem(7).setTextE(CFG.lang.get("Flags"));
         this.getMenuElem(8).setTextE(CFG.lang.get("Occupation"));
+        this.getMenuElem(9).setTextE(CFG.lang.get("AssignNeutralProvincesOnly"));
         this.updatedButtonsWidthFromToID(4, 5, CFG.PADD, CFG.BUTTON_W * 2);
-        this.updatedButtonsWidthFromToID(6, 9, this.getMenuElem(4).getPosXE() + this.getMenuElem(4).getWidthE() + CFG.PADD, CFG.BUTTON_W);
-        int tempX = CFG.GAMEWIDTH - this.getMenuElem(8).getWidthE() - CFG.PADD;
+        this.updatedButtonsWidthFromToID(6, 10, this.getMenuElem(4).getPosXE() + this.getMenuElem(4).getWidthE() + CFG.PADD, CFG.BUTTON_W);
+        int tempX = CFG.GAMEWIDTH - this.getMenuElem(9).getWidthE() - CFG.PADD;
+        this.getMenuElem(9).setPosX(tempX);
+        tempX = tempX - this.getMenuElem(8).getWidthE() - CFG.PADD;
         this.getMenuElem(8).setPosX(tempX);
         tempX = tempX - this.getMenuElem(7).getWidthE() - CFG.PADD;
         this.getMenuElem(7).setPosX(tempX);
@@ -187,6 +216,10 @@ extends Menu_CreateScenario {
             }
             case 8: {
                 CFG.SCENARIO_EDITOR_OCCUPATION = !CFG.SCENARIO_EDITOR_OCCUPATION;
+                return;
+            }
+            case 9: {
+                CFG.SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL = !CFG.SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL;
                 return;
             }
         }

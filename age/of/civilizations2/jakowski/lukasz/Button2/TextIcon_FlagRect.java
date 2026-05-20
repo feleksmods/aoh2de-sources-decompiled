@@ -99,8 +99,8 @@ extends ButtonM {
                 this.iTextWidth = 0;
             }
         }
-        catch (Exception ex) {
-            CFG.exceptionStack(ex);
+        catch (Exception exception) {
+            // empty catch block
         }
         int tWMax = 0;
         while (this.iTextWidth > this.getWidthE() - this.maxIconWidth - CFG.PADD * 2 && this.getTextE().length() > 5 && ++tWMax < 100) {

@@ -29,7 +29,7 @@ public class DiploAnimation {
         this.iPosX = CFG.core.getProv(iProvinceID).getCeShX();
         this.iPosY = CFG.core.getProv(iProvinceID).getCeShY();
         this.TURN_ID = GameCalendar.TURNID;
-        this.colorN = CFG.COLOR_WAR_DARK;
+        this.colorN = imageID == Images.mapWar ? new Color(CFG.COLOR_WAR_DARK.r, CFG.COLOR_WAR_DARK.g, CFG.COLOR_WAR_DARK.b, 0.85f) : new Color(1.0f, 0.9647059f, 0.8666667f, 0.3f);
     }
 
     public void draw(SpriteBatch oSB) {
@@ -62,7 +62,7 @@ public class DiploAnimation {
                     float fadeProgress = (fProgress - 0.85f) / 0.15f;
                     alpha = 1.0f - fadeProgress;
                 }
-                oSB.setColor(new Color(this.colorN.r, this.colorN.g, this.colorN.b, alpha));
+                oSB.setColor(new Color(this.colorN.r, this.colorN.g, this.colorN.b, alpha * this.colorN.a));
                 IMGManager.getIMG(Images.gradientXY).draw(oSB, nPosX - currentW, (int)((float)(nPosY - currentH) - yOffset), currentW * 2, currentH / 2);
                 IMGManager.getIMG(Images.gradientXY).draw(oSB, nPosX - currentW, (int)((float)nPosY - yOffset - (float)(currentH / 2)), currentW * 2, currentH / 2, false, true);
                 oSB.setColor(1.0f, 1.0f, 1.0f, alpha);

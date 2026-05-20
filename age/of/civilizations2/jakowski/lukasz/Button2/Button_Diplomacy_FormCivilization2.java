@@ -61,9 +61,13 @@ extends ButtonM {
         this.iTextCostDiplomacyWidth = (int)CFG.glyphLay.width;
         this.loadFlag(this.sCivTag);
         try {
+            FileHandle file;
             String pText = "";
-            if (FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt").exists()) {
-                FileHandle file = FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt");
+            if (FileManager.loadFile("game/formableDescription/" + this.sCivTag + ".txt").exists()) {
+                file = FileManager.loadFile("game/formableDescription/" + this.sCivTag + ".txt");
+                pText = CFG.lang.getForm(file.readString());
+            } else if (FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt").exists()) {
+                file = FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt");
                 pText = CFG.lang.getForm(file.readString());
             } else {
                 pText = CFG.lang.getForm(CFG.ideologiesMgr.getRealTag(this.sCivTag));
@@ -188,7 +192,7 @@ extends ButtonM {
     public void drawTextE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
         int posX = this.getPosXE() + CFG.PADD * 2 + iTranslateX;
         int posY = this.getPosY() + CFG.PADD * 2 + iTranslateY;
-        if (this.isNearest || GameN.FUEVG) {
+        if (this.isNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
             oSB.setShader(Renderer.shaderAlpha);
             this.lFlag.getTexture().bind(1);
             Gdx.gl.glActiveTexture(33984);
@@ -280,7 +284,10 @@ extends ButtonM {
             nData.clear();
             try {
                 String pText = "";
-                if (FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt").exists()) {
+                if (FileManager.loadFile("game/formableDescription/" + this.sCivTag + ".txt").exists()) {
+                    FileHandle file = FileManager.loadFile("game/formableDescription/" + this.sCivTag + ".txt");
+                    pText = CFG.lang.getForm(file.readString());
+                } else if (FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt").exists()) {
                     FileHandle file = FileManager.loadFile("game/formableDescription/" + CFG.ideologiesMgr.getRealTag(this.sCivTag) + ".txt");
                     pText = CFG.lang.getForm(file.readString());
                 } else {

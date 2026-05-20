@@ -261,7 +261,7 @@ extends Menu {
             CFG.menus.setVisibleCreateScenario_Events_Edit(true);
         } else if (iID % 3 == 1) {
             try {
-                CFG.eventsManager.addEvent(Menu_CreateScenario_Events_List.dc(CFG.eventsManager.getEvent(this.getMenuElem(realID - 1).getCurr())));
+                CFG.eventsManager.addEvent2(Menu_CreateScenario_Events_List.dc(CFG.eventsManager.getEvent(this.getMenuElem(realID - 1).getCurr())));
                 CFG.eventsManager.createEvent_EditEventID = CFG.eventsManager.getEventsSize() - 1;
                 CFG.eventsManager.createScenarioEvents = CFG.eventsManager.getEvent(CFG.eventsManager.createEvent_EditEventID);
                 CFG.menus.setVisibleCreateScenario_Events_Edit(true);

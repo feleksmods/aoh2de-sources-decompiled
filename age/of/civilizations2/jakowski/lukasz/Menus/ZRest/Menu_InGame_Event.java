@@ -3,9 +3,7 @@ package age.of.civilizations2.jakowski.lukasz.Menus.ZRest;
 import age.of.civilizations2.jakowski.lukasz.Button.Button_Transparent;
 import age.of.civilizations2.jakowski.lukasz.Button.MenuElemUI;
 import age.of.civilizations2.jakowski.lukasz.Button.NewGame.Button_In_Game_Box_Anim;
-import age.of.civilizations2.jakowski.lukasz.Button2.Text_Desc2_Special;
 import age.of.civilizations2.jakowski.lukasz.CFG;
-import age.of.civilizations2.jakowski.lukasz.Colors;
 import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.Files.FileManager;
 import age.of.civilizations2.jakowski.lukasz.GameCalendar;
@@ -22,6 +20,7 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_TextDes
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Renderer;
+import age.of.civilizations2.jakowski.lukasz.TextB.Texts.TextSlider;
 import age.of.civilizations2.jakowski.lukasz.Title.TitleM_TextSmall;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -63,13 +62,46 @@ extends Menu {
         menuElements.add(new Button_Transparent(CFG.PADD, tY, tempWidth - CFG.PADD * 2, (int)(96.0f * CFG.GUI_SCALE), true));
         tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
         if (CFG.eventsManager.getEvent((int)Menu_InGame_Event.EVENT_ID).getEvent_PopUp().sText != null && CFG.eventsManager.getEvent((int)Menu_InGame_Event.EVENT_ID).getEvent_PopUp().sText.length() > 0) {
-            menuElements.add(new Text_Desc2_Special(CFG.lang.get(CFG.eventsManager.getEvent((int)Menu_InGame_Event.EVENT_ID).getEvent_PopUp().sText), CFG.PADD, tY, tempWidth - CFG.PADD * 2){
+            menuElements.add(new TextSlider(CFG.PADD, tY, tempWidth - CFG.PADD * 2, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4, CFG.BUTTON_H * 2, CFG.FONT_REGULAR_SMALL){
 
                 @Override
-                protected Color getColor(boolean isActive) {
-                    return Colors.getColorButton(isActive, this.getIsHovered());
+                public Color getColor(boolean isActive) {
+                    return isActive ? CFG.COLOR_BUTTON_GAME_TEXT_IMPORTANT_ACTIVE : (this.getIsHovered() ? CFG.COLOR_BUTTON_GAME_TEXT_IMPORTANT_HOVER : CFG.COLOR_BUTTON_GAME_TEXT_IMPORTANT);
+                }
+
+                @Override
+                public void drawBG(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive, boolean scrollableY) {
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DARK_BLUE.r, CFG.COLOR_GRADIENT_DARK_BLUE.g, CFG.COLOR_GRADIENT_DARK_BLUE.b, this.getIsHovered() || isActive ? 0.5f : 0.25f));
+                    Renderer.drawBox2(oSB, Images.statsRectBG, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), this.getHeightE(), 1.0f);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.3f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), this.getHeightE());
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.35f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), this.getHeightE());
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.3f));
+                    IMGManager.getIMG(Images.gradientXY).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), this.getHeightE());
+                    oSB.setColor(new Color(0.0f, 0.0f, 0.0f, 0.25f));
+                    IMGManager.getIMG(Images.gradientXY).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), CFG.PADD * 2, false, true);
+                    IMGManager.getIMG(Images.gradientXY).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + this.getHeightE() - CFG.PADD * 2 + iTranslateY, this.getWidthE(), CFG.PADD * 2);
+                    oSB.setColor(new Color(0.0f, 0.0f, 0.0f, 0.25f));
+                    Renderer.drawBox2(oSB, Images.statsRectBGBorder, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), this.getHeightE(), 1.0f);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DARK_BLUE.r, CFG.COLOR_GRADIENT_DARK_BLUE.g, CFG.COLOR_GRADIENT_DARK_BLUE.b, 0.25f));
+                    Renderer.drawBox2(oSB, Images.statsRectBGBorder, this.getPosXE() - 1 + iTranslateX, this.getPosY() - 1 + iTranslateY, this.getWidthE() + 2, this.getHeightE() + 2, 1.0f);
+                    oSB.setColor(new Color(0.0f, 0.0f, 0.0f, 0.5f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + this.getHeightE() - 1 + iTranslateY, this.getWidthE(), 1);
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), 1);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.85f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + this.getHeightE() - 2 + iTranslateY, this.getWidthE(), 1);
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + 1 + iTranslateY, this.getWidthE(), 1);
+                    oSB.setColor(new Color(0.0f, 0.0f, 0.0f, 0.55f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + this.getHeightE() - 1 + iTranslateY, this.getWidthE(), 1);
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + iTranslateY, this.getWidthE(), 1);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.9f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + this.getHeightE() - 2 + iTranslateY, this.getWidthE(), 1);
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, this.getPosXE() + iTranslateX, this.getPosY() + 1 + iTranslateY, this.getWidthE(), 1);
+                    oSB.setColor(Color.WHITE);
                 }
             });
+            ((MenuElemUI)menuElements.get(1)).addText(CFG.lang.get(CFG.eventsManager.getEvent((int)Menu_InGame_Event.EVENT_ID).getEvent_PopUp().sText), CFG.PADD);
             tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD * 2;
         } else {
             menuElements.add(new Button_Transparent(CFG.PADD, tY, 1, 1, true));
@@ -264,7 +296,7 @@ extends Menu {
             IMGManager.getIMG(Images.sliderGradient).drawO(oSB, this.getPosX() + this.getMenuElem(0).getPosXE() + iTranslateX, this.getPosY() + CFG.TEXT_HEIGHT_DEFAULT_SMALL + CFG.PADD * 2 - 1 + this.getMenuElem(0).getPosY() - IMGManager.getIMG(Images.sliderGradient).getHeight() + iTranslateY, this.getMenuElem(0).getWidthE() / 3, 1);
             IMGManager.getIMG(Images.sliderGradient).drawO(oSB, this.getPosX() + this.getMenuElem(0).getPosXE() + this.getMenuElem(0).getWidthE() - this.getMenuElem(0).getWidthE() / 3 + iTranslateX, this.getPosY() + CFG.TEXT_HEIGHT_DEFAULT_SMALL + CFG.PADD * 2 - 1 + this.getMenuElem(0).getPosY() - IMGManager.getIMG(Images.sliderGradient).getHeight() + iTranslateY, this.getMenuElem(0).getWidthE() / 3, 1, true, false);
             oSB.setColor(Color.WHITE);
-            if (CFG.eventsManager.getEvent(EVENT_ID).getCivID() > 0 && CFG.eventsManager.getEvent(EVENT_ID).getCivID() < CFG.core.getCivsSize() && CFG.core.getCiv(CFG.eventsManager.getEvent(EVENT_ID).getCivID()).getCapitalProvID() >= 0 && CFG.core.getProv(CFG.core.getCiv(CFG.eventsManager.getEvent(EVENT_ID).getCivID()).getCapitalProvID()).getCitSize() > 0) {
+            if (CFG.eventsManager.getEvent(EVENT_ID).getCivID() > 0 && CFG.eventsManager.getEvent(EVENT_ID).getCivID() < CFG.core.getCivsSize() && CFG.core.getCiv(CFG.eventsManager.getEvent(EVENT_ID).getCivID()).getCapitalProvID() >= 0 && CFG.core.getProv(CFG.core.getCiv(CFG.eventsManager.getEvent(EVENT_ID).getCivID()).getCapitalProvID()).getCitiesSize() > 0) {
                 Renderer.drawText(oSB, CFG.FONT_BOLD_SMALL, CFG.core.getProv(CFG.core.getCiv(CFG.eventsManager.getEvent(EVENT_ID).getCivID()).getCapitalProvID()).getCit(0).getCityName(), this.getPosX() + this.getMenuElem(0).getPosXE() + CFG.PADD + iTranslateX, this.getPosY() + this.getMenuElem(0).getPosY() + CFG.PADD + iTranslateY, new Color(1.0f, 1.0f, 1.0f, 0.8f));
             }
             Renderer.drawText(oSB, CFG.FONT_BOLD_SMALL, this.sEventDate, this.getPosX() + this.getMenuElem(0).getPosXE() + this.getMenuElem(0).getWidthE() - CFG.PADD - this.iEventDateWidth + iTranslateX, this.getPosY() + this.getMenuElem(0).getPosY() + CFG.PADD + iTranslateY, new Color(1.0f, 1.0f, 1.0f, 0.8f));

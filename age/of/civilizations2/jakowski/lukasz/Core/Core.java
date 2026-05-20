@@ -258,6 +258,15 @@ public class Core {
     public static int PADDING = 4;
     public List<Integer> loadArmiesWidth_ErrorIDs = new ArrayList<Integer>();
 
+    public int getNumOfForeignInvestments(int provinceID) {
+        int out = 0;
+        for (int i = this.investForeignGold.size() - 1; i >= 0; --i) {
+            if (this.investForeignGold.get((int)i).provinceID != provinceID) continue;
+            ++out;
+        }
+        return out;
+    }
+
     public int isInvestForeignGold(int provinceID) {
         for (int i = this.investForeignGold.size() - 1; i >= 0; --i) {
             if (this.investForeignGold.get((int)i).provinceID != provinceID) continue;
@@ -318,7 +327,7 @@ public class Core {
     }
 
     public final void updateActiveProvinceBorder_Style() {
-        if (CFG.menus.getInGameView() && CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE || CFG.menus.getInCrScAs() || CFG.menus.getInCreateScenario_Assign_Select() || CFG.menus.getInCreateScenario_Available_Provinces() || CFG.menus.getInCreateScenario_Civilizations() || CFG.menus.getInCreateScenario_Civilizations_Select() || CFG.menus.getInCreateScenario_SetUpArmy() || CFG.menus.getInCreateScenario_WastelandMap() || CFG.menus.getInCreateScenario_TechnologyLevels() || CFG.menus.getInCreateScenario_StartingMoney() || CFG.menus.getInMapEditor_FormableCivs_Edit() || CFG.menus.getInCreateScenario_HolyRomanEmpire() || CFG.menus.getInGame_CreateAVassal() || CFG.menus.getInGame_SelectProvinces() || CFG.menus.getInGame_ShowProvinces() || CFG.menus.getInGame_TradeSelectCiv() || CFG.menus.getInMapEditor_FormableCivs_SelectFormable() || CFG.menus.getInManageDiplomacy() || CFG.menus.getInSelectAvailableCivilizations() || CFG.menus.getInCreateCivilization() || CFG.menus.getInCreateCity() || CFG.menus.getInMapEditor_Terrain() || CFG.menus.getInPalletOfCivsColorsEdit() || CFG.menus.getInMapEditor_TradeZones_Edit() || CFG.menus.getInMapEditor_Continents() || CFG.menus.getInMapEditor_WastelandMaps_Edit() || CFG.menus.getInCreateNewGame()) {
+        if (CFG.menus.getInGameView() && CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE || CFG.menus.getInGameAssign() || CFG.menus.getInCrScAs() || CFG.menus.getInCreateScenario_Assign_Select() || CFG.menus.getInCreateScenario_Available_Provinces() || CFG.menus.getInCreateScenario_Civilizations() || CFG.menus.getInCreateScenario_Civilizations_Select() || CFG.menus.getInCreateScenario_SetUpArmy() || CFG.menus.getInCreateScenario_WastelandMap() || CFG.menus.getInCreateScenario_TechnologyLevels() || CFG.menus.getInCreateScenario_StartingMoney() || CFG.menus.getInMapEditor_FormableCivs_Edit() || CFG.menus.getInCreateScenario_HolyRomanEmpire() || CFG.menus.getInGame_CreateAVassal() || CFG.menus.getInGame_SelectProvinces() || CFG.menus.getInGame_ShowProvinces() || CFG.menus.getInGame_TradeSelectCiv() || CFG.menus.getInMapEditor_FormableCivs_SelectFormable() || CFG.menus.getInManageDiplomacy() || CFG.menus.getInSelectAvailableCivilizations() || CFG.menus.getInCreateCivilization() || CFG.menus.getInCreateCity() || CFG.menus.getInMapEditor_Terrain() || CFG.menus.getInPalletOfCivsColorsEdit() || CFG.menus.getInMapEditor_TradeZones_Edit() || CFG.menus.getInMapEditor_Continents() || CFG.menus.getInMapEditor_WastelandMaps_Edit() || CFG.menus.getInCreateNewGame()) {
             if (this.activeProvBorder_LastUpdateInCreateScenario) {
                 return;
             }
@@ -1435,6 +1444,7 @@ public class Core {
             CFG.AI_UNIONS_ENABLED = tempSavedGame.AI_UNIONS_ENABLED;
             CFG.SANDBOX_MODE_AI = tempSavedGame.SANDBOX_MODE_AI;
             CFG.BUILD_NUKES_EXTRA_COST = tempSavedGame.BUILD_NUKES_EXTRA_COST;
+            CFG.NUKES_TOP_CIVS = tempSavedGame.NUKES_TOP_CIVS;
             CFG.NUKES_REQUIRED_TECH_LVL = tempSavedGame.NUKES_REQUIRED_TECH_LVL;
             CFG.PLUNDER_MODIFIER = tempSavedGame.PLUNDER_MODIFIER;
             CFG.AI_PLUNDER_ENABLED = tempSavedGame.AI_PLUNDER_ENABLED;
@@ -1445,6 +1455,8 @@ public class Core {
             CFG.AI_CONQUER_OWN_VASSALS_IF_OVER = tempSavedGame.AI_CONQUER_OWN_VASSALS_IF_OVER;
             CFG.DIFFICULTY = tempSavedGame.DIFFICULTY;
             CFG.SANDBOX_MODE = tempSavedGame.SANDBOX_MODE;
+            CFG.DISABLE_DISEASES = tempSavedGame.DISABLE_DISEASES;
+            CFG.INGAME_WORLD_EDITOR = tempSavedGame.INGAME_WORLD_EDITOR;
             CFG.MOVE_AND_RECRUIT_ARMY_AT_WAR_BY_AI = false;
             GameCalendar.TURNID = tempSavedGame.iTurnID;
             GameCalendar.TURNS_SINCE_LAST_WAR = tempSavedGame.TURNS_SINCE_LAST_WAR;
@@ -1802,7 +1814,7 @@ public class Core {
                 if (CFG.pNCI.get(i) >= CFG.core.getProvinSize()) continue;
                 CFG.core.getProv(CFG.pNCI.get(i)).setName2(CFG.pNC.get(i));
                 try {
-                    if (CFG.core.getProv(CFG.pNCI.get(i)).getCitSize() <= 0) continue;
+                    if (CFG.core.getProv(CFG.pNCI.get(i)).getCitiesSize() <= 0) continue;
                     CFG.core.getProv(CFG.pNCI.get(i)).getCit(0).setCityName(CFG.pNC.get(i));
                     continue;
                 }
@@ -3953,9 +3965,9 @@ lbl94:
 
     private final void drawCivFlagBG(SpriteBatch oSB, int nPosX, int nPosY, int nWidth, int nHeight) {
         IMGManager.getIMG(Images.civFlagBG).draw2(oSB, nPosX, nPosY, nWidth - IMGManager.getIMG(Images.civFlagBG).getWidth(), nHeight - IMGManager.getIMG(Images.civFlagBG).getHeight());
-        IMGManager.getIMG(Images.civFlagBG).draw(oSB, nPosX, nPosY + nHeight, nWidth - IMGManager.getIMG(Images.civFlagBG).getWidth(), false, true);
+        IMGManager.getIMG(Images.civFlagBG).draw2(oSB, nPosX, nPosY + nHeight - IMGManager.getIMG(Images.civFlagBG).getHeight(), nWidth - IMGManager.getIMG(Images.civFlagBG).getWidth(), IMGManager.getIMG(Images.civFlagBG).getHeight(), false, true);
         IMGManager.getIMG(Images.civFlagBG).draw2(oSB, nPosX + nWidth - IMGManager.getIMG(Images.civFlagBG).getWidth(), nPosY, IMGManager.getIMG(Images.civFlagBG).getWidth(), nHeight - IMGManager.getIMG(Images.civFlagBG).getHeight(), true);
-        IMGManager.getIMG(Images.civFlagBG).draw(oSB, nPosX + nWidth - IMGManager.getIMG(Images.civFlagBG).getWidth(), nPosY + nHeight, true, true);
+        IMGManager.getIMG(Images.civFlagBG).draw2(oSB, nPosX + nWidth - IMGManager.getIMG(Images.civFlagBG).getWidth(), nPosY + nHeight - IMGManager.getIMG(Images.civFlagBG).getHeight(), IMGManager.getIMG(Images.civFlagBG).getWidth(), IMGManager.getIMG(Images.civFlagBG).getHeight(), true, true);
     }
 
     public final void drawProvinceArmyBackground2(SpriteBatch oSB, int nPosX, int nPosY, int nWidth, int nHeight, int ImageID) {
@@ -5035,6 +5047,8 @@ lbl94:
     public final void acceptPeaceOffer(int iCivA, int iCivB, int nTruceNumOfTurns) {
         this.setCivRelationOfCivB(iCivA, iCivB, Math.max(this.getCivRelationOfCivB(iCivA, iCivB), (float)GameValues.gvDiplomacy.RELATION_WHITE_PEACE_AFTER));
         this.setCivRelationOfCivB(iCivB, iCivA, Math.max(this.getCivRelationOfCivB(iCivB, iCivA), (float)GameValues.gvDiplomacy.RELATION_WHITE_PEACE_AFTER));
+        Render.addDiploAnimation(iCivA, CFG.core.getCiv(iCivB).getCapitalProvID(), Images.mapTruce);
+        Render.addDiploAnimation(iCivB, CFG.core.getCiv(iCivA).getCapitalProvID(), Images.mapTruce);
         CFG.core.getCiv((int)iCivA).getCivDiploGD().messageBox.addMessage(new Message_Truce(iCivB));
         CFG.core.getCiv((int)iCivB).getCivDiploGD().messageBox.addMessage(new Message_Truce(iCivA));
         GameManager.sNCST(iCivA, iCivB);
@@ -5063,6 +5077,10 @@ lbl94:
     }
 
     public final void declareWar(int iAgressorCivID, int iCivB, boolean forceWar) {
+        this.declareWar(iAgressorCivID, iCivB, forceWar, false);
+    }
+
+    public final void declareWar(int iAgressorCivID, int iCivB, boolean forceWar, boolean rebelsWar) {
         block39: {
             int i;
             int i2;
@@ -5070,7 +5088,7 @@ lbl94:
             if (iAgressorCivID == 0 || iCivB == 0 || iAgressorCivID == iCivB || CFG.core.getCivsAtWar(iAgressorCivID, iCivB)) {
                 return;
             }
-            if (CFG.core.getCivTruce(iAgressorCivID, iCivB) > 0) {
+            if (!forceWar && CFG.core.getCivTruce(iAgressorCivID, iCivB) > 0) {
                 return;
             }
             if (!forceWar && !this.canDeclareWar_TribalColonize_NeedsToBorder(iAgressorCivID, iCivB)) {
@@ -5124,7 +5142,7 @@ lbl94:
             }
             this.setCivRelationOfCivBWar(iAgressorCivID, iCivB, GameValues.gvDiplomacy.RELATION_AT_WAR);
             this.setCivRelationOfCivBWar(iCivB, iAgressorCivID, GameValues.gvDiplomacy.RELATION_AT_WAR);
-            this.addWarData(iAgressorCivID, iCivB);
+            this.addWarData(iAgressorCivID, iCivB, rebelsWar);
             try {
                 Render.addDiploAnimation(iCivB, CFG.core.getCiv(iAgressorCivID).getCapitalProvID(), Images.mapWar);
                 Render.addDiploAnimation(iAgressorCivID, CFG.core.getCiv(iCivB).getCapitalProvID(), Images.mapWar);
@@ -6369,7 +6387,7 @@ lbl94:
             CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
             oSB.setColor(Color.WHITE);
             for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     this.getProv(this.getPIV(i)).getCit(j).drawInLine(oSB, this.getPIV(i), nScale);
                 }
             }
@@ -6386,7 +6404,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i))) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     this.getProv(this.getPIV(i)).getCit(j).drawInLine(oSB, this.getPIV(i), nScale);
                 }
             }
@@ -6412,7 +6430,7 @@ lbl94:
                 CFG.core.drawWonders_FogOfWarDiscovery(oSB, nScale);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).getDrawCitiesInProv()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                     }
                 }
@@ -6428,7 +6446,7 @@ lbl94:
                 CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).getDrawCitiesInProv()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                     }
                 }
@@ -6445,7 +6463,7 @@ lbl94:
         try {
             for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!this.getProv(this.getPIV(i)).getDrawCitiesInProv()) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     this.getProv(this.getPIV(i)).getCit(j).drawCityImage_Level(oSB, this.getPIV(i), nScale);
                 }
             }
@@ -6464,12 +6482,12 @@ lbl94:
                 if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                     if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv()) {
-                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j).draw(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         }
                     }
                 } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv()) {
-                    for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getActiveProvID()).getCit(j).draw(oSB, CFG.core.getActiveProvID(), nScale);
                     }
                 }
@@ -6487,12 +6505,12 @@ lbl94:
                 if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                     if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv()) {
-                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j).drawWithName(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         }
                     }
                 } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv()) {
-                    for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getActiveProvID()).getCit(j).drawWithName(oSB, CFG.core.getActiveProvID(), nScale);
                     }
                 }
@@ -6515,12 +6533,12 @@ lbl94:
                     if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).isCapital()) {
-                            for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                            for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                                 this.getProv(CFG.core.getActiveProvID()).getCit(j).draw(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                             }
                         }
                     } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).isCapital()) {
-                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j).draw(oSB, CFG.core.getActiveProvID(), nScale);
                         }
                     }
@@ -6539,12 +6557,12 @@ lbl94:
                 if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                     if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).isCapital()) {
-                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                        for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j).drawWithName(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         }
                     }
                 } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && !this.getProv(CFG.core.getActiveProvID()).isCapital()) {
-                    for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getActiveProvID()).getCit(j).drawWithName(oSB, CFG.core.getActiveProvID(), nScale);
                     }
                 }
@@ -6569,7 +6587,7 @@ lbl94:
                     try {
                         for (i = 0; i < CFG.gameAction.getCurrentMoveunits().getMoveUnitsSize(); ++i) {
                             if (!this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getDrawProv() || this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getCitiesSize(); ++j) {
                                 this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getCit(j).draw(oSB, CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -6593,12 +6611,12 @@ lbl94:
                     if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                            for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j2) {
+                            for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j2) {
                                 this.getProv(CFG.core.getActiveProvID()).getCit(j2).draw(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                             }
                         }
                     } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                        for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j2) {
+                        for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j2) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j2).draw(oSB, CFG.core.getActiveProvID(), nScale);
                         }
                     }
@@ -6608,7 +6626,7 @@ lbl94:
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f - 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                         for (i = 0; i < this.iHighlightedProvsSize; ++i) {
                             if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                                 this.getProv(this.lHighlightedProvs.get(i)).getCit(j).draw(oSB, (int)this.lHighlightedProvs.get(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a - CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             }
                         }
@@ -6617,21 +6635,21 @@ lbl94:
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                     for (i = 0; i < this.iHighlightedProvsSize; ++i) {
                         if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i)).getCit(j).draw(oSB, (int)this.lHighlightedProvs.get(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                         }
                     }
                 } else if (CFG.chosenProvinceID >= 0) {
                     for (i = 0; i < this.iHighlightedProvsSize; ++i) {
                         if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i)).getCit(j).draw(oSB, (int)this.lHighlightedProvs.get(i), nScale, this.lHighlightedProvs.get(i) == CFG.chosenProvinceID ? CFG.COLOR_CITY_NAME : new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                 } else {
                     for (i = 0; i < this.iHighlightedProvsSize; ++i) {
                         if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i)).getCit(j).draw(oSB, this.lHighlightedProvs.get(i), nScale);
                         }
                     }
@@ -6641,14 +6659,14 @@ lbl94:
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                         for (i = 0; i < this.currentRegroupArmy.getRouteSize(); ++i) {
                             if (!this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitiesSize(); ++j) {
                                 this.getProv(this.currentRegroupArmy.getRoute(i)).getCit(j).draw(oSB, this.currentRegroupArmy.getRoute(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             }
                         }
                     } else {
                         for (i = 0; i < this.currentRegroupArmy.getRouteSize(); ++i) {
                             if (!this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitiesSize(); ++j) {
                                 this.getProv(this.currentRegroupArmy.getRoute(i)).getCit(j).draw(oSB, this.currentRegroupArmy.getRoute(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -6666,13 +6684,13 @@ lbl94:
                             int i3;
                             for (i3 = 0; i3 < CFG.core.getCiv(o).moveUnitsSize(); ++i3) {
                                 if (!this.getProv(CFG.core.getCiv(o).getMoveUnits(i3).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(o).getMoveUnits(i3).getToProvID()).getDrawCitiesInProv()) continue;
-                                for (j3 = 0; j3 < this.getProv(CFG.core.getCiv(o).getMoveUnits(i3).getToProvID()).getCitSize(); ++j3) {
+                                for (j3 = 0; j3 < this.getProv(CFG.core.getCiv(o).getMoveUnits(i3).getToProvID()).getCitiesSize(); ++j3) {
                                     this.getProv(CFG.core.getCiv(o).getMoveUnits(i3).getToProvID()).getCit(j3).draw(oSB, CFG.core.getCiv(o).getMoveUnits(i3).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                                 }
                             }
                             for (i3 = 0; i3 < CFG.core.getCiv(o).getRegroupArmySize(); ++i3) {
                                 if (!this.getProv(CFG.core.getCiv(o).getRegroupArmy(i3).getToProvinceID()).getDrawProv() || this.getProv(CFG.core.getCiv(o).getRegroupArmy(i3).getToProvinceID()).getDrawCitiesInProv()) continue;
-                                for (j3 = 0; j3 < this.getProv(CFG.core.getCiv(o).getRegroupArmy(i3).getToProvinceID()).getCitSize(); ++j3) {
+                                for (j3 = 0; j3 < this.getProv(CFG.core.getCiv(o).getRegroupArmy(i3).getToProvinceID()).getCitiesSize(); ++j3) {
                                     this.getProv(CFG.core.getCiv(o).getRegroupArmy(i3).getToProvinceID()).getCit(j3).draw(oSB, CFG.core.getCiv(o).getRegroupArmy(i3).getToProvinceID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                                 }
                             }
@@ -6686,19 +6704,19 @@ lbl94:
                     int i5;
                     for (i5 = 0; i5 < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).moveUnitsSize(); ++i5) {
                         if (!this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i5).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i5).getToProvID()).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i5).getToProvID()).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i5).getToProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i5).getToProvID()).getCit(j).draw(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i5).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                     for (i5 = 0; i5 < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateSize(); ++i5) {
                         if (!this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i5).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i5).getToProvID()).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i5).getToProvID()).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i5).getToProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i5).getToProvID()).getCit(j).draw(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i5).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                     for (i5 = 0; i5 < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmySize(); ++i5) {
                         if (!this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i5).getToProvinceID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i5).getToProvinceID()).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i5).getToProvinceID()).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i5).getToProvinceID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i5).getToProvinceID()).getCit(j).draw(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i5).getToProvinceID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
@@ -6719,7 +6737,7 @@ lbl94:
                     try {
                         for (int i = 0; i < CFG.gameAction.getCurrentMoveunits().getMoveUnitsSize(); ++i) {
                             if (!this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getDrawProv() || this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getCitiesSize(); ++j) {
                                 this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID()).getCit(j).drawWithName(oSB, CFG.gameAction.getCurrentMoveunits().getMoveUnits(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -6732,12 +6750,12 @@ lbl94:
                     if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                            for (int j4 = 0; j4 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j4) {
+                            for (int j4 = 0; j4 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j4) {
                                 this.getProv(CFG.core.getActiveProvID()).getCit(j4).drawWithName(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                             }
                         }
                     } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                        for (int j5 = 0; j5 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j5) {
+                        for (int j5 = 0; j5 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j5) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j5).drawWithName(oSB, CFG.core.getActiveProvID(), nScale);
                         }
                     }
@@ -6747,7 +6765,7 @@ lbl94:
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f - 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                         for (int i = 0; i < this.iHighlightedProvsSize; ++i) {
                             if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                                 this.getProv(this.lHighlightedProvs.get(i)).getCit(j).drawWithName(oSB, (int)this.lHighlightedProvs.get(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a - CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             }
                         }
@@ -6756,21 +6774,21 @@ lbl94:
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                     for (int i = 0; i < this.iHighlightedProvsSize; ++i) {
                         if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i)).getCit(j).drawWithName(oSB, (int)this.lHighlightedProvs.get(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                         }
                     }
                 } else if (CFG.chosenProvinceID >= 0) {
                     for (int i = 0; i < this.iHighlightedProvsSize; ++i) {
                         if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i)).getCit(j).drawWithName(oSB, (int)this.lHighlightedProvs.get(i), nScale, this.lHighlightedProvs.get(i) == CFG.chosenProvinceID ? CFG.COLOR_CITY_NAME : new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                 } else {
                     for (int i = 0; i < this.iHighlightedProvsSize; ++i) {
                         if (!this.getProv(this.lHighlightedProvs.get(i)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i)).getCit(j).drawWithName(oSB, this.lHighlightedProvs.get(i), nScale);
                         }
                     }
@@ -6781,14 +6799,14 @@ lbl94:
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                         for (i = 0; i < this.currentRegroupArmy.getRouteSize(); ++i) {
                             if (!this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitiesSize(); ++j) {
                                 this.getProv(this.currentRegroupArmy.getRoute(i)).getCit(j).drawWithName(oSB, this.currentRegroupArmy.getRoute(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             }
                         }
                     } else {
                         for (i = 0; i < this.currentRegroupArmy.getRouteSize(); ++i) {
                             if (!this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i)).getCitiesSize(); ++j) {
                                 this.getProv(this.currentRegroupArmy.getRoute(i)).getCit(j).drawWithName(oSB, this.currentRegroupArmy.getRoute(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -6805,13 +6823,13 @@ lbl94:
                         if (CFG.core.getCiv(o).getNumOfProvs() <= 0) continue;
                         for (i = 0; i < CFG.core.getCiv(o).moveUnitsSize(); ++i) {
                             if (!this.getProv(CFG.core.getCiv(o).getMoveUnits(i).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(o).getMoveUnits(i).getToProvID()).getDrawCitiesInProv()) continue;
-                            for (j6 = 0; j6 < this.getProv(CFG.core.getCiv(o).getMoveUnits(i).getToProvID()).getCitSize(); ++j6) {
+                            for (j6 = 0; j6 < this.getProv(CFG.core.getCiv(o).getMoveUnits(i).getToProvID()).getCitiesSize(); ++j6) {
                                 this.getProv(CFG.core.getCiv(o).getMoveUnits(i).getToProvID()).getCit(j6).drawWithName(oSB, CFG.core.getCiv(o).getMoveUnits(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
                         for (i = 0; i < CFG.core.getCiv(o).getRegroupArmySize(); ++i) {
                             if (!this.getProv(CFG.core.getCiv(o).getRegroupArmy(i).getToProvinceID()).getDrawProv() || this.getProv(CFG.core.getCiv(o).getRegroupArmy(i).getToProvinceID()).getDrawCitiesInProv()) continue;
-                            for (j6 = 0; j6 < this.getProv(CFG.core.getCiv(o).getRegroupArmy(i).getToProvinceID()).getCitSize(); ++j6) {
+                            for (j6 = 0; j6 < this.getProv(CFG.core.getCiv(o).getRegroupArmy(i).getToProvinceID()).getCitiesSize(); ++j6) {
                                 this.getProv(CFG.core.getCiv(o).getRegroupArmy(i).getToProvinceID()).getCit(j6).drawWithName(oSB, CFG.core.getCiv(o).getRegroupArmy(i).getToProvinceID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -6820,19 +6838,19 @@ lbl94:
                     int i;
                     for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).moveUnitsSize(); ++i) {
                         if (!this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCit(j).drawWithName(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                     for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateSize(); ++i) {
                         if (!this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i).getToProvID()).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i).getToProvID()).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i).getToProvID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i).getToProvID()).getCit(j).drawWithName(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMigrateMU(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                     for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmySize(); ++i) {
                         if (!this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCitiesSize(); ++j) {
                             this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCit(j).drawWithName(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
@@ -6858,7 +6876,7 @@ lbl94:
                     try {
                         for (int i2 = 0; i2 < CFG.gameAction.getCurrentMoveunits().getMoveUnitsSize(); ++i2) {
                             if (!this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i2).getToProvID()).getDrawProv() || this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i2).getToProvID()).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i2).getToProvID()).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i2).getToProvID()).getCitiesSize(); ++j) {
                                 this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i2).getToProvID()).getCit(j).draw(oSB, CFG.gameAction.getCurrentMoveunits().getMoveUnits(i2).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -6883,12 +6901,12 @@ lbl94:
                         if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                             oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                             if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                                for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j2) {
+                                for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j2) {
                                     this.getProv(CFG.core.getActiveProvID()).getCit(j2).draw(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                                 }
                             }
                         } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                            for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j2) {
+                            for (j2 = 0; j2 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j2) {
                                 this.getProv(CFG.core.getActiveProvID()).getCit(j2).draw(oSB, CFG.core.getActiveProvID(), nScale);
                             }
                         }
@@ -6902,7 +6920,7 @@ lbl94:
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f - 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                         for (int i3 = 0; i3 < this.iHighlightedProvsSize; ++i3) {
                             if (!this.getProv(this.lHighlightedProvs.get(i3)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i3)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i3)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i3)).getCitiesSize(); ++j) {
                                 this.getProv(this.lHighlightedProvs.get(i3)).getCit(j).draw(oSB, (int)this.lHighlightedProvs.get(i3), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a - CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             }
                         }
@@ -6911,21 +6929,21 @@ lbl94:
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                     for (int i4 = 0; i4 < this.iHighlightedProvsSize; ++i4) {
                         if (!this.getProv(this.lHighlightedProvs.get(i4)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i4)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i4)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i4)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i4)).getCit(j).draw(oSB, (int)this.lHighlightedProvs.get(i4), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                         }
                     }
                 } else if (CFG.chosenProvinceID >= 0) {
                     for (int i5 = 0; i5 < this.iHighlightedProvsSize; ++i5) {
                         if (!this.getProv(this.lHighlightedProvs.get(i5)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i5)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i5)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i5)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i5)).getCit(j).draw(oSB, (int)this.lHighlightedProvs.get(i5), nScale, this.lHighlightedProvs.get(i5) == CFG.chosenProvinceID ? CFG.COLOR_CITY_NAME : new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                 } else {
                     for (int i6 = 0; i6 < this.iHighlightedProvsSize; ++i6) {
                         if (!this.getProv(this.lHighlightedProvs.get(i6)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i6)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i6)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i6)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i6)).getCit(j).draw(oSB, this.lHighlightedProvs.get(i6), nScale);
                         }
                     }
@@ -6936,14 +6954,14 @@ lbl94:
                             oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             for (int i7 = 0; i7 < this.currentRegroupArmy.getRouteSize(); ++i7) {
                                 if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.currentRegroupArmy.getRoute(i7)) || !this.getProv(this.currentRegroupArmy.getRoute(i7)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i7)).getDrawCitiesInProv()) continue;
-                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i7)).getCitSize(); ++j) {
+                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i7)).getCitiesSize(); ++j) {
                                     this.getProv(this.currentRegroupArmy.getRoute(i7)).getCit(j).draw(oSB, this.currentRegroupArmy.getRoute(i7), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                                 }
                             }
                         } else {
                             for (int i8 = 0; i8 < this.currentRegroupArmy.getRouteSize(); ++i8) {
                                 if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.currentRegroupArmy.getRoute(i8)) || !this.getProv(this.currentRegroupArmy.getRoute(i8)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i8)).getDrawCitiesInProv()) continue;
-                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i8)).getCitSize(); ++j) {
+                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i8)).getCitiesSize(); ++j) {
                                     this.getProv(this.currentRegroupArmy.getRoute(i8)).getCit(j).draw(oSB, this.currentRegroupArmy.getRoute(i8), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                                 }
                             }
@@ -6961,13 +6979,13 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).moveUnitsSize(); ++i) {
                     if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()) || !this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getDrawCitiesInProv()) continue;
-                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCitSize(); ++j) {
+                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCit(j).draw(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                     }
                 }
                 for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmySize(); ++i) {
                     if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()) || !this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getDrawCitiesInProv()) continue;
-                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCitSize(); ++j) {
+                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCit(j).draw(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                     }
                 }
@@ -6993,7 +7011,7 @@ lbl94:
                     try {
                         for (int i9 = 0; i9 < CFG.gameAction.getCurrentMoveunits().getMoveUnitsSize(); ++i9) {
                             if (!this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i9).getToProvID()).getDrawProv() || this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i9).getToProvID()).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i9).getToProvID()).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i9).getToProvID()).getCitiesSize(); ++j) {
                                 this.getProv(CFG.gameAction.getCurrentMoveunits().getMoveUnits(i9).getToProvID()).getCit(j).drawWithName(oSB, CFG.gameAction.getCurrentMoveunits().getMoveUnits(i9).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                             }
                         }
@@ -7016,12 +7034,12 @@ lbl94:
                     if (this.lTIME_ACTIVE_CITIES > tempTime - 525L) {
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                         if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                            for (int j3 = 0; j3 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j3) {
+                            for (int j3 = 0; j3 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j3) {
                                 this.getProv(CFG.core.getActiveProvID()).getCit(j3).drawWithName(oSB, CFG.core.getActiveProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_ACTIVE_CITIES) / 525.0f)));
                             }
                         }
                     } else if (this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0 && (!this.getProv(CFG.core.getActiveProvID()).getDrawCitiesInProv() || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DIPLOMACY_MODE && !this.getProv(CFG.core.getActiveProvID()).isCapital())) {
-                        for (int j4 = 0; j4 < this.getProv(CFG.core.getActiveProvID()).getCitSize(); ++j4) {
+                        for (int j4 = 0; j4 < this.getProv(CFG.core.getActiveProvID()).getCitiesSize(); ++j4) {
                             this.getProv(CFG.core.getActiveProvID()).getCit(j4).drawWithName(oSB, CFG.core.getActiveProvID(), nScale);
                         }
                     }
@@ -7031,7 +7049,7 @@ lbl94:
                         oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f - 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                         for (int i10 = 0; i10 < this.iHighlightedProvsSize; ++i10) {
                             if (!this.getProv(this.lHighlightedProvs.get(i10)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i10)).getDrawCitiesInProv()) continue;
-                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i10)).getCitSize(); ++j) {
+                            for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i10)).getCitiesSize(); ++j) {
                                 this.getProv(this.lHighlightedProvs.get(i10)).getCit(j).drawWithName(oSB, (int)this.lHighlightedProvs.get(i10), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a - CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             }
                         }
@@ -7040,21 +7058,21 @@ lbl94:
                     oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                     for (int i11 = 0; i11 < this.iHighlightedProvsSize; ++i11) {
                         if (!this.getProv(this.lHighlightedProvs.get(i11)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i11)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i11)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i11)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i11)).getCit(j).drawWithName(oSB, (int)this.lHighlightedProvs.get(i11), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 750.0f)));
                         }
                     }
                 } else if (CFG.chosenProvinceID >= 0) {
                     for (int i12 = 0; i12 < this.iHighlightedProvsSize; ++i12) {
                         if (!this.getProv(this.lHighlightedProvs.get(i12)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i12)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i12)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i12)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i12)).getCit(j).drawWithName(oSB, (int)this.lHighlightedProvs.get(i12), nScale, this.lHighlightedProvs.get(i12) == CFG.chosenProvinceID ? CFG.COLOR_CITY_NAME : new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                         }
                     }
                 } else {
                     for (int i13 = 0; i13 < this.iHighlightedProvsSize; ++i13) {
                         if (!this.getProv(this.lHighlightedProvs.get(i13)).getDrawProv() || this.getProv(this.lHighlightedProvs.get(i13)).getDrawCitiesInProv()) continue;
-                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i13)).getCitSize(); ++j) {
+                        for (j = 0; j < this.getProv(this.lHighlightedProvs.get(i13)).getCitiesSize(); ++j) {
                             this.getProv(this.lHighlightedProvs.get(i13)).getCit(j).drawWithName(oSB, this.lHighlightedProvs.get(i13), nScale);
                         }
                     }
@@ -7065,14 +7083,14 @@ lbl94:
                             oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                             for (int i14 = 0; i14 < this.currentRegroupArmy.getRouteSize(); ++i14) {
                                 if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.currentRegroupArmy.getRoute(i14)) || !this.getProv(this.currentRegroupArmy.getRoute(i14)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i14)).getDrawCitiesInProv()) continue;
-                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i14)).getCitSize(); ++j) {
+                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i14)).getCitiesSize(); ++j) {
                                     this.getProv(this.currentRegroupArmy.getRoute(i14)).getCit(j).drawWithName(oSB, this.currentRegroupArmy.getRoute(i14), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f * ((float)(tempTime - this.lTIME_HIGHLIGHTED_CITIES) / 350.0f)));
                                 }
                             }
                         } else {
                             for (int i15 = 0; i15 < this.currentRegroupArmy.getRouteSize(); ++i15) {
                                 if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.currentRegroupArmy.getRoute(i15)) || !this.getProv(this.currentRegroupArmy.getRoute(i15)).getDrawProv() || this.getProv(this.currentRegroupArmy.getRoute(i15)).getDrawCitiesInProv()) continue;
-                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i15)).getCitSize(); ++j) {
+                                for (j = 0; j < this.getProv(this.currentRegroupArmy.getRoute(i15)).getCitiesSize(); ++j) {
                                     this.getProv(this.currentRegroupArmy.getRoute(i15)).getCit(j).drawWithName(oSB, this.currentRegroupArmy.getRoute(i15), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                                 }
                             }
@@ -7085,13 +7103,13 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).moveUnitsSize(); ++i) {
                     if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()) || !this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getDrawCitiesInProv()) continue;
-                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCitSize(); ++j) {
+                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID()).getCit(j).drawWithName(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMoveUnits(i).getToProvID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                     }
                 }
                 for (i = 0; i < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmySize(); ++i) {
                     if (!this.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()) || !this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getDrawProv() || this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getDrawCitiesInProv()) continue;
-                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCitSize(); ++j) {
+                    for (j = 0; j < this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCitiesSize(); ++j) {
                         this.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID()).getCit(j).drawWithName(oSB, CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRegroupArmy(i).getToProvinceID(), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * 0.4f));
                     }
                 }
@@ -7111,7 +7129,7 @@ lbl94:
                 CFG.core.drawWonders_FogOfWarDiscovery(oSB, nScale);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).getDrawCitiesInProv()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (!CFG.getMetProv(this.getPIV(i))) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                     }
@@ -7128,7 +7146,7 @@ lbl94:
                 CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).getDrawCitiesInProv()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (!CFG.getMetProv(this.getPIV(i))) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                     }
@@ -7147,7 +7165,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             block2: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!this.getProv(this.getPIV(i)).isCapital() || this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getAlliance() <= 0) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                     this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                     continue block2;
@@ -7167,7 +7185,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getAlliance() <= 0 || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                         continue block4;
@@ -7184,7 +7202,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getAlliance() <= 0 || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                         continue block6;
@@ -7205,7 +7223,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                         continue block4;
@@ -7222,7 +7240,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                         continue block6;
@@ -7242,7 +7260,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             block2: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!this.getProv(this.getPIV(i)).isCapital()) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                     this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                     continue block2;
@@ -7262,7 +7280,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getIsPartOfHolyRomanEmpire()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                         continue block4;
@@ -7279,7 +7297,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getIsPartOfHolyRomanEmpire()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                         continue block6;
@@ -7300,7 +7318,7 @@ lbl94:
                 oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 0.25f + 0.75f * ((float)CFG.startTheGameData.getCapitalsAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)CFG.startTheGameData.getProvincesAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                         continue block4;
@@ -7317,7 +7335,7 @@ lbl94:
                 oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 0.25f + 0.75f * ((float)CFG.startTheGameData.getCapitalsAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)CFG.startTheGameData.getProvincesAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                         continue block6;
@@ -7338,7 +7356,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                         continue block4;
@@ -7355,7 +7373,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                         continue block6;
@@ -7375,7 +7393,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             block2: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!this.getProv(this.getPIV(i)).isCapital() || !CFG.getMetProv(this.getPIV(i))) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                     this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                     continue block2;
@@ -7395,7 +7413,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getIsPartOfHolyRomanEmpire() || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                         continue block4;
@@ -7412,7 +7430,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getIsPartOfHolyRomanEmpire() || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                         continue block6;
@@ -7433,7 +7451,7 @@ lbl94:
                 oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 0.25f + 0.75f * ((float)CFG.startTheGameData.getCapitalsAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                 block4: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)CFG.startTheGameData.getProvincesAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                         continue block4;
@@ -7450,7 +7468,7 @@ lbl94:
                 oSB.setColor(new Color(1.0f, 1.0f, 1.0f, 0.25f + 0.75f * ((float)CFG.startTheGameData.getCapitalsAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                 block6: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!this.getProv(this.getPIV(i)).isCapital() || !CFG.getMetProv(this.getPIV(i))) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, new Color(CFG.COLOR_CITY_NAME.r, CFG.COLOR_CITY_NAME.g, CFG.COLOR_CITY_NAME.b, CFG.COLOR_CITY_NAME.a * ((float)CFG.startTheGameData.getProvincesAlpha() / (float)CFG.settingsGD.PROV_ALPHA)));
                         continue block6;
@@ -7471,7 +7489,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() && this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getPuppetOfCiv() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                     }
                 }
@@ -7486,7 +7504,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() && this.getCiv(this.getProv(this.getPIV(i)).getCivId()).getPuppetOfCiv() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale);
                     }
                 }
@@ -7504,7 +7522,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             block2: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (this.getProv(this.getPIV(i)).getCivId() != this.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || !this.getProv(this.getPIV(i)).isCapital()) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                     this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                     continue block2;
@@ -7522,7 +7540,7 @@ lbl94:
             try {
                 CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
                 oSB.setColor(Color.WHITE);
-                if (CFG.formableCivs_GameData.getCapitalProvinceID() >= 0 && CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && !CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getSeaProv() && this.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCitSize() > 0) {
+                if (CFG.formableCivs_GameData.getCapitalProvinceID() >= 0 && CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && !CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getSeaProv() && this.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCitiesSize() > 0) {
                     this.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCit(0).draw(oSB, CFG.formableCivs_GameData.getCapitalProvinceID(), nScale, Images.city);
                 }
             }
@@ -7534,7 +7552,7 @@ lbl94:
             try {
                 CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
                 oSB.setColor(Color.WHITE);
-                if (CFG.formableCivs_GameData.getCapitalProvinceID() >= 0 && CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && !CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getSeaProv() && this.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCitSize() > 0) {
+                if (CFG.formableCivs_GameData.getCapitalProvinceID() >= 0 && CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && !CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getSeaProv() && this.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCitiesSize() > 0) {
                     this.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCit(0).drawWithName(oSB, CFG.formableCivs_GameData.getCapitalProvinceID(), nScale, Images.city);
                 }
             }
@@ -7558,10 +7576,10 @@ lbl94:
                     if (CFG.core.getActiveProvID() == CFG.timelapseManager.timelineOwners_Capitals.get(i).intValue()) {
                         isActiveProvinceCapital = true;
                     }
-                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitSize() <= 0) continue;
+                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitiesSize() <= 0) continue;
                     this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCit(0).draw(oSB, (int)CFG.timelapseManager.timelineOwners_Capitals.get(i), nScale, Images.city);
                 }
-                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getCitSize() > 0) {
+                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getCitiesSize() > 0) {
                     this.getProv(CFG.core.getActiveProvID()).getCit(0).draw(oSB, CFG.core.getActiveProvID(), nScale, Images.city3);
                 }
             }
@@ -7581,10 +7599,10 @@ lbl94:
                     if (CFG.core.getActiveProvID() == CFG.timelapseManager.timelineOwners_Capitals.get(i).intValue()) {
                         isActiveProvinceCapital = true;
                     }
-                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitSize() <= 0) continue;
+                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitiesSize() <= 0) continue;
                     this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCit(0).drawWithName(oSB, (int)CFG.timelapseManager.timelineOwners_Capitals.get(i), nScale, Images.city);
                 }
-                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getCitSize() > 0) {
+                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && this.getProv(CFG.core.getActiveProvID()).getCitiesSize() > 0) {
                     this.getProv(CFG.core.getActiveProvID()).getCit(0).drawWithName(oSB, CFG.core.getActiveProvID(), nScale, Images.city3);
                 }
             }
@@ -7608,10 +7626,10 @@ lbl94:
                     if (CFG.core.getActiveProvID() == CFG.timelapseManager.timelineOwners_Capitals.get(i).intValue()) {
                         isActiveProvinceCapital = true;
                     }
-                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)) || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitSize() <= 0) continue;
+                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)) || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitiesSize() <= 0) continue;
                     this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCit(0).draw(oSB, (int)CFG.timelapseManager.timelineOwners_Capitals.get(i), nScale, Images.city);
                 }
-                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getActiveProvID()) && this.getProv(CFG.core.getActiveProvID()).getCitSize() > 0) {
+                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getActiveProvID()) && this.getProv(CFG.core.getActiveProvID()).getCitiesSize() > 0) {
                     this.getProv(CFG.core.getActiveProvID()).getCit(0).draw(oSB, CFG.core.getActiveProvID(), nScale, Images.city3);
                 }
             }
@@ -7631,10 +7649,10 @@ lbl94:
                     if (CFG.core.getActiveProvID() == CFG.timelapseManager.timelineOwners_Capitals.get(i).intValue()) {
                         isActiveProvinceCapital = true;
                     }
-                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)) || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitSize() <= 0) continue;
+                    if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)) || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitiesSize() <= 0) continue;
                     this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCit(0).drawWithName(oSB, (int)CFG.timelapseManager.timelineOwners_Capitals.get(i), nScale, Images.city);
                 }
-                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getActiveProvID()) && this.getProv(CFG.core.getActiveProvID()).getCitSize() > 0) {
+                if (!isActiveProvinceCapital && CFG.core.getActiveProvID() >= 0 && this.getProv(CFG.core.getActiveProvID()).getDrawProv() && CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.core.getActiveProvID()) && this.getProv(CFG.core.getActiveProvID()).getCitiesSize() > 0) {
                     this.getProv(CFG.core.getActiveProvID()).getCit(0).drawWithName(oSB, CFG.core.getActiveProvID(), nScale, Images.city3);
                 }
             }
@@ -7650,7 +7668,7 @@ lbl94:
             CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
             oSB.setColor(Color.WHITE);
             for (int i = CFG.timelapseManager.timelineOwners_Capitals.size() - 1; i >= 0; --i) {
-                if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)) || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitSize() <= 0) continue;
+                if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)) || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitiesSize() <= 0) continue;
                 this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCit(0).drawCityImage_Level(oSB, CFG.timelapseManager.timelineOwners_Capitals.get(i), nScale);
             }
         }
@@ -7665,7 +7683,7 @@ lbl94:
             CFG.fontMain.get(0).getData().setScale(CFG.settingsGD.CITIES_FONT_SCALE);
             oSB.setColor(Color.WHITE);
             for (int i = CFG.timelapseManager.timelineOwners_Capitals.size() - 1; i >= 0; --i) {
-                if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitSize() <= 0) continue;
+                if (CFG.timelapseManager.timelineOwners_Capitals.get(i) < 0 || !this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getDrawProv() || this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCitiesSize() <= 0) continue;
                 this.getProv(CFG.timelapseManager.timelineOwners_Capitals.get(i)).getCit(0).drawCityImage_Level(oSB, CFG.timelapseManager.timelineOwners_Capitals.get(i), nScale);
             }
         }
@@ -7680,7 +7698,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             block2: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!this.getProv(this.getPIV(i)).isCapital()) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                     this.getProv(this.getPIV(i)).getCit(j).drawCityImage_Level(oSB, this.getPIV(i), nScale);
                     continue block2;
@@ -7697,7 +7715,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             block2: for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (!this.getProv(this.getPIV(i)).isCapital() || !CFG.getMetProv(this.getPIV(i))) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     if (this.getProv(this.getPIV(i)).getCit(j).getCityLevel() != Images.city) continue;
                     this.getProv(this.getPIV(i)).getCit(j).drawCityImage_Level(oSB, this.getPIV(i), nScale);
                     continue block2;
@@ -7714,7 +7732,7 @@ lbl94:
         oSB.setColor(Color.WHITE);
         for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
             if (this.getProv(this.getPIV(i)).getLvlOfPort() < 0) continue;
-            for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+            for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                 this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
             }
         }
@@ -7727,7 +7745,7 @@ lbl94:
             oSB.setColor(Color.WHITE);
             for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                 if (this.getProv(this.getPIV(i)).getLvlOfPort() != 0) continue;
-                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                     this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale);
                 }
             }
@@ -7745,7 +7763,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfPort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7760,7 +7778,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfPort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7779,7 +7797,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfPort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7794,7 +7812,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfPort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7813,7 +7831,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfFort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7828,7 +7846,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfFort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7847,7 +7865,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfFort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7862,7 +7880,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfFort() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7881,7 +7899,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfWatchTower() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7896,7 +7914,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfWatchTower() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7915,7 +7933,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfWatchTower() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7930,7 +7948,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfWatchTower() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7949,7 +7967,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfFarm() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7964,7 +7982,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfFarm() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7983,7 +8001,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfFarm() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -7998,7 +8016,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfFarm() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8017,7 +8035,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfLibrary() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8032,7 +8050,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfLibrary() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8051,7 +8069,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfLibrary() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8066,7 +8084,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfLibrary() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8085,7 +8103,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfMarket() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8100,7 +8118,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfMarket() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8119,7 +8137,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfMarket() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8134,7 +8152,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfMarket() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8153,7 +8171,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfArmoury() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8168,7 +8186,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfArmoury() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8187,7 +8205,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfArmoury() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8202,7 +8220,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfArmoury() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8221,7 +8239,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfSupply() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8236,7 +8254,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfSupply() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8255,7 +8273,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfSupply() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8270,7 +8288,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfSupply() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8289,7 +8307,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getWonderSize() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8304,7 +8322,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getWonderSize() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8323,7 +8341,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getWonderSize() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8338,7 +8356,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getWonderSize() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8357,7 +8375,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfWorkshop() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8372,7 +8390,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (this.getProv(this.getPIV(i)).getLvlOfWorkshop() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8391,7 +8409,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfWorkshop() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).draw(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -8406,7 +8424,7 @@ lbl94:
                 oSB.setColor(Color.WHITE);
                 for (int i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
                     if (!CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getMetProv(this.getPIV(i)) || this.getProv(this.getPIV(i)).getLvlOfWorkshop() <= 0) continue;
-                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitSize(); ++j) {
+                    for (int j = 0; j < this.getProv(this.getPIV(i)).getCitiesSize(); ++j) {
                         this.getProv(this.getPIV(i)).getCit(j).drawWithName(oSB, this.getPIV(i), nScale, Color.WHITE);
                     }
                 }
@@ -9309,7 +9327,7 @@ lbl94:
                 if (tempPossibleCivs.isEmpty() && possibleNewCivsByTags.isEmpty()) break block40;
                 if (civ.getCapitalProvID() >= 0) {
                     CFG.core.getProv(civ.getCapitalProvID()).setIsCapital(false);
-                    for (int i = 0; i < CFG.core.getProv(civ.getCapitalProvID()).getCitSize(); ++i) {
+                    for (int i = 0; i < CFG.core.getProv(civ.getCapitalProvID()).getCitiesSize(); ++i) {
                         if (CFG.core.getProv(civ.getCapitalProvID()).getCit(i).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                         CFG.core.getProv(civ.getCapitalProvID()).getCit(i).setCityLevel(CFG.getEditorCityLevel(1));
                     }
@@ -9446,7 +9464,7 @@ lbl94:
             }
             if (CFG.core.getCiv(declareCivID).getCapitalProvID() >= 0) {
                 CFG.core.getProv(CFG.core.getCiv(declareCivID).getCapitalProvID()).setIsCapital(true);
-                if (CFG.core.getProv(CFG.core.getCiv(declareCivID).getCapitalProvID()).getCitSize() > 0) {
+                if (CFG.core.getProv(CFG.core.getCiv(declareCivID).getCapitalProvID()).getCitiesSize() > 0) {
                     CFG.core.getProv(CFG.core.getCiv(declareCivID).getCapitalProvID()).getCit(0).setCityLevel(CFG.getEditorCityLevel(0));
                 }
             }
@@ -10334,6 +10352,10 @@ lbl94:
     }
 
     public final void addWarData(int nAggressor, int nDefender) {
+        this.addWarData(nAggressor, nDefender, false);
+    }
+
+    public final void addWarData(int nAggressor, int nDefender, boolean rebelsWar) {
         int j;
         int i;
         if (nAggressor == 0 || nDefender == 0) {
@@ -10400,7 +10422,7 @@ lbl94:
                 }
             }
         }
-        this.lWars.add(new War_GameData(nAggressor, nDefender));
+        this.lWars.add(new War_GameData(nAggressor, nDefender, rebelsWar));
         this.iWarsSize = this.lWars.size();
     }
 
@@ -11941,9 +11963,9 @@ lbl94:
         ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
         ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
         long tempPopulation = CFG.core.getCiv(nCivID).countPop();
-        if ((CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCit(0).getCityName() : CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getName()).length() > 0) {
+        if ((CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCitiesSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCit(0).getCityName() : CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getName()).length() > 0) {
             nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCivId(), 0, CFG.PADD));
-            nData.add(new ME_Hover_2Type_Text_Big((CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCitSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCit(0).getCityName() : CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getName()) + ": ", CFG.COLOR_HOVER_TITLE));
+            nData.add(new ME_Hover_2Type_Text_Big((CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCitiesSize() > 0 ? CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCit(0).getCityName() : CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getName()) + ": ", CFG.COLOR_HOVER_TITLE));
             nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Capital"), CFG.COLOR_NEUTRAL));
             nElements.add(new MEHover_2E(nData));
             nData.clear();
@@ -11971,9 +11993,9 @@ lbl94:
             nData.add(new ME_Hover_2Type_Space());
             nElements.add(new MEHover_2E(nData));
             nData.clear();
-            if ((CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()).length() > 0) {
+            if ((CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()).length() > 0) {
                 nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(nProvinceID).getCivId(), 0, CFG.PADD));
-                nData.add(new ME_Hover_2Type_Text_Big((CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()) + ": ", CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Text_Big((CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()) + ": ", CFG.COLOR_HOVER_TITLE));
                 nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("LargestCity"), CFG.COLOR_NEUTRAL));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
@@ -11996,6 +12018,15 @@ lbl94:
         catch (Exception exception) {
             // empty catch block
         }
+        nData.add(new ME_Hover_2Type_Space());
+        nElements.add(new MEHover_2E(nData));
+        nData.clear();
+        nData.add(new ME_Hover_2Type_Flag_Big(nCivID, 0, CFG.PADD));
+        nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("NationalBank"), CFG.COLOR_HOVER_TITLE));
+        nData.add(new ME_Hover_2Type_Image_Big(Images.bank, CFG.PADD, 0));
+        nData.add(new ME_Hover_2Type_Image_Big(CFG.core.getCiv((int)nCivID).civGD.nationalBankBuilt ? Images.iconTrue : Images.iconFalse, CFG.PADD, 0));
+        nElements.add(new MEHover_2E(nData));
+        nData.clear();
         return new ME_Hover_v2(nElements);
     }
 
@@ -12003,8 +12034,8 @@ lbl94:
         try {
             ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
             ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-            if ((CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()).length() > 0) {
-                nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName(), CFG.COLOR_HOVER_TITLE));
+            if ((CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()).length() > 0) {
+                nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName(), CFG.COLOR_HOVER_TITLE));
                 nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(nProvinceID).getCivId(), CFG.PADD, CFG.PADD));
                 nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Capital"), CFG.COLOR_NEUTRAL));
                 nElements.add(new MEHover_2E(nData));
@@ -12032,9 +12063,9 @@ lbl94:
         ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
         ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
         long tempPopulation = CFG.core.getCiv(CFG.core.getProv(nProvinceID).getCivId()).countPop();
-        if ((CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()).length() > 0) {
+        if ((CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()).length() > 0) {
             nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(nProvinceID).getCivId(), 0, CFG.PADD));
-            nData.add(new ME_Hover_2Type_Text_Big((CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()) + ": ", CFG.COLOR_HOVER_TITLE));
+            nData.add(new ME_Hover_2Type_Text_Big((CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName()) + ": ", CFG.COLOR_HOVER_TITLE));
             nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("LargestCity"), CFG.COLOR_NEUTRAL));
             nElements.add(new MEHover_2E(nData));
             nData.clear();
@@ -12066,8 +12097,74 @@ lbl94:
         return CFG.core.isAlly(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), nCivID);
     }
 
+    public ME_Hover_v2 getHover_EcoOfCiv(int id) {
+        try {
+            if (id < 0) {
+                return null;
+            }
+            ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+            ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+            long tempTotalEco = CFG.core.getCiv(id).countEco();
+            nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Economy") + ": "));
+            nData.add(new ME_Hover_2Type_Text_Big(CFG.getNumberWthSpaces("" + tempTotalEco), CFG.COLOR_ECONOMY));
+            nData.add(new ME_Hover_2Type_Image_Big(Images.economy, CFG.PADD, CFG.PADD));
+            nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getCiv(id).getCivName(), CFG.COLOR_HOVER_TITLE));
+            nData.add(new ME_Hover_2Type_Flag_Big(id, CFG.PADD, 0));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Space());
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("StartingEconomy") + ": "));
+            nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)id).civGD.startingEconomy), CFG.COLOR_ECONOMY));
+            nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, CFG.PADD));
+            long difference = tempTotalEco - CFG.core.getCiv((int)id).civGD.startingEconomy;
+            nData.add(new ME_Hover_2Type_Text((difference > 0L ? "+" : "") + CFG.getNumberWthSpaces("" + difference), difference == 0L ? CFG.COLOR_NEUTRAL : (difference > 0L ? CFG.COLOR_POSITIVE : CFG.COLOR_NEGATIVE_1)));
+            nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, 0));
+            nData.add(new ME_Hover_2Type_Text(" [" + (difference > 0L ? "+" : "") + CFG.getPercentage2Old(tempTotalEco - CFG.core.getCiv((int)id).civGD.startingEconomy, CFG.core.getCiv((int)id).civGD.startingEconomy, 100) + "%]", CFG.COLOR_NEUTRAL));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Space());
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Graph(Graph2.GraphType.CIV_ECONOMY, id));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("OverinvestmentPenalty") + ": "));
+            nData.add(new ME_Hover_2Type_Text("+" + CFG.getPrecision2(Core.getOverInvestmentsPenalty(id) * 100.0f, 100) + "%", CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+            nData.add(new ME_Hover_2Type_Flag(id, CFG.PADD, 0));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Space());
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("EconomicInvestments"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+            nData.add(new ME_Hover_2Type_Flag(id, CFG.PADD, 0));
+            nData.add(new ME_Hover_2Type_Image(Images.investEco, CFG.PADD, 0));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalEconomicIncrease") + ": "));
+            nData.add(new ME_Hover_2Type_Text("+" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)id).civGD.iGEG), CFG.COLOR_ECONOMY));
+            nData.add(new ME_Hover_2Type_Image(Images.investEco, CFG.PADD, 0));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalCost") + ": "));
+            nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)id).civGD.iGE), CFG.COLOR_GOLD));
+            nData.add(new ME_Hover_2Type_Image(Images.topGold(), CFG.PADD, 0));
+            nElements.add(new MEHover_2E(nData));
+            nData.clear();
+            return new ME_Hover_v2(nElements);
+        }
+        catch (Exception exception) {
+            return null;
+        }
+    }
+
     public final ME_Hover_v2 getHover_PopulationOfCiv(int nCivID) {
         try {
+            if (nCivID < 0) {
+                return null;
+            }
             ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
             ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
             if (nCivID < 0) {
@@ -13507,7 +13604,7 @@ lbl94:
         if (civID > 0) {
             CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(civID).getIdeology()).getiCrownImage().draw(oSB, posX + IMGManager.getIMG(Images.flagDiplomacyMask).getWidth() - CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(civID).getIdeology()).getiCrownImage().getWidth() / 2, posY - CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(civID).getIdeology()).getiCrownImage().getHeight() / 2);
         }
-        if (CFG.core.getCiv((int)civID).isFlagNearest || GameN.FUEVG) {
+        if (CFG.core.getCiv((int)civID).isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
             oSB.setShader(Renderer.shaderAlpha);
             CFG.core.getCiv(civID).getFlagC().getTexture().bind(1);
             Gdx.gl.glActiveTexture(33984);
@@ -13571,7 +13668,7 @@ lbl94:
             if (CFG.core.getProv(CFG.core.getCiv(civID).getProvID(i)).isOccupied() || !(CFG.core.getProv(CFG.core.getCiv(civID).getProvID(i)).getProviStability() < 1.0f) || CFG.core.getCiv(civID).isAssimilateOrganized(CFG.core.getCiv(civID).getProvID(i))) continue;
             provinces.add(CFG.core.getCiv(civID).getProvID(i));
         }
-        while (provinces.size() > 0 && CFG.core.getCiv(civID).getGold() > 0L) {
+        while (!provinces.isEmpty() && CFG.core.getCiv(civID).getGold() > 0L) {
             int bestID = 0;
             for (int i = provinces.size() - 1; i > 0; --i) {
                 if (!(CFG.core.getProv((Integer)provinces.get(bestID)).getProviStability() > CFG.core.getProv((Integer)provinces.get(i)).getProviStability())) continue;

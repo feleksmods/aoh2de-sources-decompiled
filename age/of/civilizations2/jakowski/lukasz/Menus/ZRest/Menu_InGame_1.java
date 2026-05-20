@@ -30,11 +30,9 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Bi
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Menus.Info.Menu_InGame_ProvInfo;
 import age.of.civilizations2.jakowski.lukasz.Menus.Info.Menu_InGame_ProvInfoSmall;
-import age.of.civilizations2.jakowski.lukasz.Menus.Menu_InitGame;
 import age.of.civilizations2.jakowski.lukasz.Menus.ProvinceM.More.Menu_InGame_Province_MoreAll;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_2;
 import age.of.civilizations2.jakowski.lukasz.RTS;
-import age.of.civilizations2.jakowski.lukasz.Renderer;
 import age.of.civilizations2.jakowski.lukasz.SFXManager;
 import age.of.civilizations2.jakowski.lukasz.TextB.Text;
 import age.of.civilizations2.jakowski.lukasz.TextB.Texts.TextTop_Graph;
@@ -951,9 +949,6 @@ extends Menu {
             IMGManager.getIMG(Images.line32Off1).draw(oSB, iTranslateX, CFG.GAMEHEIGHT - CFG.map.getMpB().getMinimapHeight() - 1 + iTranslateY, CFG.map.getMpB().getMinimapWidth() + Menu_InGame_ProvInfoSmall.iMaxWidth - IMGManager.getIMG(Images.bgGameMenuRSmall).getWidth() + 1, 1);
         }
         oSB.setColor(Color.WHITE);
-        if (!Menu_InitGame.PDR && CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civGD.armyExpertiseLevel > 2 && Menu_InGame_2.timeD.isAfter(Menu_InGame_2.timeT)) {
-            Renderer.drawText(oSB, CFG.FONT_BOLD, Menu_InGame_2.getInfo(), CFG.BUTTON_W + iTranslateX, CFG.GAMEHEIGHT / 2 + iTranslateY, new Color(1.0f, 1.0f, 1.0f, 0.75f));
-        }
     }
 
     @Override

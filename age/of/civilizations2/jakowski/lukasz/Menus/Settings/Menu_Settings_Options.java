@@ -218,6 +218,9 @@ extends Menu {
         menuElements.add(new Button_Classic_ReflectedBG(">>", -1, Menu_InGame_FA_Top.getWindowWidth() - (CFG.BUTTON_W + CFG.BUTTON_W / 2), tY, CFG.BUTTON_W + CFG.BUTTON_W / 2, CFG.BUTTON_H, true));
         menuElements.add(new Button_Classic(null, (int)(50.0f * CFG.GUI_SCALE), 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, Menu_InGame_FA_Top.getWindowWidth(), CFG.BUTTON_H, true));
         menuElements.add(new Button_Classic(null, (int)(50.0f * CFG.GUI_SCALE), 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, Menu_InGame_FA_Top.getWindowWidth(), CFG.BUTTON_H, true));
+        menuElements.add(new Button_Classic(null, (int)(50.0f * CFG.GUI_SCALE), 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, Menu_InGame_FA_Top.getWindowWidth(), CFG.BUTTON_H, true));
+        menuElements.add(new Button_Classic(null, (int)(50.0f * CFG.GUI_SCALE), 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, Menu_InGame_FA_Top.getWindowWidth(), CFG.BUTTON_H, true));
+        menuElements.add(new Button_Classic(null, (int)(50.0f * CFG.GUI_SCALE), 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, Menu_InGame_FA_Top.getWindowWidth(), CFG.BUTTON_H, true));
         menuElements.add(new Button_Transparent(0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, 1, CFG.BUTTON_H * 6, false));
         tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
         this.initMenu(null, 0 + AoCGame.LEFT, CFG.BUTTON_H * 3 / 4, Menu_InGame_FA_Top.getWindowWidth(), CFG.GAMEHEIGHT - CFG.BUTTON_H * 3 / 4 - CFG.BUTTON_H - CFG.PADD, menuElements);
@@ -264,6 +267,9 @@ extends Menu {
         this.getMenuElem(67).setTextE(CFG.lang.get("ProvinceBorderThickness") + ": " + CFG.getPrecision2(CFG.settingsGD.BORDER_EXTRA_THICKNESS, 100) + "px");
         this.getMenuElem(69).setTextE(CFG.lang.get("ProvinceBorder") + ": " + CFG.lang.get("Color"));
         this.getMenuElem(70).setTextE(CFG.lang.get("InnerBorders") + ": " + CFG.lang.get("Color"));
+        this.getMenuElem(71).setTextE(CFG.lang.get("LordFlagOverlayForVassals") + ": " + (CFG.settingsGD.ENABLE_LORD_FLAG_OVER_VASSAL_FLAG ? CFG.lang.get("On") : CFG.lang.get("Off")));
+        this.getMenuElem(72).setTextE(CFG.lang.get("FlagWavingAnimation") + ": " + (CFG.settingsGD.ENABLE_FLAG_WAVING ? CFG.lang.get("On") : CFG.lang.get("Off")));
+        this.getMenuElem(73).setTextE(CFG.lang.get("UIHideHotkey") + ": " + (CFG.settingsGD.ENABLE_HIDE_UI_HOTKEY ? CFG.lang.get("Enabled") : CFG.lang.get("Disabled")) + ", " + CFG.lang.get("Shortcut") + ": F10");
     }
 
     public static String getSettingsText_Names() {
@@ -614,6 +620,21 @@ extends Menu {
             case 70: {
                 CFG.menus.getColorPicker().setActiveRGBColor(CFG.COLOR_PROVINCE_DASHED.r, CFG.COLOR_PROVINCE_DASHED.g, CFG.COLOR_PROVINCE_DASHED.b);
                 CFG.menus.getColorPicker().setVisible(true, ColorPicker_AoC.PickerAction.PB_DASH);
+                break;
+            }
+            case 71: {
+                CFG.settingsGD.ENABLE_LORD_FLAG_OVER_VASSAL_FLAG = !CFG.settingsGD.ENABLE_LORD_FLAG_OVER_VASSAL_FLAG;
+                this.getMenuElem(71).setTextE(CFG.lang.get("LordFlagOverlayForVassals") + ": " + (CFG.settingsGD.ENABLE_LORD_FLAG_OVER_VASSAL_FLAG ? CFG.lang.get("On") : CFG.lang.get("Off")));
+                break;
+            }
+            case 72: {
+                CFG.settingsGD.ENABLE_FLAG_WAVING = !CFG.settingsGD.ENABLE_FLAG_WAVING;
+                this.getMenuElem(72).setTextE(CFG.lang.get("FlagWavingAnimation") + ": " + (CFG.settingsGD.ENABLE_FLAG_WAVING ? CFG.lang.get("On") : CFG.lang.get("Off")));
+                break;
+            }
+            case 73: {
+                CFG.settingsGD.ENABLE_HIDE_UI_HOTKEY = !CFG.settingsGD.ENABLE_HIDE_UI_HOTKEY;
+                this.getMenuElem(73).setTextE(CFG.lang.get("UIHideHotkey") + ": " + (CFG.settingsGD.ENABLE_HIDE_UI_HOTKEY ? CFG.lang.get("Enabled") : CFG.lang.get("Disabled")) + ", " + CFG.lang.get("Shortcut") + ": F10");
             }
         }
         CFG.saveSettings();

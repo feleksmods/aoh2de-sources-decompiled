@@ -67,7 +67,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "1";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -146,7 +155,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "2";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -199,7 +217,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "Y";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -289,7 +316,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "U";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -396,6 +432,7 @@ extends Menu {
             IMGManager.getIMG(Images.bgGameAction).draw2O(oSB, this.getPosX() + iTranslateX, this.getPosY() - IMGManager.getIMG(Images.bgGameAction).getHeight() + -1 + iTranslateY, this.getMenuElem(this.getMenuElemsSize() - 3).getPosXE() + this.getMenuElem(this.getMenuElemsSize() - 3).getWidthE() + CFG.PADD + 1, this.getHeightM() + 1, true, false);
         }
         super.draw(oSB, iTranslateX, iTranslateY, sliderMenuIsActive);
+        Menu_InGameProvAction.draw4(oSB, this.getPosX() + iTranslateX, this.getPosY() + iTranslateY, sliderMenuIsActive);
     }
 
     @Override

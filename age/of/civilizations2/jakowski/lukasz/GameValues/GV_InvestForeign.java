@@ -8,4 +8,5 @@ public class GV_InvestForeign {
     public float BUILD_EXTRA_RETURN = 0.0115f;
     public float BUILD_EXTRA_RETURN_DISTANCE = 0.0135f;
     public int BUILD_RETURN_TURNS = 12;
+    public int LIMIT_OF_INVESTMENTS_IN_A_PROVINCE = 3;
 }

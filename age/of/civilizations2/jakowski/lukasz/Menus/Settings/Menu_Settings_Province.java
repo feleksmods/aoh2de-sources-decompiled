@@ -456,7 +456,7 @@ extends Menu {
             case 9: {
                 CFG.settingsGD.CITIES_FONT_SCALE = (float)this.getMenuElem(iID).getCurr() / 100.0f;
                 for (int i = 0; i < CFG.core.getProvinSize(); ++i) {
-                    for (int j = 0; j < CFG.core.getProv(i).getCitSize(); ++j) {
+                    for (int j = 0; j < CFG.core.getProv(i).getCitiesSize(); ++j) {
                         CFG.core.getProv(i).getCit(j).updateCityNameWidth();
                     }
                 }
@@ -601,7 +601,7 @@ extends Menu {
                 }
                 CFG.settingsGD.updateCitiesFontScale();
                 for (i = 0; i < CFG.core.getProvinSize(); ++i) {
-                    for (int j = 0; j < CFG.core.getProv(i).getCitSize(); ++j) {
+                    for (int j = 0; j < CFG.core.getProv(i).getCitiesSize(); ++j) {
                         CFG.core.getProv(i).getCit(j).updateCityNameWidth();
                     }
                 }

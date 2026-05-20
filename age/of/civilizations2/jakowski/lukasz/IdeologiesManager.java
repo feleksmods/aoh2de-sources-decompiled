@@ -425,7 +425,7 @@ lbl34:
     }
 
     public float getAcceptableTaxation(int ideologyID, int civID) {
-        return Math.max(0.01f, this.getIdeologyID((int)ideologyID).ACCEPTABLE_TAXATION + CFG.religionManager.getReligion((int)CFG.core.getCiv((int)civID).getReligionID()).ACCEPTABLE_TAXATION + GameValues.gvAdministrationPolicy.POLICY_ACCEPTABLE_TAXATION[CFG.core.getCiv((int)civID).civGD.policyID] + CFG.gameAction.modifierAcceptableTaxation_CivID(civID));
+        return Math.max(0.01f, this.getIdeologyID((int)ideologyID).ACCEPTABLE_TAXATION + CFG.religionManager.getReligion((int)CFG.core.getCiv((int)civID).getReligionID()).ACCEPTABLE_TAXATION + GameValues.gvAdministrationPolicy.POLICY_ACCEPTABLE_TAXATION[CFG.core.getCiv((int)civID).civGD.policyID] + (CFG.core.getCiv((int)civID).civGD.nationalBankBuilt ? GameValues.gvIncome.BANK_ACCEPTABLE_TAXATION : 0.0f) + CFG.gameAction.modifierAcceptableTaxation_CivID(civID));
     }
 
     public float getInvestments(int ideologyID, int civID) {

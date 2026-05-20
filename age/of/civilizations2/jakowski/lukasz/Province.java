@@ -1412,7 +1412,7 @@ public class Province {
     public final void updateDrawArmyInProv() {
         block27: {
             try {
-                if (CFG.FOG_OF_WAR > 0 && !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getFog(this.getProvID()) && CFG.core.getCivRelationOfCivB(CFG.core.getProv(this.getProvID()).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) < (float)GameValues.gvRelations.FRIENDLY_MIN_RELATION) {
+                if (CFG.FOG_OF_WAR > 0 && !CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getFog(this.getProvID()) && CFG.core.getCivRelationOfCivB(CFG.core.getProv(this.getProvID()).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) < (float)GameValues.gvRelations.MIN_RELATIONS_TO_REVEAL_ARMY && !GameManager.haveASpy(CFG.core.getProv(this.getProvID()).getCivId())) {
                     if (this.isCapital()) {
                         if (CFG.FOG_OF_WAR == 2) {
                             try {
@@ -3091,7 +3091,7 @@ public class Province {
         return this.cities.get(i);
     }
 
-    public final int getCitSize() {
+    public final int getCitiesSize() {
         return this.citiesSize;
     }
 
@@ -3174,7 +3174,7 @@ public class Province {
     }
 
     public final void removeCapitalCityIcon() {
-        for (int i = 0; i < this.getCitSize(); ++i) {
+        for (int i = 0; i < this.getCitiesSize(); ++i) {
             if (this.getCit(i).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
             this.getCit(i).setCityLevel(CFG.getEditorCityLevel(1));
         }
@@ -3693,14 +3693,14 @@ public class Province {
     }
 
     public final String getName() {
-        if (this.provinceName.isEmpty() && this.getCitSize() > 0) {
+        if (this.provinceName.isEmpty() && this.getCitiesSize() > 0) {
             return this.getCit(0).getCityName();
         }
         return this.provinceName;
     }
 
     public final String getProvName() {
-        if (this.provinceName.isEmpty() && this.getCitSize() > 0) {
+        if (this.provinceName.isEmpty() && this.getCitiesSize() > 0) {
             return this.getCit(0).getCityName();
         }
         return this.provinceName;
@@ -3713,7 +3713,7 @@ public class Province {
     public final void buildProvinceName() {
         if (this.provinceName.length() > 0) {
             this.provinceName = this.provinceName;
-        } else if (this.getCitSize() > 0) {
+        } else if (this.getCitiesSize() > 0) {
             this.provinceName = this.getCit(0).getCityName();
         } else {
             try {
@@ -3792,7 +3792,7 @@ public class Province {
             if (oldCivID != this.getCivId() && CFG.ideologiesMgr.getIdeologyID((int)CFG.core.getCiv((int)oldCivID).getIdeology()).REVOLUTIONARY) {
                 if (CFG.core.getCiv(oldCivID).getNumOfProvs() == 0) {
                     if (CFG.core.getCiv(oldCivID).getCapitalProvID() >= 0 && CFG.core.getCiv(oldCivID).getCapitalProvID() >= 0 && CFG.core.getProv(CFG.core.getCiv(oldCivID).getCapitalProvID()).getCivId() != oldCivID) {
-                        for (i2 = 0; i2 < CFG.core.getProv(CFG.core.getCiv(oldCivID).getCapitalProvID()).getCitSize(); ++i2) {
+                        for (i2 = 0; i2 < CFG.core.getProv(CFG.core.getCiv(oldCivID).getCapitalProvID()).getCitiesSize(); ++i2) {
                             if (CFG.core.getProv(CFG.core.getCiv(oldCivID).getCapitalProvID()).getCit(i2).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                             CFG.core.getProv(CFG.core.getCiv(oldCivID).getCapitalProvID()).getCit(i2).setCityLevel(CFG.getEditorCityLevel(1));
                         }

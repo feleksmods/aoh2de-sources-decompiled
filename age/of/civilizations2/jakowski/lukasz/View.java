@@ -342,6 +342,10 @@ public enum View {
     eSK,
     eMM,
     eFB,
-    eNV;
+    eNV,
+    eINGAME_ASSIGN,
+    eINGAME_ASSIGN_SELECT,
+    eFLAG_PAINTER,
+    eFLAG_PAINTER_GENERATE_FLAG;
 
 }

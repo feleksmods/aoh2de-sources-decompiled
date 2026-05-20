@@ -18,7 +18,7 @@ public class ProvinceAnimationDot {
         this.iProvinceID = nProvinceID;
         this.dotColor = nColor;
         this.animationTime = CFG.currentTimeMillis;
-        if (CFG.core.getProv(nProvinceID).getCitSize() > 0) {
+        if (CFG.core.getProv(nProvinceID).getCitiesSize() > 0) {
             this.posX = CFG.core.getProv(nProvinceID).getCit(0).getPoX() * CFG.map.getMpB().getMapSc3();
             this.posY = -CFG.core.getProv(nProvinceID).getCit(0).getPosY() * CFG.map.getMpB().getMapSc3();
         } else {

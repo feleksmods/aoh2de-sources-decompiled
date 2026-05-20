@@ -36,7 +36,7 @@ public class CitiesManager {
         }
         for (i = 0; i < civ.getNumOfProvs(); ++i) {
             provinceI = CFG.core.getProv(civ.getProvID(i));
-            for (int j = 0; j < provinceI.getCitSize(); ++j) {
+            for (int j = 0; j < provinceI.getCitiesSize(); ++j) {
                 if (provinceI.getCit(j).getCityLevel() == CFG.getEditorCityLevel(0)) continue;
                 provinceI.getCit(j).setCityLevel(CitiesManager.getLevelOfCity(tMaxPopulation, provinceI.getPop().getPops(), j));
             }
@@ -69,7 +69,7 @@ public class CitiesManager {
     public static void buildLevelsOfCities() {
         int i;
         for (i = 0; i < CFG.core.getProvinSize(); ++i) {
-            for (int j = 0; j < CFG.core.getProv(i).getCitSize(); ++j) {
+            for (int j = 0; j < CFG.core.getProv(i).getCitiesSize(); ++j) {
                 CFG.core.getProv(i).getCit(j).setCityLevel(CFG.getEditorCityLevel(4));
             }
         }
@@ -86,12 +86,12 @@ public class CitiesManager {
             tMaxPop = CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getPop().getPops();
         }
         for (i = 0; i < CFG.core.getCiv(nCivID).getNumOfProvs(); ++i) {
-            for (int j = 0; j < CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getCitSize(); ++j) {
+            for (int j = 0; j < CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getCitiesSize(); ++j) {
                 CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getCit(j).setCityLevel(CFG.getCityLevel_Population(tMaxPop, CFG.core.getProv(CFG.core.getCiv(nCivID).getProvID(i)).getPop().getPops(), j));
             }
         }
         try {
-            if (CFG.core.getCiv(nCivID).getCapitalProvID() >= 0 && CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCitSize() > 0) {
+            if (CFG.core.getCiv(nCivID).getCapitalProvID() >= 0 && CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCitiesSize() > 0) {
                 CFG.core.getProv(CFG.core.getCiv(nCivID).getCapitalProvID()).getCit(0).setCityLevel(CFG.getEditorCityLevel(0));
             }
         }

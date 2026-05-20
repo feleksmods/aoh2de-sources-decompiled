@@ -13,11 +13,32 @@ public class TextBudgetTitle_TextLeft
 extends TextBudgetTitle {
     public String leftText;
     public int iconLeft;
+    public String rightText;
+    public int rightTextW = 0;
+    public String rightText2;
+    public int rightText2W = 0;
+    public int iconRight;
 
     public TextBudgetTitle_TextLeft(String sText, int iTextPositionX, int iPosX, int iPosY, int iWidth, int iHeight, String textLeft, int iconLeft) {
         super(sText, iTextPositionX, iPosX, iPosY, iWidth, iHeight);
         this.leftText = textLeft;
         this.iconLeft = iconLeft;
+        this.rightText = CFG.lang.get("Reserves") + ": ";
+        this.rightText2 = CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civGD.nationalBankReserves);
+        try {
+            if (this.rightText != null && this.rightText.length() > 0) {
+                CFG.glyphLay.setText(CFG.fontMain.get(this.fontID), this.rightText);
+                this.rightTextW = (int)CFG.glyphLay.width;
+            }
+            if (this.rightText2 != null && this.rightText2.length() > 0) {
+                CFG.glyphLay.setText(CFG.fontMain.get(this.fontID), this.rightText2);
+                this.rightText2W = (int)CFG.glyphLay.width;
+            }
+        }
+        catch (Exception ex) {
+            CFG.exceptionStack(ex);
+        }
+        this.iconRight = Images.bank;
     }
 
     @Override
@@ -45,5 +66,8 @@ extends TextBudgetTitle {
         oSB.setColor(Color.WHITE);
         IMGManager.getIMG(this.iconLeft).draw(oSB, this.getPosXE() + CFG.PADD * 2 + iTranslateX, this.getPosY() + this.getHeightE() / 2 - IMGManager.getIMG(this.iconLeft).getHeight() / 2 + iTranslateY);
         Renderer.drawTextWithShadow(oSB, this.fontID, this.leftText, this.getPosXE() + CFG.PADD * 3 + IMGManager.getIMG(this.iconLeft).getWidth() + iTranslateX, this.getPosY() + (this.getHeightE() - this.iTextHeight) / 2 + iTranslateY, this.getColor(isActive));
+        IMGManager.getIMG(this.iconRight).draw(oSB, this.getPosXE() + this.getWidthE() - CFG.PADD * 2 - IMGManager.getIMG(this.iconRight).getWidth() + iTranslateX, this.getPosY() + this.getHeightE() / 2 - IMGManager.getIMG(this.iconRight).getHeight() / 2 + iTranslateY);
+        Renderer.drawTextWithShadow(oSB, this.fontID, this.rightText2, this.getPosXE() + this.getWidthE() - CFG.PADD * 3 - IMGManager.getIMG(this.iconRight).getWidth() - this.rightText2W + iTranslateX, this.getPosY() + (this.getHeightE() - this.iTextHeight) / 2 + iTranslateY, CFG.COLOR_GOLD);
+        Renderer.drawTextWithShadow(oSB, this.fontID, this.rightText, this.getPosXE() + this.getWidthE() - CFG.PADD * 3 - IMGManager.getIMG(this.iconRight).getWidth() - this.rightText2W - this.rightTextW + iTranslateX, this.getPosY() + (this.getHeightE() - this.iTextHeight) / 2 + iTranslateY, this.getColor(isActive));
     }
 }

@@ -2,6 +2,7 @@ package age.of.civilizations2.jakowski.lukasz;
 
 import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.GameAction;
+import age.of.civilizations2.jakowski.lukasz.GameValues.GameValues;
 import age.of.civilizations2.jakowski.lukasz.Menus.RTO.Menu_InGame_RTO2;
 import age.of.civilizations2.jakowski.lukasz.RTS;
 import age.of.civilizations2.jakowski.lukasz.Render;
@@ -50,6 +51,18 @@ extends Thread {
                 } else {
                     CFG.core.enableDrawCivlizationsRegions_Players();
                 }
+            }
+            try {
+                if (!CFG.SPECTATOR_MODE) {
+                    for (int i2 = 0; i2 < CFG.core.getPlayersSize(); ++i2) {
+                        if (CFG.core.getCiv(CFG.core.getPlayer(i2).getCivId()).getGold() >= (long)GameValues.gvInvestEconomy.BUDGET_LOCK_INVESTMENTS_IF_GOLD_BELOW) continue;
+                        CFG.core.getCiv(CFG.core.getPlayer(i2).getCivId()).setSpendingInvestmentsB(Math.min(CFG.core.getCiv(CFG.core.getPlayer(i2).getCivId()).getSpendingInvestmentsB(), CFG.ideologiesMgr.getInvestments(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getIdeology(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())));
+                        CFG.core.getCiv(CFG.core.getPlayer(i2).getCivId()).setSpendingGoodsB(Math.min(CFG.core.getCiv(CFG.core.getPlayer(i2).getCivId()).getSpendingGoodsB(), CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getIdeology()).getMin_Goods(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())));
+                    }
+                }
+            }
+            catch (Exception i2) {
+                // empty catch block
             }
             time = System.nanoTime();
             CFG.core.clearMoveUnits_JustDraw_AnotherArmies();
@@ -167,7 +180,7 @@ extends Thread {
             CFG.exceptionStack(exr);
         }
         try {
-            CFG.gameAction.startUprising();
+            CFG.gameAction.beginUprising();
             time = System.nanoTime();
         }
         catch (Exception ex) {

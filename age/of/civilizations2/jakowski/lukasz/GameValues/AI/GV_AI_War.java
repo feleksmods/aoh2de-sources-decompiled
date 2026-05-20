@@ -22,4 +22,7 @@ public class GV_AI_War {
     public boolean DENY_JOIN_WAR_IF_AGAINST_FRIENDLY_CIV = true;
     public boolean DENY_JOIN_WAR_IF_IS_ALREADY_AT_WAR = false;
     public int AI_LORD_MAX_WARS_JOINED_WHEN_PLAYER_IS_VASSAL = 2;
+    public int WAR_NO_LOANS_MIN_PROVINCES = 9;
+    public int WAR_NO_LOANS_TREASURY_INCOME_RATIO = 20;
+    public float WAR_NO_LOANS_TREASURY_THRESHOLD_MODIFIER = 0.85f;
 }

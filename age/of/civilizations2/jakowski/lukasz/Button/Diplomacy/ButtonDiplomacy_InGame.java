@@ -3,12 +3,18 @@ package age.of.civilizations2.jakowski.lukasz.Button.Diplomacy;
 import age.of.civilizations2.jakowski.lukasz.Button.Diplomacy.ButtonDiplomacy;
 import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.MapA.Mode.MapModesManager;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.List;
 
 public class ButtonDiplomacy_InGame
 extends ButtonDiplomacy {
     public ButtonDiplomacy_InGame(int iDiploImageID, List<Integer> nCivs, int iPosX, int iPosY, int iWidth) {
         super(iDiploImageID, nCivs, iPosX, iPosY, iWidth);
+    }
+
+    @Override
+    public void drawButtonBGE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+        super.drawButtonBGE(oSB, iTranslateX, iTranslateY, isActive);
     }
 
     @Override

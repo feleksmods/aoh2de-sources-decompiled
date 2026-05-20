@@ -122,7 +122,7 @@ public class MapCoords {
         if (CFG.menus.getInGameView()) {
             this.iMinPosY = IMGManager.getIMG(Images.topFlagBG).getHeight();
             this.iMaxPosY = CFG.BUTTON_H + CFG.PADD * 2;
-        } else if (CFG.menus.getInCreateScenario_WastelandMap() || CFG.menus.getInCrScAs() || CFG.menus.getInCreateScenario_Available_Provinces() || CFG.menus.getInCreateScenario_Civilizations()) {
+        } else if (CFG.menus.getInCreateScenario_WastelandMap() || CFG.menus.getInCrScAs() || CFG.menus.getInGameAssign() || CFG.menus.getInCreateScenario_Available_Provinces() || CFG.menus.getInCreateScenario_Civilizations()) {
             this.iMinPosY = CFG.BUTTON_H + CFG.PADD * 2;
             this.iMaxPosY = CFG.BUTTON_H + CFG.PADD * 2;
         } else if (CFG.menus.getInCreateNewGame()) {

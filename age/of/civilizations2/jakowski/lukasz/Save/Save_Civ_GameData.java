@@ -152,6 +152,8 @@ implements Serializable {
     public List<Civilization_SentMessages> sentMessages;
     public List<Civ_Gift_GameData> lGifts_Received;
     public List<Civilization_Sanctions> lSanctions;
+    public boolean nationalBankBuilt;
+    public long nationalBankReserves;
 
     public Save_Civ_GameData() {
         this.capitalMoved_LastTurnID = -GameValues.gvMoveCapital.MOVE_CAPITAL_LOCK_MOVING_FOR_X_TURNS;
@@ -229,5 +231,7 @@ implements Serializable {
         this.sentMessages = new ArrayList<Civilization_SentMessages>();
         this.lGifts_Received = new ArrayList<Civ_Gift_GameData>();
         this.lSanctions = new ArrayList<Civilization_Sanctions>();
+        this.nationalBankBuilt = false;
+        this.nationalBankReserves = 0L;
     }
 }

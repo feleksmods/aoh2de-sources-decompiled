@@ -21,10 +21,12 @@ implements Serializable {
     public int iLastTurn_ConqueredProvince = 0;
     public boolean wasAnyAttack = false;
     public String WAR_TAG;
+    public boolean rebelsWar = false;
 
-    public War_GameData(int nAggressor, int nDefender) {
+    public War_GameData(int nAggressor, int nDefender, boolean nRebelsWar) {
         this.addAggressor(nAggressor);
         this.addDefender(nDefender);
+        this.rebelsWar = nRebelsWar;
         this.iWarTurnID = GameCalendar.TURNID;
         this.WAR_TAG = CFG.core.getCiv(nAggressor).getCivTag() + CFG.core.getCiv(nDefender).getCivTag() + CFG.extraRandomTag() + this.iWarTurnID;
     }

@@ -440,6 +440,8 @@ extends Menu {
                                 int maxInvestGold = GameManager.invest_MaxEconomy_Gold(this.getCurr(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
                                 if (CFG.core.getProv(this.getCurr()).getCivId() <= 0) {
                                     CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.lang.get("Neutral"), CFG.COLOR_NEGATIVE_1);
+                                } else if (CFG.core.getNumOfForeignInvestments(this.getCurr()) >= GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE) {
+                                    CFG.toastM.addM(CFG.lang.get("MaxActiveForeignInvestmentsInProvince") + ": " + CFG.core.getNumOfForeignInvestments(this.getCurr()) + " / " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE, CFG.COLOR_NEGATIVE_1);
                                 } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).areSanctionsAdded(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(this.getCurr()).getCivId()) || CFG.core.getCiv(CFG.core.getProv(this.getCurr()).getCivId()).areSanctionsAdded(CFG.core.getProv(this.getCurr()).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
                                     CFG.toastM.addM(CFG.lang.get("SanctionsBox1"), CFG.COLOR_NEGATIVE_1);
                                 } else if (maxInvestGold > 0) {
@@ -508,6 +510,18 @@ extends Menu {
                                 nElements.add(new MEHover_2E(nData));
                                 nData.clear();
                                 nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
+                                nElements.add(new MEHover_2E(nData));
+                                nData.clear();
+                                nData.add(new ME_Hover_2Type_Space());
+                                nElements.add(new MEHover_2E(nData));
+                                nData.clear();
+                                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("MaxActiveForeignInvestmentsInProvince") + ": " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE));
+                                nElements.add(new MEHover_2E(nData));
+                                nData.clear();
+                                nData.add(new ME_Hover_2Type_Space());
+                                nElements.add(new MEHover_2E(nData));
+                                nData.clear();
+                                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("InvestingInAnOccupiedProvinceIsNotPossible")));
                                 nElements.add(new MEHover_2E(nData));
                                 nData.clear();
                                 this.menuElemHover = new ME_Hover_v2(nElements);

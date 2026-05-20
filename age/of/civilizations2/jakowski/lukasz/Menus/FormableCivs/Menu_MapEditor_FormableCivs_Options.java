@@ -81,8 +81,9 @@ extends Menu {
             } else {
                 int iSize = tagsSPLITED.length;
                 for (int i = 0; i < iSize; ++i) {
-                    if (CFG.lang.getCiv(tagsSPLITED[i]).charAt(0) != CFG.chosenAlphabetCharachter.charAt(0)) continue;
-                    lTempNames.add(CFG.lang.getCiv(tagsSPLITED[i]));
+                    String name = CFG.lang.getCiv(tagsSPLITED[i]);
+                    if (name.isEmpty() || name.charAt(0) != CFG.chosenAlphabetCharachter.charAt(0)) continue;
+                    lTempNames.add(name);
                     lTempTags.add(tagsSPLITED[i]);
                 }
                 int nPosY = 0;

@@ -9,7 +9,6 @@ import age.of.civilizations2.jakowski.lukasz.Button2.TextIcon_Horizontal;
 import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.GameValues.GameValues;
-import age.of.civilizations2.jakowski.lukasz.Graphs.Graph2.Graph2;
 import age.of.civilizations2.jakowski.lukasz.Graphs.Graph_Circle;
 import age.of.civilizations2.jakowski.lukasz.IMGManager;
 import age.of.civilizations2.jakowski.lukasz.Images;
@@ -19,7 +18,6 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.MEHover_2E;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Flag;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Flag_Big;
-import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Graph;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Image;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Image_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Space;
@@ -78,6 +76,19 @@ extends Menu {
             }
         });
         menuElements.add(new TextLeftSide_Icon("3", menuW - CFG.PADD * 2 - 2, CFG.PADD * 2, Images.city){
+
+            @Override
+            public void drawE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive, boolean scrollableY) {
+                try {
+                    if (CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.nationalBankBuilt) {
+                        IMGManager.getIMG(Images.bank).draw(oSB, this.getPosXE() - CFG.PADD - CFG.PADD / 2 - (int)((float)IMGManager.getIMG(Images.bank).getWidth() * this.getImageScale(IMGManager.getIMG(Images.bank).getHeight())) - (int)((float)IMGManager.getIMG(Images.bank).getWidth() * this.getImageScale(IMGManager.getIMG(Images.bank).getHeight())) + iTranslateX, this.getPosY() + (this.getHeightE() - (int)((float)IMGManager.getIMG(Images.bank).getHeight() * this.getImageScale(IMGManager.getIMG(Images.bank).getHeight()))) / 2 + iTranslateY, (int)((float)IMGManager.getIMG(Images.bank).getWidth() * this.getImageScale(IMGManager.getIMG(Images.bank).getHeight())), (int)((float)IMGManager.getIMG(Images.bank).getHeight() * this.getImageScale(IMGManager.getIMG(Images.bank).getHeight())));
+                    }
+                }
+                catch (Exception exception) {
+                    // empty catch block
+                }
+                super.drawE(oSB, iTranslateX, iTranslateY, isActive, scrollableY);
+            }
 
             @Override
             public void buildElemHover() {
@@ -220,63 +231,7 @@ extends Menu {
 
             @Override
             public void buildElemHover() {
-                try {
-                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                    long tempTotalEco = CFG.core.getCiv(CFG.getActiveCivInfoId()).countEco();
-                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Economy") + ": "));
-                    nData.add(new ME_Hover_2Type_Text_Big(CFG.getNumberWthSpaces("" + tempTotalEco), CFG.COLOR_ECONOMY));
-                    nData.add(new ME_Hover_2Type_Image_Big(Images.economy, CFG.PADD, CFG.PADD));
-                    nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getCiv(CFG.getActiveCivInfoId()).getCivName(), CFG.COLOR_HOVER_TITLE));
-                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Space());
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("StartingEconomy") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.startingEconomy), CFG.COLOR_ECONOMY));
-                    nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, CFG.PADD));
-                    long difference = tempTotalEco - CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.startingEconomy;
-                    nData.add(new ME_Hover_2Type_Text((difference > 0L ? "+" : "") + CFG.getNumberWthSpaces("" + difference), difference == 0L ? CFG.COLOR_NEUTRAL : (difference > 0L ? CFG.COLOR_POSITIVE : CFG.COLOR_NEGATIVE_1)));
-                    nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, 0));
-                    nData.add(new ME_Hover_2Type_Text(" [" + (difference > 0L ? "+" : "") + CFG.getPercentage2Old(tempTotalEco - CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.startingEconomy, CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.startingEconomy, 100) + "%]", CFG.COLOR_NEUTRAL));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Space());
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Graph(Graph2.GraphType.CIV_ECONOMY, CFG.getActiveCivInfoId()));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("OverinvestmentPenalty") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + CFG.getPrecision2(Core.getOverInvestmentsPenalty(CFG.getActiveCivInfoId()) * 100.0f, 100) + "%", CFG.COLOR_TEXT_NUM_OF_PROVINCES));
-                    nData.add(new ME_Hover_2Type_Flag(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Space());
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("EconomicInvestments"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
-                    nData.add(new ME_Hover_2Type_Flag(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                    nData.add(new ME_Hover_2Type_Image(Images.investEco, CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalEconomicIncrease") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.iGEG), CFG.COLOR_ECONOMY));
-                    nData.add(new ME_Hover_2Type_Image(Images.investEco, CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalCost") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)CFG.getActiveCivInfoId()).civGD.iGE), CFG.COLOR_GOLD));
-                    nData.add(new ME_Hover_2Type_Image(Images.topGold(), CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    this.menuElemHover = new ME_Hover_v2(nElements);
-                }
-                catch (Exception ex) {
-                    this.menuElemHover = null;
-                }
+                this.menuElemHover = CFG.core.getHover_EcoOfCiv(CFG.getActiveCivInfoId());
             }
         });
         menuElements.add(new TextLeftSide_Happiness("", menuW - CFG.PADD * 2 - 2, ((MenuElemUI)menuElements.get(6)).getPosY() + ((MenuElemUI)menuElements.get(6)).getHeightE() - CFG.TEXT_HEIGHT_DEFAULT * 3 - CFG.PADD * 2){

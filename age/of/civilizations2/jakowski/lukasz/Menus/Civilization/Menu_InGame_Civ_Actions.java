@@ -39,8 +39,10 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Civilization.Menu_InGame_Civ;
 import age.of.civilizations2.jakowski.lukasz.Menus.Civilization.Menu_InGame_Civ_Decisions;
 import age.of.civilizations2.jakowski.lukasz.Menus.Civilization.Menu_InGame_ProposeFormUnion;
 import age.of.civilizations2.jakowski.lukasz.Menus.Continents.Menu_InGame_LeaderC;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainter;
 import age.of.civilizations2.jakowski.lukasz.Menus.Menu_InitGame;
 import age.of.civilizations2.jakowski.lukasz.Menus.PeaceTreaty.Menu_PeaceTreaty;
+import age.of.civilizations2.jakowski.lukasz.Menus.Provinces.Menu_InGame_CivProvinces;
 import age.of.civilizations2.jakowski.lukasz.Menus.Relations.Actions.Menu_InGameOfferAlliance;
 import age.of.civilizations2.jakowski.lukasz.Menus.Relations.Actions.Menu_InGame_HostSummit;
 import age.of.civilizations2.jakowski.lukasz.Menus.Send.Army.Menu_InGame_SendArmy;
@@ -50,10 +52,12 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Wars.Details.Menu_InGame_WarD
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_CivilizationView;
 import age.of.civilizations2.jakowski.lukasz.RTS;
 import age.of.civilizations2.jakowski.lukasz.SFXManager;
+import age.of.civilizations2.jakowski.lukasz.Save.SaveGameManager;
 import age.of.civilizations2.jakowski.lukasz.Touch;
 import age.of.civilizations2.jakowski.lukasz.TradeRequest_GameData;
 import age.of.civilizations2.jakowski.lukasz.Ultimatum_GameData;
 import age.of.civilizations2.jakowski.lukasz.View;
+import age.of.civilizations2.jakowski.lukasz.Z_Other.ColorPicker.ColorPicker_AoC;
 import age.of.civilizations2.jakowski.lukasz.Z_Other.DialogType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -888,6 +892,11 @@ extends Menu {
             }
 
             @Override
+            public boolean getIsClickable() {
+                return super.getIsClickable() && !CFG.core.getCivsAtWar(CFG.getActiveCivInfoId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+            }
+
+            @Override
             public void actionElem(int iID) {
                 CFG.menus.rebuildInGame_SendInsult(CFG.getActiveCivInfoId());
             }
@@ -905,50 +914,108 @@ extends Menu {
 
             @Override
             public void buildElemHover() {
-                ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("SendAnInsult"), CFG.COLOR_HOVER_TITLE));
-                nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelationsDec, CFG.PADD, 0));
-                nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                nElements.add(new MEHover_2E(nData));
-                nData.clear();
-                nData.add(new ME_Hover_2Type_Space());
-                nElements.add(new MEHover_2E(nData));
-                nData.clear();
-                float relation = CFG.core.getCiv(CFG.getActiveCivInfoId()).getRelationD(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
-                nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), 0, CFG.PADD));
-                nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelations, 0, CFG.PADD));
-                nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), 0, CFG.PADD));
-                nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Opinion") + ": "));
-                nData.add(new ME_Hover_2Type_Text_Big("" + (relation > 0.0f ? "+" : "") + CFG.getPrecision2(relation, 100), relation < 0.0f ? CFG.COLOR_NEGATIVE_2 : (relation > 0.0f ? CFG.COLOR_POSITIVE : CFG.COLOR_NEUTRAL)));
-                nData.add(new ME_Hover_2Type_Image_Big2(Images.diploRelations, CFG.PADD, 0));
-                nElements.add(new MEHover_2E(nData));
-                nData.clear();
-                nData.add(new ME_Hover_2Type_Space());
-                nElements.add(new MEHover_2E(nData));
-                nData.clear();
-                nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("DecreaseRelation") + ": "));
-                nData.add(new ME_Hover_2Type_Text_Big("" + CFG.getPrecision2(GameManager.getDecreaseRelation(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId()), 10), CFG.COLOR_NEGATIVE_2));
-                nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelationsDec, CFG.PADD, 0));
-                nElements.add(new MEHover_2E(nData));
-                nData.clear();
-                if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCivDiploGD().isEmbassyClosed_Turns(CFG.getActiveCivInfoId()) > 0) {
-                    int tTurns = CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCivDiploGD().isEmbassyClosed_Turns(CFG.getActiveCivInfoId());
+                if (CFG.core.getCivsAtWar(CFG.getActiveCivInfoId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
+                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("WeAreAtWar"), CFG.COLOR_NEGATIVE_2));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.diploWar, CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    this.menuElemHover = new ME_Hover_v2(nElements);
+                } else {
+                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("SendAnInsult"), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelationsDec, CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
                     nData.add(new ME_Hover_2Type_Space());
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
-                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("EmbassyClosed") + ": "));
-                    nData.add(new ME_Hover_2Type_Text_Big("" + CFG.lang.get("TurnsX", tTurns), CFG.COLOR_NEGATIVE_2));
-                    nData.add(new ME_Hover_2Type_Image_Big(Images.time, CFG.PADD, 0));
+                    float relation = CFG.core.getCiv(CFG.getActiveCivInfoId()).getRelationD(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), 0, CFG.PADD));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelations, 0, CFG.PADD));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), 0, CFG.PADD));
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Opinion") + ": "));
+                    nData.add(new ME_Hover_2Type_Text_Big("" + (relation > 0.0f ? "+" : "") + CFG.getPrecision2(relation, 100), relation < 0.0f ? CFG.COLOR_NEGATIVE_2 : (relation > 0.0f ? CFG.COLOR_POSITIVE : CFG.COLOR_NEUTRAL)));
+                    nData.add(new ME_Hover_2Type_Image_Big2(Images.diploRelations, CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Space());
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("DecreaseRelation") + ": "));
+                    nData.add(new ME_Hover_2Type_Text_Big("" + CFG.getPrecision2(GameManager.getDecreaseRelation(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId()), 10), CFG.COLOR_NEGATIVE_2));
                     nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelationsDec, CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
+                    if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCivDiploGD().isEmbassyClosed_Turns(CFG.getActiveCivInfoId()) > 0) {
+                        int tTurns = CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCivDiploGD().isEmbassyClosed_Turns(CFG.getActiveCivInfoId());
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("EmbassyClosed") + ": "));
+                        nData.add(new ME_Hover_2Type_Text_Big("" + CFG.lang.get("TurnsX", tTurns), CFG.COLOR_NEGATIVE_2));
+                        nData.add(new ME_Hover_2Type_Image_Big(Images.time, CFG.PADD, 0));
+                        nData.add(new ME_Hover_2Type_Image_Big(Images.diploRelationsDec, CFG.PADD, 0));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                    }
+                    this.menuElemHover = new ME_Hover_v2(nElements);
                 }
-                this.menuElemHover = new ME_Hover_v2(nElements);
             }
         });
         nPosY += tempElemH;
         if (!CFG.core.getCivsAtWar(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId())) {
+            menuElems.add(new Button_DiplomacyAction(Images.spy, CFG.lang.get("SendSpy"), 0, 0, nPosY, menuW - 2, tempElemH, true){
+
+                @Override
+                public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+                    if (this.menuElemHover != null) {
+                        this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
+                    }
+                }
+
+                @Override
+                public void actionElem(int iID) {
+                    CFG.menus.rebuildInGame_SendSpy(CFG.getActiveCivInfoId());
+                }
+
+                @Override
+                public void buildElemHover() {
+                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("SendSpy"), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.spy, CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Space());
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("SendASpyDesc2")));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Space());
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Cost") + ": "));
+                    nData.add(new ME_Hover_2Type_Text(CFG.getNumberWthSpaces("" + GameManager.sendSpyCost(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId())), CFG.COLOR_GOLD));
+                    nData.add(new ME_Hover_2Type_Image(Images.topGold(), CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Turns") + ": "));
+                    nData.add(new ME_Hover_2Type_Text(CFG.getNumberWthSpaces("" + GameValues.gvRelations.SPY_NUMBER_OF_TURNS), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Image(Images.time, CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    this.menuElemHover = new ME_Hover_v2(nElements);
+                }
+            });
+            nPosY += tempElemH;
             boolean summitClickable = true;
             tempTurns = 0;
             for (i = CFG.core.diplomaticSummitCooldowns.size() - 1; i >= 0; --i) {
@@ -1117,109 +1184,111 @@ extends Menu {
                 });
                 nPosY += tempElemH;
             }
-            menuElems.add(new Button_DiplomacyAction(Images.investF1, CFG.lang.get("InvestInForeignProvince"), 0, 0, nPosY, menuW - 2, tempElemH, true){
+            if (GameValues.gvDiplomacy.SHOW_FOREIGN_INVESTMENTS_BUTTON_IN_DIPLOMACY_MENU) {
+                menuElems.add(new Button_DiplomacyAction(Images.investF1, CFG.lang.get("InvestInForeignProvince"), 0, 0, nPosY, menuW - 2, tempElemH, true){
 
-                @Override
-                public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
-                    if (this.menuElemHover != null) {
-                        this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
+                    @Override
+                    public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+                        if (this.menuElemHover != null) {
+                            this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
+                        }
                     }
-                }
 
-                @Override
-                public void actionElem(int iID) {
-                    if (CFG.core.getActiveProvID() >= 0 && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() == CFG.getActiveCivInfoId()) {
-                        CFG.menus.rebuildInGame_InvestForeign(CFG.getActiveCivInfoId(), CFG.core.getActiveProvID());
-                    } else {
-                        CFG.menus.rebuildInGame_InvestForeign(CFG.getActiveCivInfoId());
+                    @Override
+                    public void actionElem(int iID) {
+                        if (CFG.core.getActiveProvID() >= 0 && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() == CFG.getActiveCivInfoId()) {
+                            CFG.menus.rebuildInGame_InvestForeign(CFG.getActiveCivInfoId(), CFG.core.getActiveProvID());
+                        } else {
+                            CFG.menus.rebuildInGame_InvestForeign(CFG.getActiveCivInfoId());
+                        }
                     }
-                }
 
-                @Override
-                public void actionElemPPM() {
-                    if (CFG.core.getActiveProvID() >= 0) {
-                        try {
-                            int provinceID = CFG.core.getActiveProvID();
-                            if (CFG.core.getProv(provinceID).getCivId() <= 0) {
-                                CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.lang.get("Neutral"), CFG.COLOR_NEGATIVE_1);
-                            } else if (CFG.core.getProv(provinceID).getCivId() == CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) {
-                                CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCivName(), CFG.COLOR_NEGATIVE_1);
-                            } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).areSanctionsAdded(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
-                                CFG.toastM.addM(CFG.lang.get("SanctionsBox1"), CFG.COLOR_NEGATIVE_1);
-                            } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() > 49L) {
-                                GameManager.investForeignEconomy(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), provinceID, GameManager.invest_MaxEconomy_Gold(provinceID, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()));
-                                CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
-                                CFG.gameAction.updateInGame_ProvinceInfo();
-                                CFG.toastM.addM(CFG.lang.get("Ok") + "!", CFG.COLOR_POSITIVE);
-                                CFG.toastM.setTimeInView(3500);
-                                CFG.menus.rebuildMenu_InGame_Infobox(CFG.lang.get("InvestInForeignProvince"), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(provinceID).getCivId(), Images.infoEconomy);
+                    @Override
+                    public void actionElemPPM() {
+                        if (CFG.core.getActiveProvID() >= 0) {
+                            try {
+                                int provinceID = CFG.core.getActiveProvID();
+                                if (CFG.core.getProv(provinceID).getCivId() <= 0) {
+                                    CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.lang.get("Neutral"), CFG.COLOR_NEGATIVE_1);
+                                } else if (CFG.core.getProv(provinceID).getCivId() == CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) {
+                                    CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCivName(), CFG.COLOR_NEGATIVE_1);
+                                } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).areSanctionsAdded(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
+                                    CFG.toastM.addM(CFG.lang.get("SanctionsBox1"), CFG.COLOR_NEGATIVE_1);
+                                } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() > 49L) {
+                                    GameManager.investForeignEconomy(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), provinceID, GameManager.invest_MaxEconomy_Gold(provinceID, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()));
+                                    CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+                                    CFG.gameAction.updateInGame_ProvinceInfo();
+                                    CFG.toastM.addM(CFG.lang.get("Ok") + "!", CFG.COLOR_POSITIVE);
+                                    CFG.toastM.setTimeInView(3500);
+                                    CFG.menus.rebuildMenu_InGame_Infobox(CFG.lang.get("InvestInForeignProvince"), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(provinceID).getCivId(), Images.infoEconomy);
+                                }
+                            }
+                            catch (Exception exception) {
+                                // empty catch block
                             }
                         }
-                        catch (Exception exception) {
-                            // empty catch block
+                    }
+
+                    @Override
+                    public void buildElemHover() {
+                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                        nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("InvestInForeignProvince"), CFG.COLOR_HOVER_TITLE));
+                        nData.add(new ME_Hover_2Type_Image_Big(Images.investF1, CFG.PADD, 0));
+                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        this.menuElemHover = new ME_Hover_v2(nElements);
+                    }
+                });
+                menuElems.add(new Button_DiplomacyAction(Images.investB1, CFG.lang.get("BuildInForeignProvince"), 0, 0, nPosY += tempElemH, menuW - 2, tempElemH, true){
+
+                    @Override
+                    public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+                        if (this.menuElemHover != null) {
+                            this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
                         }
                     }
-                }
 
-                @Override
-                public void buildElemHover() {
-                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("InvestInForeignProvince"), CFG.COLOR_HOVER_TITLE));
-                    nData.add(new ME_Hover_2Type_Image_Big(Images.investF1, CFG.PADD, 0));
-                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Space());
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    this.menuElemHover = new ME_Hover_v2(nElements);
-                }
-            });
-            menuElems.add(new Button_DiplomacyAction(Images.investB1, CFG.lang.get("BuildInForeignProvince"), 0, 0, nPosY += tempElemH, menuW - 2, tempElemH, true){
-
-                @Override
-                public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
-                    if (this.menuElemHover != null) {
-                        this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
+                    @Override
+                    public void actionElem(int iID) {
+                        if (CFG.core.getActiveProvID() >= 0 && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() == CFG.getActiveCivInfoId()) {
+                            Menu_InGame_BuildForeign.buildBuildList();
+                            CFG.menus.rebuildInGame_BuildForeign(CFG.getActiveCivInfoId(), CFG.core.getActiveProvID());
+                        } else {
+                            Menu_InGame_BuildForeign.buildBuildList();
+                            CFG.menus.rebuildInGame_BuildForeign(CFG.getActiveCivInfoId());
+                        }
                     }
-                }
 
-                @Override
-                public void actionElem(int iID) {
-                    if (CFG.core.getActiveProvID() >= 0 && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() == CFG.getActiveCivInfoId()) {
-                        Menu_InGame_BuildForeign.buildBuildList();
-                        CFG.menus.rebuildInGame_BuildForeign(CFG.getActiveCivInfoId(), CFG.core.getActiveProvID());
-                    } else {
-                        Menu_InGame_BuildForeign.buildBuildList();
-                        CFG.menus.rebuildInGame_BuildForeign(CFG.getActiveCivInfoId());
+                    @Override
+                    public void buildElemHover() {
+                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                        nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("BuildInForeignProvince"), CFG.COLOR_HOVER_TITLE));
+                        nData.add(new ME_Hover_2Type_Image_Big(Images.investB1, CFG.PADD, 0));
+                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        this.menuElemHover = new ME_Hover_v2(nElements);
                     }
-                }
-
-                @Override
-                public void buildElemHover() {
-                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("BuildInForeignProvince"), CFG.COLOR_HOVER_TITLE));
-                    nData.add(new ME_Hover_2Type_Image_Big(Images.investB1, CFG.PADD, 0));
-                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_Space());
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
-                    nElements.add(new MEHover_2E(nData));
-                    nData.clear();
-                    this.menuElemHover = new ME_Hover_v2(nElements);
-                }
-            });
-            nPosY += tempElemH;
+                });
+                nPosY += tempElemH;
+            }
         }
-        if (!CFG.core.getCivsAtWar(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId())) {
+        if (GameValues.gvDiplomacy.SHOW_SEND_VOLUNTEER_BUTTON_IN_DIPLOMACY_MENU && !CFG.core.getCivsAtWar(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId())) {
             menuElems.add(new Button_DiplomacyAction(Images.diploArmySend, CFG.lang.get("SendVolunteerArmy"), 0, 0, nPosY, menuW - 2, tempElemH, true){
 
                 @Override
@@ -2271,6 +2340,14 @@ extends Menu {
             }
 
             @Override
+            public void actionElemPPM() {
+                Menu_InGame_CivProvinces.PAGES = 1;
+                Menu_InGame_CivProvinces.ACTIVE_PAGE = 0;
+                Menu_InGame_CivProvinces.civID = CFG.getActiveCivInfoId();
+                CFG.menus.rebuildInGame_CivProvinces();
+            }
+
+            @Override
             public void buildElemHover() {
                 ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
                 ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
@@ -2283,7 +2360,49 @@ extends Menu {
             }
         });
         nPosY += tempElemH;
-        if (CFG.SANDBOX_MODE || CFG.SPECTATOR_MODE || Menu_InitGame.EAPWS) {
+        if (CFG.getIsDesktop()) {
+            menuElems.add(new Button_DiplomacyAction(Images.brush, CFG.lang.get("FlagPainter"), 0, 0, nPosY, menuW - 2, tempElemH, true){
+
+                @Override
+                public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+                    if (this.menuElemHover != null) {
+                        this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
+                    }
+                }
+
+                @Override
+                public void actionElem(int iID) {
+                    Menu_InGame_Civ_Actions.actionFlagPainter(CFG.getActiveCivInfoId());
+                }
+
+                @Override
+                public void buildElemHover() {
+                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("FlagPainter"), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.brush, CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Space());
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    if (SaveGameManager.saveTag == null) {
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("FlagPainterSaveDesc"), CFG.COLOR_NEGATIVE_2));
+                    } else {
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("FlagPainterSaveDesc")));
+                    }
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("FlagPainterSaveDesc2")));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    this.menuElemHover = new ME_Hover_v2(nElements);
+                }
+            });
+            nPosY += tempElemH;
+        }
+        if (CFG.SANDBOX_MODE || CFG.SPECTATOR_MODE || Menu_InitGame.EAPWS || CFG.INGAME_WORLD_EDITOR) {
             menuElems.add(new Button_DiplomacyAction(Images.iconTrue, CFG.lang.get("AddPlayer") + ": " + CFG.core.getCiv(CFG.getActiveCivInfoId()).getCivName(), 0, 0, nPosY, menuW - 2, tempElemH, true){
 
                 @Override
@@ -2302,6 +2421,15 @@ extends Menu {
                     nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
+                    if (CFG.INGAME_WORLD_EDITOR) {
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Text(CFG.lang.get("InGameWorldEditor")));
+                        nData.add(new ME_Hover_2Type_Image(Images.editorGame, CFG.PADD, 0));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                    }
                     this.menuElemHover = new ME_Hover_v2(nElements);
                 }
 
@@ -2506,6 +2634,21 @@ extends Menu {
     public void setVisibleM(boolean visible) {
         if (visible) {
             super.setVisibleM(visible);
+        }
+    }
+
+    public static void actionFlagPainter(int civ) {
+        if (SaveGameManager.saveTag == null) {
+            CFG.toastM.addM(CFG.lang.get("FlagPainterSaveDesc"), CFG.COLOR_NEGATIVE_2);
+        } else {
+            CFG.menus.getColorPicker().setVisible(false, ColorPicker_AoC.PickerAction.FLAG_PAINTER);
+            Menu_InGame_FlagPainter.civID = civ;
+            CFG.menus.setMenuIDWithoutAnim(View.eFLAG_PAINTER);
+            CFG.menus.setOrderOfMenu_FlagPainter();
+            CFG.menus.getColorPicker().setPosX(CFG.GAMEWIDTH - CFG.menus.getColorPicker().getWidth() - CFG.PADD * 3);
+            CFG.menus.getColorPicker().setPosY(CFG.PADD * 3);
+            CFG.menus.getColorPicker().setVisible(true, ColorPicker_AoC.PickerAction.FLAG_PAINTER);
+            CFG.menus.getColorPicker().setActiveRGBColor(Menu_InGame_FlagPainter.brushColor.r, Menu_InGame_FlagPainter.brushColor.g, Menu_InGame_FlagPainter.brushColor.b);
         }
     }
 

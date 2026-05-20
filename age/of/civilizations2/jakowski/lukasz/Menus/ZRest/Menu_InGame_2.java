@@ -34,11 +34,9 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Bi
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Menus.Info.Menu_InGame_ProvInfo;
 import age.of.civilizations2.jakowski.lukasz.Menus.Info.Menu_InGame_ProvInfoSmall;
-import age.of.civilizations2.jakowski.lukasz.Menus.Menu_InitGame;
 import age.of.civilizations2.jakowski.lukasz.Menus.ProvinceM.More.Menu_InGame_Province_MoreAll;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Graph.Menu_InGame_GraphManager;
 import age.of.civilizations2.jakowski.lukasz.RTS;
-import age.of.civilizations2.jakowski.lukasz.Renderer;
 import age.of.civilizations2.jakowski.lukasz.SFXManager;
 import age.of.civilizations2.jakowski.lukasz.TextB.Text;
 import age.of.civilizations2.jakowski.lukasz.TextB.Texts.TextTop_Graph;
@@ -202,6 +200,20 @@ extends Menu {
                 nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Treasury") + ": ", CFG.COLOR_HOVER_TITLE));
                 nData.add(new ME_Hover_2Type_Text_Big("" + CFG.getNumberWthSpaces("" + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold()), CFG.COLOR_GOLD));
                 nData.add(new ME_Hover_2Type_Image_Big(Images.topGold(), CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("InflationThreshold") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.gameUpdate.getInflationStartsWhenTreasuryExceeds(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())), CFG.COLOR_GOLD));
+                nData.add(new ME_Hover_2Type_Image(Images.developmentDown, CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Space());
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Reserves") + ": "));
+                nData.add(new ME_Hover_2Type_Text_Big("" + CFG.getNumberWthSpaces("" + CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civGD.nationalBankReserves), CFG.COLOR_GOLD));
+                nData.add(new ME_Hover_2Type_Image_Big(Images.topGold(), CFG.PADD, 0));
+                nData.add(new ME_Hover_2Type_Image_Big(Images.bank, CFG.PADD, 0));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Space());
@@ -1131,9 +1143,6 @@ extends Menu {
             }
         }
         oSB.setColor(Color.WHITE);
-        if (!Menu_InitGame.PDR && CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civGD.armyExpertiseLevel > 2 && timeD.isAfter(timeT)) {
-            Renderer.drawText(oSB, CFG.FONT_BOLD, Menu_InGame_2.getInfo(), CFG.BUTTON_W + iTranslateX, CFG.GAMEHEIGHT / 2 + iTranslateY, new Color(1.0f, 1.0f, 1.0f, 0.75f));
-        }
     }
 
     public static final void clickFlagAction() {

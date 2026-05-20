@@ -338,30 +338,64 @@ public class PeaceTreaty_Data {
 
     private final void initPeaceTreatyData(int iWarID, List<Boolean> addDefender, List<Boolean> addAggressor, boolean scoreCountDefenders) {
         try {
-            int i;
             this.peaceTreatyGD.iWarID = iWarID;
             this.peaceTreatyGD.WAR_TAG = CFG.core.getWar((int)iWarID).WAR_TAG;
             this.scoreCountDefenders = scoreCountDefenders;
-            for (i = 0; i < CFG.core.getWar(iWarID).getDefendersSize(); ++i) {
-                try {
-                    if (!addDefender.get(i).booleanValue()) continue;
-                    this.peaceTreatyGD.civsDataDefenders.add(CFG.core.getWar(iWarID).getDefenders_ProvincesLost(i, addDefender, addAggressor));
-                    this.peaceTreatyGD.civsDemandsDefenders.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getDefenderID(i).getCivID(), CFG.core.getWar(iWarID).getWarScore_DefendersInProvinceValue_OnlyPositive(i, addDefender, addAggressor)));
-                    continue;
+            if (CFG.core.getWar((int)iWarID).rebelsWar) {
+                int i;
+                for (i = 0; i < CFG.core.getWar(iWarID).getDefendersSize(); ++i) {
+                    try {
+                        if (!addDefender.get(i).booleanValue()) continue;
+                        this.peaceTreatyGD.civsDataDefenders.add(CFG.core.getWar(iWarID).getDefenders_ProvincesLost(i, addDefender, addAggressor));
+                        if (CFG.core.getWar(iWarID).getWarScore_DefendersInProvinceValue_OnlyPositive(i, addDefender, addAggressor) > 0 && i == 0) {
+                            this.peaceTreatyGD.civsDemandsDefenders.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getDefenderID(i).getCivID(), 99999));
+                            continue;
+                        }
+                        this.peaceTreatyGD.civsDemandsDefenders.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getDefenderID(i).getCivID(), 0));
+                        continue;
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
                 }
-                catch (Exception ex) {
-                    CFG.exceptionStack(ex);
+                for (i = 0; i < CFG.core.getWar(iWarID).getAggressorsSize(); ++i) {
+                    try {
+                        if (!addAggressor.get(i).booleanValue()) continue;
+                        this.peaceTreatyGD.civsDataAggressors.add(CFG.core.getWar(iWarID).getAggressors_ProvincesLost(i, addDefender, addAggressor));
+                        if (CFG.core.getWar(iWarID).getWarScore_AggressorsInProvinceValue_OnlyPositive(i, addDefender, addAggressor) > 0 && i == 0) {
+                            this.peaceTreatyGD.civsDemandsAggressors.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getAggressorID(i).getCivID(), 99999));
+                            continue;
+                        }
+                        this.peaceTreatyGD.civsDemandsAggressors.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getAggressorID(i).getCivID(), 0));
+                        continue;
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
                 }
-            }
-            for (i = 0; i < CFG.core.getWar(iWarID).getAggressorsSize(); ++i) {
-                try {
-                    if (!addAggressor.get(i).booleanValue()) continue;
-                    this.peaceTreatyGD.civsDataAggressors.add(CFG.core.getWar(iWarID).getAggressors_ProvincesLost(i, addDefender, addAggressor));
-                    this.peaceTreatyGD.civsDemandsAggressors.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getAggressorID(i).getCivID(), CFG.core.getWar(iWarID).getWarScore_AggressorsInProvinceValue_OnlyPositive(i, addDefender, addAggressor)));
-                    continue;
+            } else {
+                int i;
+                for (i = 0; i < CFG.core.getWar(iWarID).getDefendersSize(); ++i) {
+                    try {
+                        if (!addDefender.get(i).booleanValue()) continue;
+                        this.peaceTreatyGD.civsDataDefenders.add(CFG.core.getWar(iWarID).getDefenders_ProvincesLost(i, addDefender, addAggressor));
+                        this.peaceTreatyGD.civsDemandsDefenders.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getDefenderID(i).getCivID(), CFG.core.getWar(iWarID).getWarScore_DefendersInProvinceValue_OnlyPositive(i, addDefender, addAggressor)));
+                        continue;
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
                 }
-                catch (Exception ex) {
-                    CFG.exceptionStack(ex);
+                for (i = 0; i < CFG.core.getWar(iWarID).getAggressorsSize(); ++i) {
+                    try {
+                        if (!addAggressor.get(i).booleanValue()) continue;
+                        this.peaceTreatyGD.civsDataAggressors.add(CFG.core.getWar(iWarID).getAggressors_ProvincesLost(i, addDefender, addAggressor));
+                        this.peaceTreatyGD.civsDemandsAggressors.add(new PeaceTreaty_Demands(CFG.core.getWar(iWarID).getAggressorID(i).getCivID(), CFG.core.getWar(iWarID).getWarScore_AggressorsInProvinceValue_OnlyPositive(i, addDefender, addAggressor)));
+                        continue;
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
                 }
             }
             this.redistributePointsToLords();

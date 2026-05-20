@@ -144,21 +144,21 @@ extends MenuElemUI {
      * Unable to fully structure code
      */
     protected void loadData(int i) {
-        block68: {
-            block79: {
-                block77: {
-                    block76: {
-                        block75: {
-                            block74: {
-                                block73: {
-                                    block72: {
-                                        block71: {
-                                            block70: {
-                                                block69: {
-                                                    block67: {
+        block72: {
+            block83: {
+                block81: {
+                    block80: {
+                        block79: {
+                            block78: {
+                                block77: {
+                                    block76: {
+                                        block75: {
+                                            block74: {
+                                                block73: {
+                                                    block71: {
                                                         nStartTurnID = 0;
                                                         tempPoints = new ArrayList<Long>();
-                                                        if (this.graphType != GraphType.PLAYER_BALANCE) break block67;
+                                                        if (this.graphType != GraphType.PLAYER_BALANCE) break block71;
                                                         try {
                                                             for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_Balance.size(); ++a) {
                                                                 tempPoints.add(Long.valueOf(CFG.timelapseManager.timelapseStatsGD.lPlayers_Balance.get(a).get(CFG.PLAYER_TURN_ID).intValue()));
@@ -169,9 +169,9 @@ extends MenuElemUI {
                                                             tempPoints.add(1L);
                                                             tempPoints.add(1L);
                                                         }
-                                                        break block68;
+                                                        break block72;
                                                     }
-                                                    if (this.graphType != GraphType.PLAYER_INCOME) break block69;
+                                                    if (this.graphType != GraphType.PLAYER_INCOME) break block73;
                                                     try {
                                                         for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_Income.size(); ++a) {
                                                             tempPoints.add(Long.valueOf(CFG.timelapseManager.timelapseStatsGD.lPlayers_Income.get(a).get(CFG.PLAYER_TURN_ID).intValue()));
@@ -182,9 +182,9 @@ extends MenuElemUI {
                                                         tempPoints.add(1L);
                                                         tempPoints.add(1L);
                                                     }
-                                                    break block68;
+                                                    break block72;
                                                 }
-                                                if (this.graphType != GraphType.PLAYER_EXPENSES) break block70;
+                                                if (this.graphType != GraphType.PLAYER_EXPENSES) break block74;
                                                 try {
                                                     for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_Expenses.size(); ++a) {
                                                         tempPoints.add((long)CFG.timelapseManager.timelapseStatsGD.lPlayers_Expenses.get(a).get(CFG.PLAYER_TURN_ID));
@@ -195,9 +195,9 @@ extends MenuElemUI {
                                                     tempPoints.add(1L);
                                                     tempPoints.add(1L);
                                                 }
-                                                break block68;
+                                                break block72;
                                             }
-                                            if (this.graphType != GraphType.PLAYER_MILITARY_SPENDING) break block71;
+                                            if (this.graphType != GraphType.PLAYER_MILITARY_SPENDING) break block75;
                                             try {
                                                 for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_MilitarySpendings.size(); ++a) {
                                                     tempPoints.add((long)CFG.timelapseManager.timelapseStatsGD.lPlayers_MilitarySpendings.get(a).get(CFG.PLAYER_TURN_ID));
@@ -208,9 +208,9 @@ extends MenuElemUI {
                                                 tempPoints.add(1L);
                                                 tempPoints.add(1L);
                                             }
-                                            break block68;
+                                            break block72;
                                         }
-                                        if (this.graphType != GraphType.PLAYER_TREASURY) break block72;
+                                        if (this.graphType != GraphType.PLAYER_TREASURY) break block76;
                                         try {
                                             for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_Treasury.size(); ++a) {
                                                 tempPoints.add((long)CFG.timelapseManager.timelapseStatsGD.lPlayers_Treasury.get(a).get(CFG.PLAYER_TURN_ID));
@@ -221,9 +221,9 @@ extends MenuElemUI {
                                             tempPoints.add(1L);
                                             tempPoints.add(1L);
                                         }
-                                        break block68;
+                                        break block72;
                                     }
-                                    if (this.graphType != GraphType.PLAYER_HAPPINESS) break block73;
+                                    if (this.graphType != GraphType.PLAYER_HAPPINESS) break block77;
                                     try {
                                         for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_Happiness.size(); ++a) {
                                             tempPoints.add((long)CFG.timelapseManager.timelapseStatsGD.lPlayers_Happiness.get(a).get(CFG.PLAYER_TURN_ID));
@@ -234,9 +234,9 @@ extends MenuElemUI {
                                         tempPoints.add(1L);
                                         tempPoints.add(1L);
                                     }
-                                    break block68;
+                                    break block72;
                                 }
-                                if (this.graphType != GraphType.PLAYER_ARMY_SIZE) break block74;
+                                if (this.graphType != GraphType.PLAYER_ARMY_SIZE) break block78;
                                 try {
                                     for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_ArmySize.size(); ++a) {
                                         tempPoints.add((long)CFG.timelapseManager.timelapseStatsGD.lPlayers_ArmySize.get(a).get(CFG.PLAYER_TURN_ID));
@@ -247,9 +247,9 @@ extends MenuElemUI {
                                     tempPoints.add(1L);
                                     tempPoints.add(1L);
                                 }
-                                break block68;
+                                break block72;
                             }
-                            if (this.graphType != GraphType.PLAYER_STABILITY) break block75;
+                            if (this.graphType != GraphType.PLAYER_STABILITY) break block79;
                             try {
                                 for (a = 0; a < CFG.timelapseManager.timelapseStatsGD.lPlayers_Stability.size(); ++a) {
                                     tempPoints.add((long)CFG.timelapseManager.timelapseStatsGD.lPlayers_Stability.get(a).get(CFG.PLAYER_TURN_ID));
@@ -260,9 +260,9 @@ extends MenuElemUI {
                                 tempPoints.add(1L);
                                 tempPoints.add(1L);
                             }
-                            break block68;
+                            break block72;
                         }
-                        if (this.graphType != GraphType.CIV_POPULATION) break block76;
+                        if (this.graphType != GraphType.CIV_POPULATION) break block80;
                         try {
                             for (a = 0; a < CFG.timelapseManager.timelapseStatsPopulation.lPopulation.size(); ++a) {
                                 tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(a).get(this.lData.get(0).getCivID()));
@@ -273,9 +273,9 @@ extends MenuElemUI {
                             tempPoints.add(1L);
                             tempPoints.add(1L);
                         }
-                        break block68;
+                        break block72;
                     }
-                    if (this.graphType != GraphType.RELIGION_POPULATION) break block77;
+                    if (this.graphType != GraphType.RELIGION_POPULATION) break block81;
 lbl148:
                     // 3 sources
 
@@ -283,10 +283,16 @@ lbl148:
                         for (a = 1; a < CFG.core.getCivsSize(); ++a) {
                             if (CFG.core.getCiv(a).getReligionID() != this.lData.get(0).getCivID()) continue;
                             try {
-                                block78: {
-                                    if (!tempPoints.isEmpty()) break block78;
+                                block82: {
+                                    if (!tempPoints.isEmpty()) break block82;
                                     for (b = 0; b < CFG.timelapseManager.timelapseStatsPopulation.lPopulation.size(); ++b) {
-                                        tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(b).get(a));
+                                        try {
+                                            tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(b).get(a));
+                                            continue;
+                                        }
+                                        catch (Exception ex) {
+                                            tempPoints.add(1L);
+                                        }
                                     }
                                     ** GOTO lbl148
                                 }
@@ -296,7 +302,13 @@ lbl148:
                                         continue;
                                     }
                                     catch (Exception exr) {
-                                        tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(b).get(a));
+                                        try {
+                                            tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(b).get(a));
+                                            continue;
+                                        }
+                                        catch (Exception var7_43) {
+                                            // empty catch block
+                                        }
                                     }
                                 }
                                 ** GOTO lbl148
@@ -313,22 +325,22 @@ lbl148:
                         tempPoints.add(1L);
                         tempPoints.add(1L);
                     }
-                    break block68;
+                    break block72;
                 }
-                if (this.graphType != GraphType.GOVERNMENT_POPULATION) break block79;
-lbl186:
+                if (this.graphType != GraphType.GOVERNMENT_POPULATION) break block83;
+lbl195:
                 // 3 sources
 
                 try {
                     for (a = 1; a < CFG.core.getCivsSize(); ++a) {
                         if (CFG.core.getCiv(a).getIdeology() != this.lData.get(0).getCivID()) continue;
                         try {
-                            block80: {
-                                if (!tempPoints.isEmpty()) break block80;
+                            block84: {
+                                if (!tempPoints.isEmpty()) break block84;
                                 for (b = 0; b < CFG.timelapseManager.timelapseStatsPopulation.lPopulation.size(); ++b) {
                                     tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(b).get(a));
                                 }
-                                ** GOTO lbl186
+                                ** GOTO lbl195
                             }
                             for (b = 0; b < CFG.timelapseManager.timelapseStatsPopulation.lPopulation.size(); ++b) {
                                 try {
@@ -339,7 +351,7 @@ lbl186:
                                     tempPoints.add((long)CFG.timelapseManager.timelapseStatsPopulation.lPopulation.get(b).get(a));
                                 }
                             }
-                            ** GOTO lbl186
+                            ** GOTO lbl195
                         }
                         catch (Exception ex) {
                             CFG.exceptionStack(ex);
@@ -349,11 +361,10 @@ lbl186:
                     }
                 }
                 catch (Exception ex) {
-                    CFG.exceptionStack(ex);
                     tempPoints.add(1L);
                     tempPoints.add(1L);
                 }
-                break block68;
+                break block72;
             }
             if (this.graphType == GraphType.CIV_ECONOMY) {
                 try {

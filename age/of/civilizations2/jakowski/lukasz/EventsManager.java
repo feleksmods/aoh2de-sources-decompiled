@@ -203,6 +203,14 @@ public class EventsManager {
         this.events.iEventsSize = this.events.lEvents.size();
     }
 
+    public final void addEvent2(Event_GameData nEvent) {
+        if (nEvent != null) {
+            nEvent.setEventTag(System.currentTimeMillis() + CFG.extraRandomTag());
+            this.events.lEvents.add(nEvent);
+            this.events.iEventsSize = this.events.lEvents.size();
+        }
+    }
+
     public final void updateEventsAfterRemoveCiv(int nRemovedCivID) {
         for (int i = 0; i < this.events.iEventsSize; ++i) {
             int k;

@@ -23,7 +23,7 @@ extends ButtonFlagBig {
     @Override
     protected void drawFlag(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
         if (GameCalendar.currYear > year) {
-            if (CFG.core.getCiv((int)this.getFlagCivID()).isFlagNearest || GameN.FUEVG) {
+            if (CFG.core.getCiv((int)this.getFlagCivID()).isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
                 oSB.setShader(Renderer.shaderAlpha);
                 this.getFlag().getTexture().bind(1);
                 Gdx.gl.glActiveTexture(33984);
@@ -38,8 +38,8 @@ extends ButtonFlagBig {
             }
             oSB.flush();
             oSB.setShader(AoCGame.shaderDef);
-            if (GameValues.gvVassal.ENABLE_VASSAL_LORD_FLAG && !CFG.core.getCiv((int)this.getFlagCivID()).iFVS && !this.getIsHovered() && CFG.core.getCiv(this.getFlagCivID()).getPuppetOfCiv() != this.getFlagCivID()) {
-                if (CFG.core.getCiv((int)CFG.core.getCiv((int)this.getFlagCivID()).getPuppetOfCiv()).isFlagNearest || GameN.FUEVG) {
+            if (GameValues.gvVassal.ENABLE_VASSAL_LORD_FLAG && CFG.settingsGD.ENABLE_LORD_FLAG_OVER_VASSAL_FLAG && !CFG.core.getCiv((int)this.getFlagCivID()).iFVS && !this.getIsHovered() && CFG.core.getCiv(this.getFlagCivID()).getPuppetOfCiv() != this.getFlagCivID()) {
+                if (CFG.core.getCiv((int)CFG.core.getCiv((int)this.getFlagCivID()).getPuppetOfCiv()).isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
                     oSB.setShader(Renderer.shaderAlpha);
                     CFG.core.getCiv(CFG.core.getCiv(this.getFlagCivID()).getPuppetOfCiv()).getFlagC().getTexture().bind(1);
                     Gdx.gl.glActiveTexture(33984);
@@ -61,7 +61,7 @@ extends ButtonFlagBig {
                 IMGManager.getIMG(Images.flagBigOver2).draw(oSB, this.getPosXE() + (IMGManager.getIMG(Images.flagBigMask2).getWidth() - IMGManager.getIMG(Images.flagBigOver2).getWidth()) / 2 + iTranslateX, this.getPosY() + iTranslateY);
             }
         } else {
-            if (CFG.core.getCiv((int)this.getFlagCivID()).isFlagNearest || GameN.FUEVG) {
+            if (CFG.core.getCiv((int)this.getFlagCivID()).isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
                 oSB.setShader(Renderer.shaderAlpha);
                 this.getFlag().getTexture().bind(1);
                 Gdx.gl.glActiveTexture(33984);
@@ -76,8 +76,8 @@ extends ButtonFlagBig {
             }
             oSB.flush();
             oSB.setShader(AoCGame.shaderDef);
-            if (GameValues.gvVassal.ENABLE_VASSAL_LORD_FLAG && !CFG.core.getCiv((int)this.getFlagCivID()).iFVS && !this.getIsHovered() && CFG.core.getCiv(this.getFlagCivID()).getPuppetOfCiv() != this.getFlagCivID()) {
-                if (CFG.core.getCiv((int)CFG.core.getCiv((int)this.getFlagCivID()).getPuppetOfCiv()).isFlagNearest || GameN.FUEVG) {
+            if (GameValues.gvVassal.ENABLE_VASSAL_LORD_FLAG && CFG.settingsGD.ENABLE_LORD_FLAG_OVER_VASSAL_FLAG && !CFG.core.getCiv((int)this.getFlagCivID()).iFVS && !this.getIsHovered() && CFG.core.getCiv(this.getFlagCivID()).getPuppetOfCiv() != this.getFlagCivID()) {
+                if (CFG.core.getCiv((int)CFG.core.getCiv((int)this.getFlagCivID()).getPuppetOfCiv()).isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
                     oSB.setShader(Renderer.shaderAlpha);
                     CFG.core.getCiv(CFG.core.getCiv(this.getFlagCivID()).getPuppetOfCiv()).getFlagC().getTexture().bind(1);
                     Gdx.gl.glActiveTexture(33984);

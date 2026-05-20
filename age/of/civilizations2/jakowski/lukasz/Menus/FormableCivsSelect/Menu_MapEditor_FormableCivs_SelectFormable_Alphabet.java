@@ -25,6 +25,7 @@ extends Menu {
 
     public Menu_MapEditor_FormableCivs_SelectFormable_Alphabet() {
         int a;
+        String name;
         boolean addChar;
         int j;
         boolean add;
@@ -112,13 +113,15 @@ extends Menu {
             }
             if (!add) continue;
             addChar = true;
+            name = CFG.lang.getCiv(tagsSPLITED[i]);
+            if (name.isEmpty()) continue;
             for (a = 0; a < this.lCharacters.size(); ++a) {
-                if (this.lCharacters.get(a).charValue() != CFG.lang.getCiv(tagsSPLITED[i]).charAt(0)) continue;
+                if (this.lCharacters.get(a).charValue() != name.charAt(0)) continue;
                 addChar = false;
                 break;
             }
             if (!addChar) continue;
-            this.lCharacters.add(Character.valueOf(CFG.lang.getCiv(tagsSPLITED[i]).charAt(0)));
+            this.lCharacters.add(Character.valueOf(name.charAt(0)));
         }
         iSize = tagsSPLITED_ED.length;
         for (i = 0; i < iSize; ++i) {
@@ -131,13 +134,15 @@ extends Menu {
             }
             if (!add) continue;
             addChar = true;
+            name = CFG.lang.getCiv(tagsSPLITED_ED[i]);
+            if (name.isEmpty()) continue;
             for (a = 0; a < this.lCharacters.size(); ++a) {
-                if (this.lCharacters.get(a).charValue() != CFG.lang.getCiv(tagsSPLITED_ED[i]).charAt(0)) continue;
+                if (this.lCharacters.get(a).charValue() != name.charAt(0)) continue;
                 addChar = false;
                 break;
             }
             if (!addChar) continue;
-            this.lCharacters.add(Character.valueOf(CFG.lang.getCiv(tagsSPLITED_ED[i]).charAt(0)));
+            this.lCharacters.add(Character.valueOf(name.charAt(0)));
         }
         for (i = 0; i < this.lCharacters.size() - 1; ++i) {
             for (int j2 = i + 1; j2 < this.lCharacters.size(); ++j2) {

@@ -143,7 +143,7 @@ extends Menu {
                         nData.clear();
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
-                    catch (IndexOutOfBoundsException ex) {
+                    catch (Exception ex) {
                         this.menuElemHover = null;
                     }
                 }

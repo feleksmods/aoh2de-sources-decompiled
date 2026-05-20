@@ -61,6 +61,7 @@ import age.of.civilizations2.jakowski.lukasz.MapA.Plagues.Nuke.NukeManager;
 import age.of.civilizations2.jakowski.lukasz.Menus.PeaceTreaty.Menu_PeaceTreaty;
 import age.of.civilizations2.jakowski.lukasz.Messages.MessageType;
 import age.of.civilizations2.jakowski.lukasz.Messages.Relations.Message_Rivals;
+import age.of.civilizations2.jakowski.lukasz.NationalBank;
 import age.of.civilizations2.jakowski.lukasz.Province;
 import age.of.civilizations2.jakowski.lukasz.RegroupArmy.RegroupArmy;
 import age.of.civilizations2.jakowski.lukasz.RegroupArmy.RegroupArmy_AtPeace;
@@ -102,21 +103,22 @@ public class AIPlaystyle {
     }
 
     public void turnOrders(int nCivID) {
+        Civilization civ = CFG.core.getCiv(nCivID);
         this.armyOverBudget = false;
         this.relocateLostCapital(nCivID);
         this.changeTypeOfIdeology(nCivID);
-        if (CFG.core.getCiv((int)nCivID).civGD.civPlans.iWarPrepsSize > 0) {
-            CFG.core.getCiv((int)nCivID).civGD.civPlans.checkWarPreparations(nCivID);
+        if (civ.civGD.civPlans.iWarPrepsSize > 0) {
+            civ.civGD.civPlans.checkWarPreparations(nCivID);
         }
         try {
-            if (CFG.core.getCiv(nCivID).isAtWarC()) {
+            if (civ.isAtWarC()) {
                 this.takeLoanAtWar(nCivID);
                 this.nukeDropBomb(nCivID);
                 this.defendFromSeaInvasion(nCivID);
                 this.moveAtWar(nCivID);
                 this.armyOverBudget = true;
             }
-            if (CFG.core.getCiv((int)nCivID).civGD.civPlans.isPreparingForTheWar()) {
+            if (civ.civGD.civPlans.isPreparingForTheWar()) {
                 this.prepareForWar2(nCivID);
             }
         }
@@ -124,64 +126,80 @@ public class AIPlaystyle {
             CFG.exceptionStack(ex);
         }
         CFG.oAI.expandNeutral.expandToNeutralProvinces(nCivID);
-        if (this.getMinMilitarySpending(nCivID) + 0.025f < CFG.core.getCiv((int)nCivID).iMilitaryUpkeep_PERC) {
+        if (this.getMinMilitarySpending(nCivID) + 0.025f < civ.iMilitaryUpkeep_PERC) {
             this.armyOverBudget_Disband(nCivID);
             this.armyOverBudget = true;
         }
-        if (CFG.core.getCiv(nCivID).getHappiness() < GameValues.gvAiProvince.HAPPINESS_CRISIS_BASE + CFG.oR.nextInt(GameValues.gvAiProvince.HAPPINESS_CRISIS_RANDOM)) {
+        if (civ.getHappiness() < GameValues.gvAiProvince.HAPPINESS_CRISIS_BASE + CFG.oR.nextInt(GameValues.gvAiProvince.HAPPINESS_CRISIS_RANDOM)) {
             this.happinessCrisis(nCivID);
-        } else if (!CFG.core.getCiv(nCivID).isAtWarC()) {
-            if (!CFG.core.getCiv((int)nCivID).provincesWithLowHappiness.isEmpty() && CFG.core.getCiv(nCivID).getTaxationLvl() <= CFG.ideologiesMgr.getAcceptableTaxation(CFG.core.getCiv(nCivID).getIdeology(), nCivID) && CFG.core.getCiv(nCivID).getSpendingGoodsB() >= CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(nCivID).getIdeology()).getMin_Goods(nCivID)) {
-                this.hostFestivals(nCivID, CFG.core.getCiv(nCivID).getNumOfProvs());
+        } else if (!civ.isAtWarC()) {
+            if (!civ.provincesWithLowHappiness.isEmpty() && civ.getTaxationLvl() <= CFG.ideologiesMgr.getAcceptableTaxation(civ.getIdeology(), nCivID) && civ.getSpendingGoodsB() >= CFG.ideologiesMgr.getIdeologyID(civ.getIdeology()).getMin_Goods(nCivID)) {
+                this.hostFestivals(nCivID, civ.getNumOfProvs());
             }
-        } else if (!CFG.core.getCiv((int)nCivID).provincesWithLowHappiness.isEmpty() && CFG.core.getCiv(nCivID).getTaxationLvl() <= CFG.ideologiesMgr.getAcceptableTaxation(CFG.core.getCiv(nCivID).getIdeology(), nCivID) && CFG.core.getCiv(nCivID).getSpendingGoodsB() >= CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(nCivID).getIdeology()).getMin_Goods(nCivID)) {
+        } else if (!civ.provincesWithLowHappiness.isEmpty() && civ.getTaxationLvl() <= CFG.ideologiesMgr.getAcceptableTaxation(civ.getIdeology(), nCivID) && civ.getSpendingGoodsB() >= CFG.ideologiesMgr.getIdeologyID(civ.getIdeology()).getMin_Goods(nCivID)) {
             this.hostFestivals(nCivID, 1 + CFG.oR.nextInt(3));
         }
-        if (!CFG.core.getCiv((int)nCivID).provincesWithLowStability.isEmpty()) {
+        if (!civ.provincesWithLowStability.isEmpty()) {
             this.assimilateProvinces(nCivID);
         }
-        if ((!this.armyOverBudget || CFG.core.getCiv(nCivID).getBordersWithEnemy() == 0) && CFG.core.getCiv(nCivID).getGold() > 0L && this.getMinMilitarySpending(nCivID) > CFG.core.getCiv((int)nCivID).iMilitaryUpkeep_PERC + 0.0275f) {
+        if ((!this.armyOverBudget || civ.getBordersWithEnemy() == 0) && civ.getGold() > 0L && this.getMinMilitarySpending(nCivID) > civ.iMilitaryUpkeep_PERC + 0.0275f) {
             this.recruitMilitary_MinSpending(nCivID);
         }
         if (!this.armyOverBudget) {
             this.colonizeProvinces(nCivID);
         }
-        if (!CFG.core.getCiv(nCivID).isAtWarC() && !CFG.core.getCiv((int)nCivID).civGD.civPlans.isPreparingForTheWar()) {
+        if (!civ.isAtWarC() && !civ.civGD.civPlans.isPreparingForTheWar()) {
             this.regroupArmy_AtPeace(nCivID);
         }
         this.regroupArmyAfterRecruitment(nCivID);
-        if (CFG.core.getCiv((int)nCivID).civGD.civPlans.isPreparingForTheWar()) {
+        if (civ.civGD.civPlans.isPreparingForTheWar()) {
             this.prepareForWar_MoveReadyArmies(nCivID);
-            for (int i = CFG.core.getCiv((int)nCivID).civGD.civPlans.iWarPrepsSize - 1; i >= 0; --i) {
-                if (CFG.core.getCiv((int)nCivID).civGD.civPlans.warPreps.get((int)i).iNumOfTurnsLeft-- > 0) continue;
-                int tOnCivID = CFG.core.getCiv((int)nCivID).civGD.civPlans.warPreps.get((int)i).onCivID;
-                CFG.core.declareWar(nCivID, CFG.core.getCiv((int)nCivID).civGD.civPlans.warPreps.get((int)i).onCivID, false);
-                for (int k = CFG.core.getCiv((int)nCivID).civGD.civPlans.armiesMissions.size() - 1; k >= 0; --k) {
-                    if (CFG.core.getCiv((int)nCivID).civGD.civPlans.armiesMissions.get((int)k).MISSION_TYPE != CivArmyMission_Type.PREAPARE_FOR_WAR || CFG.core.getCiv((int)nCivID).civGD.civPlans.armiesMissions.get((int)k).MISSION_ID != tOnCivID) continue;
-                    CFG.core.getCiv((int)nCivID).civGD.civPlans.armiesMissions.remove(k);
+            for (int i = civ.civGD.civPlans.iWarPrepsSize - 1; i >= 0; --i) {
+                if (civ.civGD.civPlans.warPreps.get((int)i).iNumOfTurnsLeft-- > 0) continue;
+                int tOnCivID = civ.civGD.civPlans.warPreps.get((int)i).onCivID;
+                CFG.core.declareWar(nCivID, civ.civGD.civPlans.warPreps.get((int)i).onCivID, false);
+                for (int k = civ.civGD.civPlans.armiesMissions.size() - 1; k >= 0; --k) {
+                    if (civ.civGD.civPlans.armiesMissions.get((int)k).MISSION_TYPE != CivArmyMission_Type.PREAPARE_FOR_WAR || civ.civGD.civPlans.armiesMissions.get((int)k).MISSION_ID != tOnCivID) continue;
+                    civ.civGD.civPlans.armiesMissions.remove(k);
                 }
                 try {
-                    CFG.core.getCiv((int)nCivID).civGD.civPlans.warPreps.remove(i);
-                    CFG.core.getCiv((int)nCivID).civGD.civPlans.iWarPrepsSize = CFG.core.getCiv((int)nCivID).civGD.civPlans.warPreps.size();
+                    civ.civGD.civPlans.warPreps.remove(i);
+                    civ.civGD.civPlans.iWarPrepsSize = civ.civGD.civPlans.warPreps.size();
                     continue;
                 }
-                catch (Exception exception) {
+                catch (Exception k) {
                     // empty catch block
                 }
             }
-        } else if (!CFG.core.getCiv(nCivID).isAtWarC() && CFG.core.getCiv(nCivID).getMovemPoints() > GameValues.gvAiProvince.BUILD_INVEST_MIN_MOVEMENT_POINTS) {
-            if (GameCalendar.TURNID % GameValues.gvAiProvince.EXTRA_INVEST_ECO_EVERY_X_TURN == nCivID % GameValues.gvAiProvince.EXTRA_INVEST_ECO_EVERY_X_TURN) {
-                if (CFG.core.getCiv(nCivID).getMovemPoints() >= GameValues.gvInvestEconomy.INVEST_ECO_COST_MOVEMENT_POINTS && CFG.core.getCiv(nCivID).getGold() > (long)GameValues.gvAiProvince.MIN_GOLD_TO_INVEST) {
-                    this.buildInvestEco(nCivID);
+        } else if (!civ.isAtWarC()) {
+            if (GameCalendar.TURNID > GameValues.gvIncome.AI_BUILD_NATIONAL_BANK_MIN_TURN) {
+                if (civ.civGD.nationalBankBuilt) {
+                    long current;
+                    long limit;
+                    long spaceLeft;
+                    long deposit;
+                    if (civ.getGold() > 100L && (deposit = (long)((float)civ.getGold() * (GameValues.gvIncome.AI_NATIONAL_BANK_DEPOSIT_RATIO_MIN + (float)CFG.oR.nextInt(GameValues.gvIncome.AI_NATIONAL_BANK_DEPOSIT_RATIO_RANDOM_100) / 100.0f))) > 0L && (spaceLeft = (limit = (long)NationalBank.getReserveLimit(nCivID)) - (current = civ.civGD.nationalBankReserves)) > 0L && (deposit = Math.min(deposit, spaceLeft)) > 0L) {
+                        civ.setGold(civ.getGold() - deposit);
+                        civ.civGD.nationalBankReserves += deposit;
+                    }
+                } else if (civ.getNumOfProvs() >= GameValues.gvIncome.BANK_REQUIRED_PROVINCES) {
+                    NationalBank.constructNationalBank(nCivID);
                 }
-            } else if (CFG.core.getCiv(nCivID).getMovemPoints() > GameValues.gvAiProvince.BUILD_INVEST_MIN_MOVEMENT_POINTS && CFG.core.getCiv(nCivID).getGold() > (long)GameValues.gvAiProvince.MIN_GOLD_TO_BUILD) {
-                this.buildBuildings(nCivID);
             }
-            if (GameCalendar.TURNID > GameValues.gvAiProvince.EXTRA_INVEST_DEVELOPMENT_MIN_TURN_ID && CFG.core.getCiv(nCivID).getMovemPoints() >= GameValues.gvInvestEconomy.INVEST_ECO_COST_MOVEMENT_POINTS && CFG.core.getCiv(nCivID).getGold() > (long)GameValues.gvAiProvince.MIN_GOLD_TO_INVEST) {
-                this.buildInvestDev(nCivID);
+            if (civ.getMovemPoints() > GameValues.gvAiProvince.BUILD_INVEST_MIN_MOVEMENT_POINTS) {
+                if (GameCalendar.TURNID % GameValues.gvAiProvince.EXTRA_INVEST_ECO_EVERY_X_TURN == nCivID % GameValues.gvAiProvince.EXTRA_INVEST_ECO_EVERY_X_TURN) {
+                    if (civ.getMovemPoints() >= GameValues.gvInvestEconomy.INVEST_ECO_COST_MOVEMENT_POINTS && civ.getGold() > (long)GameValues.gvAiProvince.MIN_GOLD_TO_INVEST) {
+                        this.buildInvestEco(nCivID);
+                    }
+                } else if (civ.getMovemPoints() > GameValues.gvAiProvince.BUILD_INVEST_MIN_MOVEMENT_POINTS && civ.getGold() > (long)GameValues.gvAiProvince.MIN_GOLD_TO_BUILD) {
+                    this.buildBuildings(nCivID);
+                }
+                if (GameCalendar.TURNID > GameValues.gvAiProvince.EXTRA_INVEST_DEVELOPMENT_MIN_TURN_ID && civ.getMovemPoints() >= GameValues.gvInvestEconomy.INVEST_ECO_COST_MOVEMENT_POINTS && civ.getGold() > (long)GameValues.gvAiProvince.MIN_GOLD_TO_INVEST) {
+                    this.buildInvestDev(nCivID);
+                }
             }
         }
-        CFG.core.getCiv((int)nCivID).civGD.moveAtWar_ProvincesLostAndConquered_LastTurn = 0;
+        civ.civGD.moveAtWar_ProvincesLostAndConquered_LastTurn = 0;
     }
 
     public final void turnOrdersEssential(int nCivID) {
@@ -296,7 +314,7 @@ public class AIPlaystyle {
         if (GameCalendar.TURNID >= CFG.core.getCiv((int)nCivID).civGD.checkFormCiv_TurnID) {
             if (CFG.core.getCiv(nCivID).getTagsCanFormCSize() > 0) {
                 for (int i = 0; i < CFG.core.getCiv(nCivID).getTagsCanFormCSize(); ++i) {
-                    if (!CFG.canFormACiv(nCivID, CFG.core.getCiv(nCivID).getTagsCanFormC(i), true)) continue;
+                    if (!CFG.canFormACiv(nCivID, CFG.core.getCiv(nCivID).getTagsCanFormC(i), true) || CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(nCivID).getCivTag()).equals(CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(nCivID).getTagsCanFormC(i)))) continue;
                     CFG.loadFormableCiv_GameData(CFG.core.getCiv(nCivID).getTagsCanFormC(i));
                     CFG.formCiv(nCivID);
                     CFG.core.getCiv((int)nCivID).civGD.checkFormCiv_TurnID = GameCalendar.TURNID + GameValues.gvAiFormCiv.NEXT_FORM_CIV_CHECK_TURN_ID_AFTER_FORMING + CFG.oR.nextInt(GameValues.gvAiFormCiv.NEXT_FORM_CIV_CHECK_TURN_ID_RANDOM_AFTER_FORMING);
@@ -2221,6 +2239,25 @@ lbl85:
 
     public final void takeLoanAtWar(int civID) {
         try {
+            long incomeThresholdCheck = (long)(CFG.core.getCiv((int)civID).incomeTaxation + CFG.core.getCiv((int)civID).incomeProduction) * (long)GameValues.gvAiWar.WAR_NO_LOANS_TREASURY_INCOME_RATIO;
+            long inflationThresholdCheck = (long)((float)CFG.gameUpdate.getInflationStartsWhenTreasuryExceeds(civID) * GameValues.gvAiWar.WAR_NO_LOANS_TREASURY_THRESHOLD_MODIFIER);
+            long valueCheck = Math.min(incomeThresholdCheck, inflationThresholdCheck);
+            if (CFG.core.getCiv(civID).getNumOfProvs() > GameValues.gvAiWar.WAR_NO_LOANS_MIN_PROVINCES && CFG.core.getCiv(civID).getGold() >= valueCheck) {
+                return;
+            }
+            if (CFG.core.getCiv((int)civID).civGD.nationalBankBuilt && CFG.core.getCiv((int)civID).civGD.nationalBankReserves > 0L) {
+                long inflationThreshold = CFG.gameUpdate.getInflationStartsWhenTreasuryExceeds(civID);
+                long safeSpace = Math.max(0L, inflationThreshold - CFG.core.getCiv(civID).getGold());
+                long withdrawAmount = 0L;
+                withdrawAmount = CFG.core.getCiv((int)civID).civGD.nationalBankReserves < (long)(NationalBank.getReserveLimit(civID) / 2) ? CFG.core.getCiv((int)civID).civGD.nationalBankReserves : CFG.core.getCiv((int)civID).civGD.nationalBankReserves / 2L;
+                if ((withdrawAmount = Math.min(withdrawAmount, safeSpace)) > 0L) {
+                    CFG.core.getCiv((int)civID).civGD.nationalBankReserves = Math.max(0L, CFG.core.getCiv((int)civID).civGD.nationalBankReserves - withdrawAmount);
+                    CFG.core.getCiv(civID).setGold(CFG.core.getCiv(civID).getGold() + withdrawAmount);
+                    if (CFG.core.getCiv(civID).getNumOfProvs() > GameValues.gvAiWar.WAR_NO_LOANS_MIN_PROVINCES && CFG.core.getCiv(civID).getGold() >= valueCheck) {
+                        return;
+                    }
+                }
+            }
             if (CFG.core.getCiv(civID).getLoansSize() < GameValues.gvLoan.LOAN_MAX_NUM_OF_LOANS && ((float)CFG.core.getCiv(civID).getGold() < (float)Loans.takeLoan_MaxValue(civID) * GameValues.gvAiLoan.LOW_MONEY_RELATIVE_TO_LOAN_MULTIPLIER || CFG.core.getCiv(civID).getGold() < (long)GameValues.gvAiLoan.LOW_MONEY_THRESHOLD)) {
                 for (int i = CFG.core.getCiv((int)civID).isAtWarWithCivs.size() - 1; i >= 0; --i) {
                     if (!((float)CFG.core.getCiv(CFG.core.getCiv((int)civID).isAtWarWithCivs.get(i)).getNumberOfUnits() > (float)CFG.core.getCiv(civID).getNumberOfUnits() * GameValues.gvAiLoan.ENEMY_ARMY_MODIFIER)) continue;
@@ -6148,7 +6185,7 @@ lbl120:
                     bestID = a;
                 }
                 int fromCivID = CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).civNeighbors.civs.get((int)bestID).civID;
-                if (fromCivID != CFG.core.getCiv(fromCivID).getPuppetOfCiv() || CFG.core.getCiv(fromCivID).isAtWarC() || CFG.core.getCiv((int)fromCivID).civGD.civPlans.isPreparingForTheWar() || CFG.core.getCiv(fromCivID).getNumberOfUnits() < CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getNumberOfUnits() || !((float)CFG.core.getCiv((int)fromCivID).iBudget * GameValues.gvAiDiplomacy.DEMAND_VASSALIZATION_CIV_FROM_BUDGET_MODIFIER > (float)CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).iBudget)) continue;
+                if (CFG.core.getCiv(fromCivID).getAlliance() != 0 && CFG.core.getCiv(fromCivID).getAlliance() == CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getAlliance() || fromCivID != CFG.core.getCiv(fromCivID).getPuppetOfCiv() || CFG.core.getCiv(fromCivID).isAtWarC() || CFG.core.getCiv((int)fromCivID).civGD.civPlans.isPreparingForTheWar() || CFG.core.getCiv(fromCivID).getNumberOfUnits() < CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).getNumberOfUnits() || !((float)CFG.core.getCiv((int)fromCivID).iBudget * GameValues.gvAiDiplomacy.DEMAND_VASSALIZATION_CIV_FROM_BUDGET_MODIFIER > (float)CFG.core.getCiv((int)CFG.core.getPlayer((int)i).getCivId()).iBudget)) continue;
                 GameManager.decreaseRelation(fromCivID, CFG.core.getPlayer(i).getCivId(), GameValues.gvRelationDecrease.SUSPEND_DIPLOMATIC_RELATIONS_MAX);
                 GameManager.decreaseRelation(fromCivID, CFG.core.getPlayer(i).getCivId(), GameValues.gvRelationDecrease.SUSPEND_DIPLOMATIC_RELATIONS_MAX);
                 if (CFG.core.getCiv(fromCivID).getNumOfProvs() <= 0) continue;

@@ -2,7 +2,6 @@ package age.of.civilizations2.jakowski.lukasz;
 
 import age.of.civilizations2.jakowski.lukasz.AI.AI_Playstyle.AIPlaystyle;
 import age.of.civilizations2.jakowski.lukasz.Actions;
-import age.of.civilizations2.jakowski.lukasz.Alliance;
 import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.CivInvest;
 import age.of.civilizations2.jakowski.lukasz.CivTask;
@@ -993,7 +992,6 @@ public class GameAction {
 
     public final void turnMoves() {
         try {
-            int k;
             int civRTO;
             if (this.currentMoveUnits != null && this.currentMoveUnits.getMoveUnitsSize() > 0) {
                 this.turnMoves_MoveCurrentArmy();
@@ -1019,7 +1017,7 @@ public class GameAction {
                         this.currentMoveUnits.addMoveUnits(moveUnitsI, civRTO);
                         civE.removeMove(i--);
                         if (!CFG.core.getProv(this.currentMoveUnits.getMoveUnits(0).getToProvID()).getSeaProv()) {
-                            for (k = i + 1; k < civE.moveUnitsSize(); ++k) {
+                            for (int k = i + 1; k < civE.moveUnitsSize(); ++k) {
                                 if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != civE.getMoveUnits(k).getToProvID()) continue;
                                 if (civE.getMoveUnits(k).getNumberOfUnits() > CFG.core.getProv(civE.getMoveUnits(k).getFromProviID()).getArmyCivID1(civRTO)) {
                                     civE.getMoveUnits(k).setNumberOfUnits(CFG.core.getProv(civE.getMoveUnits(k).getFromProviID()).getArmyCivID1(civRTO));
@@ -1027,33 +1025,6 @@ public class GameAction {
                                 if (civE.getMoveUnits(k).getNumberOfUnits() <= 0) continue;
                                 this.currentMoveUnits.addMoveUnits(civE.getMoveUnits(k), civRTO);
                                 civE.removeMove(k--);
-                            }
-                            if (civE.getAlliance() > 0) {
-                                Alliance alliance = CFG.core.getAlliance(civE.getAlliance());
-                                for (int a = 0; a < alliance.getCivilizationsSize(); ++a) {
-                                    if (alliance.getCivilization(a) == civRTO) continue;
-                                    for (int k2 = 0; k2 < CFG.core.getCiv(alliance.getCivilization(a)).moveUnitsSize(); ++k2) {
-                                        if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2).getToProvID()) continue;
-                                        if (CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2).getNumberOfUnits() > CFG.core.getProv(CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2).getFromProviID()).getArmyCivID1(alliance.getCivilization(a))) {
-                                            CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2).setNumberOfUnits(CFG.core.getProv(CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2).getFromProviID()).getArmyCivID1(alliance.getCivilization(a)));
-                                        }
-                                        if (CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2).getNumberOfUnits() <= 0) continue;
-                                        this.currentMoveUnits.addMoveUnits(CFG.core.getCiv(alliance.getCivilization(a)).getMoveUnits(k2), alliance.getCivilization(a));
-                                        CFG.core.getCiv(alliance.getCivilization(a)).removeMove(k2--);
-                                    }
-                                }
-                            }
-                            for (int a = 1; a < CFG.core.getCivsSize(); ++a) {
-                                if (a == civRTO || CFG.core.getCiv(a).getPuppetOfCiv() != civRTO && a != civE.getPuppetOfCiv()) continue;
-                                for (int k3 = 0; k3 < CFG.core.getCiv(a).moveUnitsSize(); ++k3) {
-                                    if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != CFG.core.getCiv(a).getMoveUnits(k3).getToProvID()) continue;
-                                    if (CFG.core.getCiv(a).getMoveUnits(k3).getNumberOfUnits() > CFG.core.getProv(CFG.core.getCiv(a).getMoveUnits(k3).getFromProviID()).getArmyCivID1(a)) {
-                                        CFG.core.getCiv(a).getMoveUnits(k3).setNumberOfUnits(CFG.core.getProv(CFG.core.getCiv(a).getMoveUnits(k3).getFromProviID()).getArmyCivID1(a));
-                                    }
-                                    if (CFG.core.getCiv(a).getMoveUnits(k3).getNumberOfUnits() <= 0) continue;
-                                    this.currentMoveUnits.addMoveUnits(CFG.core.getCiv(a).getMoveUnits(k3), a);
-                                    CFG.core.getCiv(a).removeMove(k3--);
-                                }
                             }
                         }
                         int attackingArmy = 0;
@@ -1119,41 +1090,14 @@ public class GameAction {
                             this.currentMoveUnits.addMoveUnits(moveUnitsI, civRTO);
                             CFG.core.getCiv(civRTO).removeMove(i--);
                             if (!CFG.core.getProv(this.currentMoveUnits.getMoveUnits(0).getToProvID()).getSeaProv()) {
-                                int a;
-                                for (int k4 = i + 1; k4 < CFG.core.getCiv(civRTO).moveUnitsSize(); ++k4) {
-                                    if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != CFG.core.getCiv(civRTO).getMoveUnits(k4).getToProvID()) continue;
-                                    if (CFG.core.getCiv(civRTO).getMoveUnits(k4).getNumberOfUnits() > CFG.core.getProv(CFG.core.getCiv(civRTO).getMoveUnits(k4).getFromProviID()).getArmyCivID1(civRTO)) {
-                                        CFG.core.getCiv(civRTO).getMoveUnits(k4).setNumberOfUnits(CFG.core.getProv(CFG.core.getCiv(civRTO).getMoveUnits(k4).getFromProviID()).getArmyCivID1(civRTO));
+                                for (int k = i + 1; k < CFG.core.getCiv(civRTO).moveUnitsSize(); ++k) {
+                                    if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != CFG.core.getCiv(civRTO).getMoveUnits(k).getToProvID()) continue;
+                                    if (CFG.core.getCiv(civRTO).getMoveUnits(k).getNumberOfUnits() > CFG.core.getProv(CFG.core.getCiv(civRTO).getMoveUnits(k).getFromProviID()).getArmyCivID1(civRTO)) {
+                                        CFG.core.getCiv(civRTO).getMoveUnits(k).setNumberOfUnits(CFG.core.getProv(CFG.core.getCiv(civRTO).getMoveUnits(k).getFromProviID()).getArmyCivID1(civRTO));
                                     }
-                                    if (CFG.core.getCiv(civRTO).getMoveUnits(k4).getNumberOfUnits() <= 0) continue;
-                                    this.currentMoveUnits.addMoveUnits(CFG.core.getCiv(civRTO).getMoveUnits(k4), civRTO);
-                                    CFG.core.getCiv(civRTO).removeMove(k4--);
-                                }
-                                if (CFG.core.getCiv(civRTO).getAlliance() > 0) {
-                                    for (a = 0; a < CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilizationsSize(); ++a) {
-                                        if (CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a) == civRTO) continue;
-                                        for (k = 0; k < CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).moveUnitsSize(); ++k) {
-                                            if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k).getToProvID()) continue;
-                                            if (CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k).getNumberOfUnits() > CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k).getFromProviID()).getArmyCivID1(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a))) {
-                                                CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k).setNumberOfUnits(CFG.core.getProv(CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k).getFromProviID()).getArmyCivID1(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)));
-                                            }
-                                            if (CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k).getNumberOfUnits() <= 0) continue;
-                                            this.currentMoveUnits.addMoveUnits(CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).getMoveUnits(k), CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a));
-                                            CFG.core.getCiv(CFG.core.getAlliance(CFG.core.getCiv(civRTO).getAlliance()).getCivilization(a)).removeMove(k--);
-                                        }
-                                    }
-                                }
-                                for (a = 1; a < CFG.core.getCivsSize(); ++a) {
-                                    if (a == civRTO || CFG.core.getCiv(a).getPuppetOfCiv() != civRTO && a != CFG.core.getCiv(civRTO).getPuppetOfCiv()) continue;
-                                    for (k = 0; k < CFG.core.getCiv(a).moveUnitsSize(); ++k) {
-                                        if (this.currentMoveUnits.getMoveUnits(0).getToProvID() != CFG.core.getCiv(a).getMoveUnits(k).getToProvID()) continue;
-                                        if (CFG.core.getCiv(a).getMoveUnits(k).getNumberOfUnits() > CFG.core.getProv(CFG.core.getCiv(a).getMoveUnits(k).getFromProviID()).getArmyCivID1(a)) {
-                                            CFG.core.getCiv(a).getMoveUnits(k).setNumberOfUnits(CFG.core.getProv(CFG.core.getCiv(a).getMoveUnits(k).getFromProviID()).getArmyCivID1(a));
-                                        }
-                                        if (CFG.core.getCiv(a).getMoveUnits(k).getNumberOfUnits() <= 0) continue;
-                                        this.currentMoveUnits.addMoveUnits(CFG.core.getCiv(a).getMoveUnits(k), a);
-                                        CFG.core.getCiv(a).removeMove(k--);
-                                    }
+                                    if (CFG.core.getCiv(civRTO).getMoveUnits(k).getNumberOfUnits() <= 0) continue;
+                                    this.currentMoveUnits.addMoveUnits(CFG.core.getCiv(civRTO).getMoveUnits(k), civRTO);
+                                    CFG.core.getCiv(civRTO).removeMove(k--);
                                 }
                             }
                             int attackingArmy = 0;
@@ -1668,12 +1612,12 @@ public class GameAction {
                                 if (CFG.core.getCiv(nRebelsCivID).getCapitalProvID() >= 0) {
                                     CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).setIsCapital(true);
                                     boolean updateCapitalLevel = true;
-                                    for (int i7 = 0; i7 < CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize(); ++i7) {
+                                    for (int i7 = 0; i7 < CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitiesSize(); ++i7) {
                                         if (CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(i7).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                                         updateCapitalLevel = false;
                                         break;
                                     }
-                                    if (updateCapitalLevel && CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize() > 0) {
+                                    if (updateCapitalLevel && CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitiesSize() > 0) {
                                         CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(0).setCityLevel(CFG.getEditorCityLevel(0));
                                     }
                                 }
@@ -1835,30 +1779,32 @@ public class GameAction {
     }
 
     public final void spawnRevolutionaryArmy(int nProvinceID, int nCivID, int nRebelsCivID) {
-        int revolutionaryPop = GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_BASE + CFG.oR.nextInt(GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_RANDOM);
-        for (int i = 0; i < CFG.core.getProv(nProvinceID).getPop().getNatsSize(); ++i) {
-            if (CFG.core.getProv(nProvinceID).getPop().getCivID(i) == nCivID) {
-                revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_FROM_CIV_ID);
-                continue;
+        if (nRebelsCivID > 0) {
+            int revolutionaryPop = GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_BASE + CFG.oR.nextInt(GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_RANDOM);
+            for (int i = 0; i < CFG.core.getProv(nProvinceID).getPop().getNatsSize(); ++i) {
+                if (CFG.core.getProv(nProvinceID).getPop().getCivID(i) == nCivID) {
+                    revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_FROM_CIV_ID);
+                    continue;
+                }
+                if (CFG.core.getProv(nProvinceID).getPop().getCivID(i) == nRebelsCivID) {
+                    revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_REBELS_CIV_ID);
+                    continue;
+                }
+                if (CFG.core.getCiv(CFG.core.getProv(nProvinceID).getPop().getCivID(i)).getNumOfProvs() == 0) {
+                    revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_CIV_0_PROVINCES);
+                    continue;
+                }
+                if (CFG.core.getCivsAtWar(CFG.core.getProv(nProvinceID).getPop().getCivID(i), nCivID)) {
+                    revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_AT_WAR_WITH_CIV_ID);
+                    continue;
+                }
+                revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_ELSE);
             }
-            if (CFG.core.getProv(nProvinceID).getPop().getCivID(i) == nRebelsCivID) {
-                revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_REBELS_CIV_ID);
-                continue;
-            }
-            if (CFG.core.getCiv(CFG.core.getProv(nProvinceID).getPop().getCivID(i)).getNumOfProvs() == 0) {
-                revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_CIV_0_PROVINCES);
-                continue;
-            }
-            if (CFG.core.getCivsAtWar(CFG.core.getProv(nProvinceID).getPop().getCivID(i), nCivID)) {
-                revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_AT_WAR_WITH_CIV_ID);
-                continue;
-            }
-            revolutionaryPop += (int)((float)CFG.core.getProv(nProvinceID).getPop().getPopulationID(i) * GameValues.gvRebels.SPAWN_REVOLUTIONARY_ARMY_POP_SUPPORT_ELSE);
+            int nArmy = revolutionaryPop;
+            nArmy = (int)Math.max(10.0f, (float)nArmy * CFG.REBELS_POWER);
+            CFG.core.getProv(nProvinceID).updateArmy4(nRebelsCivID, nArmy);
+            CFG.core.getCiv(nRebelsCivID).setNumberOfUnits(CFG.core.getCiv(nRebelsCivID).getNumberOfUnits() + nArmy);
         }
-        int nArmy = revolutionaryPop;
-        nArmy = (int)Math.max(10.0f, (float)nArmy * CFG.REBELS_POWER);
-        CFG.core.getProv(nProvinceID).updateArmy4(nRebelsCivID, nArmy);
-        CFG.core.getCiv(nRebelsCivID).setNumberOfUnits(CFG.core.getCiv(nRebelsCivID).getNumberOfUnits() + nArmy);
     }
 
     public final void updateProvinceAfterRevolution(int nProvinceID) {
@@ -5128,8 +5074,8 @@ public class GameAction {
         CFG.core.getCiv((int)nRebelsCivID).civGD.iRevolt_LastTurnLostProvince = GameCalendar.TURNID;
         CFG.core.getCiv(nRebelsCivID).setCapitalProvID(nProvinceID);
         CFG.core.getProv(nProvinceID).setIsCapital(true);
-        if (CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize() > 0) {
-            for (i2 = 0; i2 < CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitSize(); ++i2) {
+        if (CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitiesSize() > 0) {
+            for (i2 = 0; i2 < CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCitiesSize(); ++i2) {
                 if (CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(i2).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                 CFG.core.getProv(CFG.core.getCiv(nRebelsCivID).getCapitalProvID()).getCit(i2).setCityLevel(CFG.getEditorCityLevel(1));
             }
@@ -5251,6 +5197,12 @@ public class GameAction {
         catch (Exception exception) {
             // empty catch block
         }
+    }
+
+    public final void beginUprising() {
+    }
+
+    public final void spawnRevolution2(int nCivID, List<Integer> nProvinces, List<Integer> nOverMin) {
     }
 
     public static enum TurnStates {

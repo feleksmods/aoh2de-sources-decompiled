@@ -126,6 +126,7 @@ public class CFG {
     public static int FONT_BOLD;
     public static int FONT_BOLD_SMALL;
     public static int FONT_REGULAR_SMALL;
+    public static boolean HIDE_UI;
     public static Color sparksColors;
     private static final Color colorLine;
     public static EditorManager editorManager;
@@ -419,6 +420,8 @@ public class CFG {
     public static boolean RANDOM_FILL;
     public static boolean SANDBOX_MODE;
     public static boolean SANDBOX_MODE_AI;
+    public static boolean INGAME_WORLD_EDITOR;
+    public static boolean DISABLE_DISEASES;
     public static boolean PXSX;
     public static boolean SPECTATOR_MODE;
     public static boolean SPECTATOR_MODE_LOCK_CIV;
@@ -458,6 +461,8 @@ public class CFG {
     public static float ECONOMY_GROWTH_RATE;
     public static float PEACE_TREATY_VICTORY_POINTS_MODIFIER;
     public static int BUILD_NUKES_EXTRA_COST;
+    public static int NUKES_TOP_CIVS_DEFAULT;
+    public static int NUKES_TOP_CIVS;
     public static float NUKES_REQUIRED_TECH_LVL;
     public static float PLUNDER_MODIFIER;
     public static boolean AI_PLUNDER_ENABLED;
@@ -496,6 +501,7 @@ public class CFG {
     public static int activeCivilizationArmyID;
     public static boolean VIEW_SHOW_VALUES;
     public static boolean SCENARIO_EDITOR_OCCUPATION;
+    public static boolean SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL;
     public static boolean SHOW_ALL_MOVES;
     public static boolean SHOW_ONLY_COMBAT_MOVES;
     public static final int NUM_OF_GAMES_WON_TON_UNLOCK_SANDBOX_MODE = 0;
@@ -1693,7 +1699,7 @@ public class CFG {
         }
         menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(1).setTextE("" + CFG.getNumberWthSpaces("" + core.getCiv(activeCivInfoId).countPop()));
         try {
-            menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(3).setTextE("" + (core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCitSize() > 0 ? core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCit(0).getCityName() : core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getName()));
+            menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(3).setTextE("" + (core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCitiesSize() > 0 ? core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCit(0).getCityName() : core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getName()));
         }
         catch (IndexOutOfBoundsException ex) {
             menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(3).setTextE(lang.get("NoData"));
@@ -1704,7 +1710,7 @@ public class CFG {
                 if (core.getProv(nLargestCity).getPop().getPops() >= core.getProv(core.getCiv(activeCivInfoId).getProvID(i)).getPop().getPops()) continue;
                 nLargestCity = core.getCiv(activeCivInfoId).getProvID(i);
             }
-            menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(5).setTextE(core.getProv(nLargestCity).getCitSize() > 0 ? core.getProv(nLargestCity).getCit(0).getCityName() : core.getProv(nLargestCity).getName());
+            menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(5).setTextE(core.getProv(nLargestCity).getCitiesSize() > 0 ? core.getProv(nLargestCity).getCit(0).getCityName() : core.getProv(nLargestCity).getName());
             menus.getCreate_NewGame_Civ_Info_Stats().getMenuElem(5).setCurr(nLargestCity);
         }
         catch (IndexOutOfBoundsException ex) {
@@ -1843,14 +1849,14 @@ public class CFG {
             }
             if (FOG_OF_WAR == 2) {
                 if (core.getPlayer(PLAYER_TURN_ID).getMetProv(nLargestCity)) {
-                    menus.getInGameCivStats().getMenuElem(5).setTextE(core.getProv(nLargestCity).getCitSize() > 0 ? core.getProv(nLargestCity).getCit(0).getCityName() : core.getProv(nLargestCity).getName());
+                    menus.getInGameCivStats().getMenuElem(5).setTextE(core.getProv(nLargestCity).getCitiesSize() > 0 ? core.getProv(nLargestCity).getCit(0).getCityName() : core.getProv(nLargestCity).getName());
                     menus.getInGameCivStats().getMenuElem(5).setCurr(nLargestCity);
                 } else {
                     menus.getInGameCivStats().getMenuElem(5).setTextE(lang.get("NoData"));
                     menus.getInGameCivStats().getMenuElem(5).setCurr(-1);
                 }
             } else {
-                menus.getInGameCivStats().getMenuElem(5).setTextE(core.getProv(nLargestCity).getCitSize() > 0 ? core.getProv(nLargestCity).getCit(0).getCityName() : core.getProv(nLargestCity).getName());
+                menus.getInGameCivStats().getMenuElem(5).setTextE(core.getProv(nLargestCity).getCitiesSize() > 0 ? core.getProv(nLargestCity).getCit(0).getCityName() : core.getProv(nLargestCity).getName());
                 menus.getInGameCivStats().getMenuElem(5).setCurr(nLargestCity);
             }
         }
@@ -1866,13 +1872,13 @@ public class CFG {
         try {
             if (FOG_OF_WAR == 2) {
                 if (core.getPlayer(PLAYER_TURN_ID).getMetProv(core.getCiv(activeCivInfoId).getCapitalProvID())) {
-                    menus.getInGameCivStats().getMenuElem(3).setTextE("" + (core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCitSize() > 0 ? core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCit(0).getCityName() : core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getName()));
+                    menus.getInGameCivStats().getMenuElem(3).setTextE("" + (core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCitiesSize() > 0 ? core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCit(0).getCityName() : core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getName()));
                 } else {
                     menus.getInGameCivStats().getMenuElem(3).setTextE(lang.get("NoData"));
                     menus.getInGameCivStats().getMenuElem(3).setCurr(-1);
                 }
             } else {
-                menus.getInGameCivStats().getMenuElem(3).setTextE("" + (core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCitSize() > 0 ? core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCit(0).getCityName() : core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getName()));
+                menus.getInGameCivStats().getMenuElem(3).setTextE("" + (core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCitiesSize() > 0 ? core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getCit(0).getCityName() : core.getProv(core.getCiv(activeCivInfoId).getCapitalProvID()).getName()));
             }
         }
         catch (Exception ex) {
@@ -1959,7 +1965,7 @@ public class CFG {
         }
         menus.getCreateAVassal_Stats().getMenuElem(1).setTextE("" + CFG.getNumberWthSpaces("" + tempPopulation));
         if (CFG.createVassalData.iCapitalProvinceID >= 0) {
-            menus.getCreateAVassal_Stats().getMenuElem(3).setTextE("" + (core.getProv(CFG.createVassalData.iCapitalProvinceID).getCitSize() > 0 ? core.getProv(CFG.createVassalData.iCapitalProvinceID).getCit(0).getCityName() : core.getProv(CFG.createVassalData.iCapitalProvinceID).getName()));
+            menus.getCreateAVassal_Stats().getMenuElem(3).setTextE("" + (core.getProv(CFG.createVassalData.iCapitalProvinceID).getCitiesSize() > 0 ? core.getProv(CFG.createVassalData.iCapitalProvinceID).getCit(0).getCityName() : core.getProv(CFG.createVassalData.iCapitalProvinceID).getName()));
         } else {
             menus.getCreateAVassal_Stats().getMenuElem(3).setTextE("-");
         }
@@ -1972,7 +1978,7 @@ public class CFG {
             }
         }
         if (nLargestCity >= 0) {
-            menus.getCreateAVassal_Stats().getMenuElem(5).setTextE(core.getProv(core.getProvSelected().getProv(nLargestCity)).getCitSize() > 0 ? core.getProv(core.getProvSelected().getProv(nLargestCity)).getCit(0).getCityName() : core.getProv(core.getProvSelected().getProv(nLargestCity)).getName());
+            menus.getCreateAVassal_Stats().getMenuElem(5).setTextE(core.getProv(core.getProvSelected().getProv(nLargestCity)).getCitiesSize() > 0 ? core.getProv(core.getProvSelected().getProv(nLargestCity)).getCit(0).getCityName() : core.getProv(core.getProvSelected().getProv(nLargestCity)).getName());
             menus.getCreateAVassal_Stats().getMenuElem(5).setCurr(core.getProvSelected().getProv(nLargestCity));
         } else {
             menus.getCreateAVassal_Stats().getMenuElem(5).setTextE("-");
@@ -2860,6 +2866,14 @@ public class CFG {
         menus.setCreate_Scenario_AssignUndoButton(true);
     }
 
+    public static final void addUndoAssignProvincesInGame(int iProvinceID, int iCivID) {
+        if (lCreateScenario_UndoAssignProvsCivID.size() > 499) {
+            lCreateScenario_UndoAssignProvsCivID.remove(0);
+        }
+        lCreateScenario_UndoAssignProvsCivID.add(new Undo_AssignProvinceCiv(iProvinceID, iCivID));
+        menus.setInGame_AssignUndoButton(true);
+    }
+
     public static void removeUndoAssignProvinces() {
         if (lCreateScenario_UndoAssignProvsCivID.size() > 0) {
             lCreateScenario_UndoAssignProvsCivID.remove(lCreateScenario_UndoAssignProvsCivID.size() - 1);
@@ -2923,7 +2937,7 @@ public class CFG {
                 }
                 if (core.getProv(formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && !core.getProv(formableCivs_GameData.getCapitalProvinceID()).getSeaProv() && formableCivs_GameData.getCapitalProvinceID() != core.getCiv(nCivID).getCapitalProvID()) {
                     if (core.getCiv(nCivID).getCapitalProvID() >= 0) {
-                        for (int k = 0; k < core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCitSize(); ++k) {
+                        for (int k = 0; k < core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCitiesSize(); ++k) {
                             if (core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCit(k).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                             core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCit(k).setCityLevel(CFG.getEditorCityLevel(1));
                         }
@@ -2933,7 +2947,7 @@ public class CFG {
                     core.getProv(formableCivs_GameData.getCapitalProvinceID()).setIsCapital(true);
                     if (core.getCiv(nCivID).getCapitalProvID() >= 0) {
                         core.getCiv(nCivID).setCoreCapitalProvID(core.getCiv(nCivID).getCapitalProvID());
-                        if (core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCitSize() > 0) {
+                        if (core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCitiesSize() > 0) {
                             core.getProv(core.getCiv(nCivID).getCapitalProvID()).getCit(0).setCityLevel(CFG.getEditorCityLevel(0));
                         }
                     }
@@ -4934,7 +4948,7 @@ public class CFG {
         gameNewGame.updateFormableCivilizations(nCivA);
         gameNewGame.updateFormableCivilizations(nCivB);
         if (core.getCiv(nCivB).getCapitalProvID() >= 0) {
-            for (int k = 0; k < core.getProv(core.getCiv(nCivB).getCapitalProvID()).getCitSize(); ++k) {
+            for (int k = 0; k < core.getProv(core.getCiv(nCivB).getCapitalProvID()).getCitiesSize(); ++k) {
                 if (core.getProv(core.getCiv(nCivB).getCapitalProvID()).getCit(k).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                 core.getProv(core.getCiv(nCivB).getCapitalProvID()).getCit(k).setCityLevel(CFG.getEditorCityLevel(1));
             }
@@ -5186,6 +5200,10 @@ public class CFG {
 
     public static Color getColorMixed_2(Color colorVassal, Color colorLord) {
         return new Color(colorLord.r * GameValues.gvVassal.VASSAL_COLOR_LORD_PERC + colorVassal.r * GameValues.gvVassal.VASSAL_COLOR_VASSAL_PERC, colorLord.g * GameValues.gvVassal.VASSAL_COLOR_LORD_PERC + colorVassal.g * GameValues.gvVassal.VASSAL_COLOR_VASSAL_PERC, colorLord.b * GameValues.gvVassal.VASSAL_COLOR_LORD_PERC + colorVassal.b * GameValues.gvVassal.VASSAL_COLOR_VASSAL_PERC, colorVassal.a);
+    }
+
+    public static Color getColorMixed_3(Color colorVassal, Color colorLord) {
+        return new Color(colorLord.r * 0.4f + colorVassal.r * 0.6f, colorLord.g * 0.4f + colorVassal.g * 0.6f, colorLord.b * 0.4f + colorVassal.b * 0.6f, colorVassal.a);
     }
 
     public static void investAllEconomy() {
@@ -5994,7 +6012,7 @@ public class CFG {
                 }
             }
             if (fPrv.isEmpty()) {
-                toastM.addM(lang.get("Provinces") + ": 0", COLOR_NEGATIVE_2);
+                toastM.addM(lang.get("MoveToFrontLine") + ": " + lang.get("Provinces") + ": 0", COLOR_NEGATIVE_2);
             } else {
                 int armyPerMove = core.getProv(fromProvID).getArmyCivID1(byCivID) / fPrv.size();
                 if (armyPerMove <= 0) {
@@ -6181,6 +6199,7 @@ public class CFG {
         FONT_BOLD = 0;
         FONT_BOLD_SMALL = 1;
         FONT_REGULAR_SMALL = 2;
+        HIDE_UI = false;
         sparksColors = new Color(1.0f, 1.0f, 1.0f, 0.25f);
         colorLine = new Color(0.5176471f, 0.43529412f, 0.25882354f, 0.55f);
         colorGradient = new Color(0.09803922f, 0.15686275f, 0.23529412f, 0.4f);
@@ -6341,6 +6360,8 @@ public class CFG {
         RANDOM_FILL = false;
         SANDBOX_MODE = false;
         SANDBOX_MODE_AI = false;
+        INGAME_WORLD_EDITOR = false;
+        DISABLE_DISEASES = false;
         PXSX = false;
         SPECTATOR_MODE = false;
         SPECTATOR_MODE_LOCK_CIV = false;
@@ -6380,6 +6401,7 @@ public class CFG {
         ECONOMY_GROWTH_RATE = 1.0f;
         PEACE_TREATY_VICTORY_POINTS_MODIFIER = 1.0f;
         BUILD_NUKES_EXTRA_COST = 0;
+        NUKES_TOP_CIVS = NUKES_TOP_CIVS_DEFAULT = 14;
         NUKES_REQUIRED_TECH_LVL = 0.75f;
         PLUNDER_MODIFIER = 1.0f;
         AI_PLUNDER_ENABLED = true;
@@ -6400,6 +6422,7 @@ public class CFG {
         activeCivilizationArmyID = 0;
         VIEW_SHOW_VALUES = true;
         SCENARIO_EDITOR_OCCUPATION = false;
+        SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL = false;
         SHOW_ALL_MOVES = false;
         SHOW_ONLY_COMBAT_MOVES = true;
         RANDOM_CIVILIZATION = null;
@@ -6421,7 +6444,7 @@ public class CFG {
         leaderTime = 0L;
         leaderFrame = 50L;
         loadedLeader = "";
-        CIV_INFO_MENU_WIDTH = 320;
+        CIV_INFO_MENU_WIDTH = 325;
         pNCI = new ArrayList<Integer>();
         pNC = new ArrayList<String>();
         cNCI = new ArrayList<Integer>();

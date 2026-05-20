@@ -8,6 +8,7 @@ import age.of.civilizations2.jakowski.lukasz.Colors;
 import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.EventTemplatesMGR;
 import age.of.civilizations2.jakowski.lukasz.Files.FileManager;
+import age.of.civilizations2.jakowski.lukasz.FlagEyesManager;
 import age.of.civilizations2.jakowski.lukasz.Game.GameUpdate;
 import age.of.civilizations2.jakowski.lukasz.GameAction;
 import age.of.civilizations2.jakowski.lukasz.GameAges;
@@ -815,11 +816,16 @@ extends Menu {
                     Images.bLibrary = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "b_library.png");
                     Images.bArmoury = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "b_armoury.png");
                     Images.bWorkshop = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "b_workshop.png");
+                    Images.bBarracks = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "b_barracks.png");
                     Images.bSupply = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "b_supply.png");
                     Images.bMarket = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "b_market.png");
                     Images.buildAll = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "build_all.png");
                     Images.nuke = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "nuke.png");
+                    Images.sandbox = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "sandbox.png");
+                    Images.brush = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "brush.png");
+                    Images.bank = IMGManager.addIMG("UI/" + CFG.getResPath() + "icons/" + "bank.png");
                     Images.mapWar = IMGManager.addIMG("UI/icons/mapWar.png");
+                    Images.mapTruce = IMGManager.addIMG("UI/icons/mapTruce.png");
                     ++this.iStepID;
                     break block105;
                 }
@@ -966,6 +972,7 @@ extends Menu {
                 if (this.iStepID == 57 + CFG.map.getMapNumOfProvinces(CFG.map.getActiveMapIDN()) * 2) {
                     CFG.core.updateDrawMoveUnitsArmy();
                     CFG.gameNewGame = new NewGameManager();
+                    FlagEyesManager.loadImages();
                     ++this.iStepID;
                     break block105;
                 }

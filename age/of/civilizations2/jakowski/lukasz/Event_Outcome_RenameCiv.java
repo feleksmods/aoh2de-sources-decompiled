@@ -52,6 +52,7 @@ extends Event_Outcome {
     public void outcomeAction() {
         if (this.canMakeAction()) {
             CFG.core.getCiv(this.getCivID()).setCivName(this.name);
+            CFG.core.getCiv(this.getCivID()).setUpdateRegions(true);
         }
     }
 

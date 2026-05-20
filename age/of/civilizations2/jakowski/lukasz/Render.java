@@ -97,7 +97,7 @@ public class Render {
     public static final void drawWithoutScale(SpriteBatch oSB, SpriteBatch oSBNames) {
         CFG.unionFlagsToGenerate_Manager.generateFlags(oSB);
         CFG.core.updateLoadArmiesWidth_ErrorIDs(oSB);
-        if (!CFG.menus.getIn_InitMenu() || !CFG.menus.getIn_SaveTheGame()) {
+        if (!(CFG.menus.getIn_InitMenu() && CFG.menus.getIn_SaveTheGame() && CFG.menus.getInFlagPainter())) {
             if (CFG.map.getMapProvinceNames(CFG.map.getActiveMapIDN())) {
                 PNM.dPN.dPNA(oSBNames);
             } else {
@@ -124,7 +124,7 @@ public class Render {
         try {
             if (CFG.settingsGD.DRAW_WAR_ON_MAP && GameValues.gvProvinceAnimation.ENABLE_DIPLOMACY_ANIMATION && (CFG.FOG_OF_WAR < 2 || CFG.FOG_OF_WAR == 2 && CFG.getMetProv(iProvinceID)) && iProvinceID >= 0 && iProvinceID < CFG.core.getProvinSize()) {
                 for (int a = diploAnimations.size() - 1; a >= 0; --a) {
-                    if (Render.diploAnimations.get((int)a).iProvinceID != iProvinceID) continue;
+                    if (Render.diploAnimations.get((int)a).iProvinceID != iProvinceID || Render.diploAnimations.get((int)a).imageID != imageID) continue;
                     return;
                 }
                 diploAnimations.add(new DiploAnimation(civID, iProvinceID, imageID));
@@ -1551,7 +1551,7 @@ public class Render {
             @Override
             public void drawRendererMapDetails(SpriteBatch oSB) {
             }
-        } : (CFG.menus.getInCrScAs() ? new Renderer(){
+        } : (CFG.menus.getInCrScAs() || CFG.menus.getInGameAssign() ? new Renderer(){
 
             @Override
             public void drawRenderer(SpriteBatch oSB) {
@@ -1568,7 +1568,7 @@ public class Render {
                     if (!CFG.VIEW_SHOW_VALUES) {
                         CFG.core.drawAllProvinces_Name_Flag(oSB, 1.0f);
                     } else {
-                        CFG.core.drawAllCivilizations_Flag_InCapitals(oSB, 1.0f);
+                        CFG.core.drawAllCivilizations_Name_Flag_InCapitals(oSB, 1.0f);
                     }
                 }
             }
@@ -1579,7 +1579,7 @@ public class Render {
                     if (!CFG.VIEW_SHOW_VALUES) {
                         CFG.core.drawAllProvinces_Name_Flag(oSB, CFG.map.getMpS().getCurrSc());
                     } else {
-                        CFG.core.drawAllCivilizations_Flag_InCapitals(oSB, CFG.map.getMpS().getCurrSc());
+                        CFG.core.drawAllCivilizations_Name_Flag_InCapitals(oSB, CFG.map.getMpS().getCurrSc());
                     }
                 }
             }
@@ -1857,7 +1857,7 @@ public class Render {
             @Override
             public void drawRendererMapDetails(SpriteBatch oSB) {
             }
-        } : (CFG.menus.getIn_MainMenu() || CFG.menus.getInGamesMenu() || CFG.menus.getInEditorMenu() || CFG.menus.getIn_AboutMenu() || CFG.menus.getIn_SKMenu() || CFG.menus.getIn_MMMenu() || CFG.menus.getIn_FBMenu() || CFG.menus.getIn_NVMenu() || CFG.menus.getIn_InitMenu() || CFG.menus.getInLoadMap() || CFG.menus.getInLoadSave() || CFG.menus.getIn_SaveTheGame() ? new Renderer(){
+        } : (CFG.menus.getIn_MainMenu() || CFG.menus.getInGamesMenu() || CFG.menus.getInFlagPainter() || CFG.menus.getInEditorMenu() || CFG.menus.getIn_AboutMenu() || CFG.menus.getIn_SKMenu() || CFG.menus.getIn_MMMenu() || CFG.menus.getIn_FBMenu() || CFG.menus.getIn_NVMenu() || CFG.menus.getIn_InitMenu() || CFG.menus.getInLoadMap() || CFG.menus.getInLoadSave() || CFG.menus.getIn_SaveTheGame() ? new Renderer(){
 
             @Override
             public void drawRenderer(SpriteBatch oSB) {

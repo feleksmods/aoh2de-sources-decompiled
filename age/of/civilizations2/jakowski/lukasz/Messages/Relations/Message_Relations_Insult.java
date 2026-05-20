@@ -28,6 +28,7 @@ extends Message {
 
     @Override
     public void onAction(int iMessageID) {
+        CFG.menus.rebuildMenu_InGame_InfoboxSmallFlags(CFG.lang.get("DiplomaticRelationsAreSuspended"), this.fromCivID, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), Images.infoDiplomacy);
         CFG.toastM.addM(CFG.lang.get("DiplomaticRelationsAreSuspended") + ": " + CFG.core.getCiv(this.fromCivID).getCivName(), CFG.COLOR_NEGATIVE_2);
         CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).getCivDiploGD().messageBox.getMessage(iMessageID).onDecline(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
         CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).getCivDiploGD().messageBox.removeMessage(iMessageID);

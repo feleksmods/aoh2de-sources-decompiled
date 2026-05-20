@@ -8,6 +8,7 @@ import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.Colors;
 import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.EventTemplatesMGR;
+import age.of.civilizations2.jakowski.lukasz.FlagEyesManager;
 import age.of.civilizations2.jakowski.lukasz.GameCalendar;
 import age.of.civilizations2.jakowski.lukasz.GameValues.GameValues;
 import age.of.civilizations2.jakowski.lukasz.Graphs.Graph;
@@ -58,6 +59,8 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Army.Menu_CreateScenario_SetU
 import age.of.civilizations2.jakowski.lukasz.Menus.Army.Menu_CreateScenario_SetUpArmy_NeutralArmy;
 import age.of.civilizations2.jakowski.lukasz.Menus.Army.Menu_CreateScenario_SetUpArmy_Options;
 import age.of.civilizations2.jakowski.lukasz.Menus.Army.Menu_CreateScenario_SetUpArmy_Sliders;
+import age.of.civilizations2.jakowski.lukasz.Menus.Army.Menu_InGame_DisbandAllArmies;
+import age.of.civilizations2.jakowski.lukasz.Menus.Army.Menu_InGame_PlunderAllArmies;
 import age.of.civilizations2.jakowski.lukasz.Menus.ArmyCS.Menu_CreateScenario_SetUp_StartingMoney;
 import age.of.civilizations2.jakowski.lukasz.Menus.ArmyPos.Menu_MapEditor_ArmyPosition;
 import age.of.civilizations2.jakowski.lukasz.Menus.ArmyPos.Menu_MapEditor_ArmyPosition_Convert;
@@ -81,6 +84,7 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Budget.Menu_InGame_FA_Stats;
 import age.of.civilizations2.jakowski.lukasz.Menus.Budget.Menu_InGame_FA_Top;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_BuildForeign;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Armoury;
+import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Bank;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Farm;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Fort;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Library;
@@ -91,6 +95,7 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Suppl
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Tower;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Wonder;
 import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_Build_Workshop;
+import age.of.civilizations2.jakowski.lukasz.Menus.Build.Menu_InGame_NationalBank;
 import age.of.civilizations2.jakowski.lukasz.Menus.Buildings.Menu_InGame_View_BArmoury;
 import age.of.civilizations2.jakowski.lukasz.Menus.Buildings.Menu_InGame_View_BFarms;
 import age.of.civilizations2.jakowski.lukasz.Menus.Buildings.Menu_InGame_View_BForts;
@@ -258,6 +263,7 @@ import age.of.civilizations2.jakowski.lukasz.Menus.CreateCiv.Menu_CreateCiv_BG;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateCiv.Menu_CreateCiv_Data;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateCiv.Menu_CreateCiv_Flag;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateCiv.Menu_CreateCiv_Overlay;
+import age.of.civilizations2.jakowski.lukasz.Menus.CreateVassal.Info.Menu_InGame_CreateAVassal_Gov;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateVassal.Info.Menu_InGame_CreateAVassal_Info;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateVassal.Info.Menu_InGame_CreateAVassal_Info_Stats;
 import age.of.civilizations2.jakowski.lukasz.Menus.CreateVassal.MapModes.Menu_InGame_CreateAVassal_MapModes;
@@ -292,6 +298,10 @@ import age.of.civilizations2.jakowski.lukasz.Menus.Development.All.Menu_InGame_V
 import age.of.civilizations2.jakowski.lukasz.Menus.Development.Menu_InGame_View_DevelopmentProvinces;
 import age.of.civilizations2.jakowski.lukasz.Menus.Development.Menu_InGame_View_DevelopmentProvincesWorst;
 import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_Fc;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainter;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainterGenerateFlag;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainterTools;
+import age.of.civilizations2.jakowski.lukasz.Menus.Diplomacy.Menu_InGame_SendSpy;
 import age.of.civilizations2.jakowski.lukasz.Menus.Diplomacy.Menu_NV;
 import age.of.civilizations2.jakowski.lukasz.Menus.DiplomacyC.Menu_DiplomacyColors_Create;
 import age.of.civilizations2.jakowski.lukasz.Menus.DiplomacyC.Menu_DiplomacyColors_Create_Colors;
@@ -382,6 +392,10 @@ import age.of.civilizations2.jakowski.lukasz.Menus.HRE.Menu_CreateScenario_HRE;
 import age.of.civilizations2.jakowski.lukasz.Menus.HRE.Menu_CreateScenario_HRE_Princes;
 import age.of.civilizations2.jakowski.lukasz.Menus.Happiness.Menu_CreateScenario_Happiness;
 import age.of.civilizations2.jakowski.lukasz.Menus.ImposeS.Menu_InGame_ImposeSanctions;
+import age.of.civilizations2.jakowski.lukasz.Menus.InGameAss.Menu_InGame_Assign;
+import age.of.civilizations2.jakowski.lukasz.Menus.InGameAss.Menu_InGame_Assign_Select;
+import age.of.civilizations2.jakowski.lukasz.Menus.InGameAss.Menu_InGame_Assign_Select_Alphabet;
+import age.of.civilizations2.jakowski.lukasz.Menus.InGameAss.Menu_InGame_Assign_Select_List;
 import age.of.civilizations2.jakowski.lukasz.Menus.Income.Menu_InGame_View_Income;
 import age.of.civilizations2.jakowski.lukasz.Menus.Income.Menu_InGame_View_Income_All;
 import age.of.civilizations2.jakowski.lukasz.Menus.Income.Menu_InGame_View_Income_Production;
@@ -586,6 +600,7 @@ import age.of.civilizations2.jakowski.lukasz.Menus.ProvinceM.Menu_MapEditor_Prov
 import age.of.civilizations2.jakowski.lukasz.Menus.ProvinceM.Menu_MapEditor_SeaProvinces;
 import age.of.civilizations2.jakowski.lukasz.Menus.ProvinceM.More.Menu_InGame_Province_More;
 import age.of.civilizations2.jakowski.lukasz.Menus.ProvinceM.More.Menu_InGame_Province_MoreAll;
+import age.of.civilizations2.jakowski.lukasz.Menus.Provinces.Menu_InGame_CivProvinces;
 import age.of.civilizations2.jakowski.lukasz.Menus.ProvincesCS.Menu_CreateScenario_AvailableProvinces;
 import age.of.civilizations2.jakowski.lukasz.Menus.RTO.Menu_InGame_RTO2;
 import age.of.civilizations2.jakowski.lukasz.Menus.RTO.Menu_InGame_RTO_Bot2;
@@ -944,6 +959,8 @@ public class MenuManager {
     public int INGAME_OUTLINER = -1;
     public int INGAME_CURRENT_WARS = -1;
     public int INGAME_CURRENT_WARS_INFO = -1;
+    public int INGAME_ASSIGN = -1;
+    public int INGAME_ASSIGN_SELECT = -1;
     public int CREATE_SCENARIO_CIVILIZATIONS_SELECT = -1;
     public int CREATE_SCENARIO_CIVILIZATIONS_SELECT_ALPHABET = -1;
     public int CREATE_SCENARIO_CIVILIZATIONS_SELECT_LIST = -1;
@@ -962,6 +979,7 @@ public class MenuManager {
     public int INGAME_WAR = -1;
     public int INGAME_SAVED_GAME = -1;
     public int INGAME_ALLIANCE_INFO = -1;
+    public int FLAG_PAINTER = -1;
     public int CREATE_SCENARIO_EVENTS_COND_ISVASSAL = -1;
     public int CREATE_SCENARIO_EVENTS_COND_ISVASSAL_OFCIV = -1;
     public int CREATE_SCENARIO_EVENTS_COND_ISPARTOFHRE = -1;
@@ -1114,6 +1132,7 @@ public class MenuManager {
     public int INGAME_CREATE_VASSAL_INFO_STATS = -1;
     public int INGAME_CREATE_VASSAL_MAPMODES = -1;
     public int INGAME_CREATE_VASSAL_CIVS = -1;
+    public int INGAME_CREATE_VASSAL_GOV = -1;
     public int INGAME_CREATE_VASSAL_SELECT_CIV = -1;
     public int INGAME_CREATE_VASSAL_SELECT_CIV_ALPHABET = -1;
     public int INGAME_CREATE_VASSAL_SELECT_CIV_LIST = -1;
@@ -1348,6 +1367,7 @@ public class MenuManager {
     public int GAME_EDITOR_REGIONS = -1;
     public int GENERATE_PREVIEW = -1;
     public int GENERATE_FLAG = -1;
+    public int FLAG_PAINTER_GENERATE_FLAG = -1;
     public int PRINT_A_MAP = -1;
     public int ACHIEVEMENTS = -1;
     public int DOWNLOAD_PALLETS = -1;
@@ -1397,7 +1417,7 @@ public class MenuManager {
     }
 
     /*
-     * Opcode count of 13502 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
+     * Opcode count of 13661 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
      */
     public final int getViewID(View eMenu) {
         try {
@@ -2858,11 +2878,13 @@ public class MenuManager {
                         this.INGAME_CREATE_VASSAL_INFO_STATS = this.addNewMenuToViewID(this.INGAME_CREATE_VASSAL, new Menu_InGame_CreateAVassal_Info_Stats());
                         this.INGAME_CREATE_VASSAL_MAPMODES = this.addNewMenuToViewID(this.INGAME_CREATE_VASSAL, new Menu_InGame_CreateAVassal_MapModes());
                         this.INGAME_CREATE_VASSAL_CIVS = this.addNewMenuToViewID(this.INGAME_CREATE_VASSAL, new Menu_InGame_CreateAVassal_Civ());
+                        this.INGAME_CREATE_VASSAL_GOV = this.addNewMenuToViewID(this.INGAME_CREATE_VASSAL, new Menu_InGame_CreateAVassal_Gov());
                     } else {
                         this.menus.get(this.INGAME_CREATE_VASSAL).set(0, new Menu_InGame_CreateAVassal());
                         this.menus.get(this.INGAME_CREATE_VASSAL).set(this.INGAME_CREATE_VASSAL_INFO, new Menu_InGame_CreateAVassal_Info());
                         this.menus.get(this.INGAME_CREATE_VASSAL).set(this.INGAME_CREATE_VASSAL_INFO_STATS, new Menu_InGame_CreateAVassal_Info_Stats());
                         this.menus.get(this.INGAME_CREATE_VASSAL).set(this.INGAME_CREATE_VASSAL_CIVS, new Menu_InGame_CreateAVassal_Civ());
+                        this.menus.get(this.INGAME_CREATE_VASSAL).set(this.INGAME_CREATE_VASSAL_GOV, new Menu_InGame_CreateAVassal_Gov());
                     }
                     CFG.updateCreateAVassalCivInfo();
                     return this.INGAME_CREATE_VASSAL;
@@ -3969,6 +3991,12 @@ public class MenuManager {
                     }
                     return this.CREATE_SCENARIO_EVENTS_OUT_MILITARY;
                 }
+                case eINGAME_ASSIGN: {
+                    if (this.INGAME_ASSIGN == -1) {
+                        this.INGAME_ASSIGN = this.addMenu(new Menu_InGame_Assign());
+                    }
+                    return this.INGAME_ASSIGN;
+                }
                 case eCREATE_SCENARIO_ASSIGN: {
                     if (this.CREATE_SCENARIO_ASSIGN == -1) {
                         this.CREATE_SCENARIO_ASSIGN = this.addMenu(new Menu_CreateScenario_Assign());
@@ -3976,6 +4004,17 @@ public class MenuManager {
                         this.menus.get(this.CREATE_SCENARIO_ASSIGN).get(0).getMenuElem(6).setClickable(false);
                     }
                     return this.CREATE_SCENARIO_ASSIGN;
+                }
+                case eINGAME_ASSIGN_SELECT: {
+                    if (this.INGAME_ASSIGN_SELECT == -1) {
+                        this.INGAME_ASSIGN_SELECT = this.addMenu(new Menu_InGame_Assign_Select());
+                        this.addNewMenuToViewID(this.INGAME_ASSIGN_SELECT, new Menu_InGame_Assign_Select_Alphabet());
+                        this.addNewMenuToViewID(this.INGAME_ASSIGN_SELECT, new Menu_InGame_Assign_Select_List());
+                    } else {
+                        this.menus.get(this.INGAME_ASSIGN_SELECT).set(1, new Menu_InGame_Assign_Select_Alphabet());
+                        this.menus.get(this.INGAME_ASSIGN_SELECT).set(2, new Menu_InGame_Assign_Select_List());
+                    }
+                    return this.INGAME_ASSIGN_SELECT;
                 }
                 case eCREATE_SCENARIO_ASSIGN_SELECT: {
                     if (this.CREATE_SCENARIO_ASSIGN_SELECT == -1) {
@@ -4016,6 +4055,27 @@ public class MenuManager {
                         this.menus.get(this.CREATE_SCENARIO_SETTINGS).set(1, new Menu_CreateScenario_Settings());
                     }
                     return this.CREATE_SCENARIO_SETTINGS;
+                }
+                case eFLAG_PAINTER: {
+                    if (this.FLAG_PAINTER == -1) {
+                        this.FLAG_PAINTER = this.addMenu(new Menu_InGame_FlagPainter());
+                        this.addNewMenuToViewID(this.FLAG_PAINTER, new Menu_InGame_FlagPainterTools());
+                    } else {
+                        Menu_InGame_FlagPainter.dispose();
+                        this.menus.get(this.FLAG_PAINTER).set(0, new Menu_InGame_FlagPainter());
+                    }
+                    if (!CFG.getIsDesktop()) {
+                        return this.IN_GAME_MENU;
+                    }
+                    return this.FLAG_PAINTER;
+                }
+                case eFLAG_PAINTER_GENERATE_FLAG: {
+                    if (this.FLAG_PAINTER_GENERATE_FLAG == -1) {
+                        this.FLAG_PAINTER_GENERATE_FLAG = this.addMenu(new Menu_InGame_FlagPainterGenerateFlag());
+                    } else {
+                        this.menus.get(this.FLAG_PAINTER_GENERATE_FLAG).set(0, new Menu_InGame_FlagPainterGenerateFlag());
+                    }
+                    return this.FLAG_PAINTER_GENERATE_FLAG;
                 }
                 case eCREATE_SCENARIO_SET_UP_ARMY: {
                     if (this.CREATE_SCENARIO_SET_UP_ARMY == -1) {
@@ -4590,12 +4650,25 @@ public class MenuManager {
         }
     }
 
+    public final boolean getInFlagPainter() {
+        return this.viewID == this.FLAG_PAINTER;
+    }
+
     public final boolean getInGameView_EndOfGame() {
         try {
             return this.menus.get(this.IN_GAME_MENU).get(this.INGAME_ENDOFGAME).getVisibleM();
         }
         catch (IndexOutOfBoundsException e) {
             return false;
+        }
+    }
+
+    public final void setOrderOfMenu_FlagPainter() {
+        try {
+            this.setOrderOfMenuID(1);
+        }
+        catch (Exception exception) {
+            // empty catch block
         }
     }
 
@@ -4659,7 +4732,7 @@ public class MenuManager {
 
     public final void rebuildMenu_InGame_CityHaveBeenFounded(int nProvinceID, int nCivID) {
         String topText = "";
-        topText = CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getCit(0).getCityName()) : CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getName());
+        topText = CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getCit(0).getCityName()) : CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getName());
         this.menus.get(this.IN_GAME_MENU).set(this.INGAME_CITY_HAVE_BEEN_FOUNED, new Menu_InGame_Infobox(topText, GameCalendar.getCurrDate(), "", CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), -1, Images.infoDiplomacy));
         if (this.menus.get(this.IN_GAME_MENU).get(this.INGAME_CITY_HAVE_BEEN_FOUNED).getVisibleM()) {
             this.setOrderOfMenuID(this.INGAME_CITY_HAVE_BEEN_FOUNED);
@@ -4738,7 +4811,7 @@ public class MenuManager {
 
     public final void rebuildMenu_InGame_CapitalMoved(int nProvinceID, int nCivID) {
         String topText = "";
-        topText = CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.lang.get("CapitalMoved") + ": " + CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.lang.get("CapitalMoved");
+        topText = CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.lang.get("CapitalMoved") + ": " + CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.lang.get("CapitalMoved");
         this.menus.get(this.IN_GAME_MENU).set(this.INGAME_CAPITAL_MOVED, new Menu_InGame_Infobox(topText, GameCalendar.getCurrDate(), "", CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), -1, Images.infoDiplomacy));
         if (this.menus.get(this.IN_GAME_MENU).get(this.INGAME_CAPITAL_MOVED).getVisibleM()) {
             this.setOrderOfMenuID(this.INGAME_CAPITAL_MOVED);
@@ -4938,6 +5011,7 @@ public class MenuManager {
                 if (this.getVisible_InGame_View_Stats()) {
                     this.setVisible_InGame_View(false);
                 }
+                FlagEyesManager.updateRandTimer();
             }
             this.setOrderOfMenu_InGame_CivInfo();
         }
@@ -5304,6 +5378,10 @@ public class MenuManager {
 
     public final boolean getInCrScAs() {
         return this.viewID == this.CREATE_SCENARIO_ASSIGN;
+    }
+
+    public final boolean getInGameAssign() {
+        return this.viewID == this.INGAME_ASSIGN;
     }
 
     public final boolean getIn_CustomizeAlliance() {
@@ -6209,6 +6287,27 @@ public class MenuManager {
         }
     }
 
+    public final void setVisible_InGame_ReleaseVassal_Gov(boolean visible) {
+        try {
+            if (visible) {
+                this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).setVisibleM(false);
+                int tPosX = this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).getPosX();
+                int tPosY = this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).getPosY();
+                this.menus.get(this.INGAME_CREATE_VASSAL).set(this.INGAME_CREATE_VASSAL_GOV, new Menu_InGame_CreateAVassal_Gov());
+                this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).setPosX(tPosX);
+                this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).setPosY(tPosY);
+                this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).setVisibleM(visible);
+                this.setOrderOfMenuID(1);
+                this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).updateMenuElements_IsInView();
+            } else {
+                this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).setVisibleM(visible);
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
+    }
+
     public final void getMapEditor_FormableCivs_Alphabet() {
         if (CFG.sSearch == null) {
             this.menus.get(this.MAP_EDITOR_FORMABLE_CIVS).get(2).getMenuElem(0).setTextE("");
@@ -6602,6 +6701,10 @@ public class MenuManager {
         catch (Exception exception) {
             // empty catch block
         }
+    }
+
+    public final boolean getVisible_ReleaseVassal_Gov() {
+        return this.menus.get(this.INGAME_CREATE_VASSAL).get(this.INGAME_CREATE_VASSAL_GOV).getVisibleM();
     }
 
     public final boolean getInCreateScenario_Civilizations_Select() {
@@ -7173,6 +7276,9 @@ public class MenuManager {
 
     public final void drawMM(SpriteBatch oSB) {
         try {
+            if (CFG.HIDE_UI) {
+                return;
+            }
             if (this.fromViewID < 0) {
                 this.drawMM(oSB, this.viewID, 0);
             } else {
@@ -8050,7 +8156,7 @@ public class MenuManager {
                     MenuManager.this.provHoverInfo = null;
                 }
             }
-        } : (this.getInCrScAs() ? new BuildProvinceHover_Informations(){
+        } : (this.getInCrScAs() || CFG.menus.getInGameAssign() ? new BuildProvinceHover_Informations(){
 
             @Override
             public void build() {
@@ -8666,6 +8772,9 @@ public class MenuManager {
     }
 
     public final boolean actionDown(int nPosX, int nPosY) {
+        if (CFG.HIDE_UI) {
+            return false;
+        }
         try {
             if (this.dialogMenu.getVisibleM()) {
                 for (int i = 0; i < this.dialogMenu.getMenuElemsSize(); ++i) {
@@ -8955,6 +9064,9 @@ public class MenuManager {
     }
 
     public final boolean actionMove(int nPosX, int nPosY) {
+        if (CFG.HIDE_UI) {
+            return false;
+        }
         try {
             if (this.activeMenuID >= 0 && this.activeMenuElemeID >= 0) {
                 hoverMobileTime = System.currentTimeMillis();
@@ -9217,6 +9329,9 @@ public class MenuManager {
     }
 
     public final boolean actionUp(int nPosX, int nPosY, int nPointer, int button) {
+        if (CFG.HIDE_UI) {
+            return false;
+        }
         try {
             if (this.dialogMenu.getVisibleM()) {
                 if (this.activeMenuElemeID >= 0 && this.dialogMenu.getMenuElem(this.activeMenuElemeID).getIsClickable() && nPosX >= this.dialogMenu.getMenuElem(this.activeMenuElemeID).getPosXE() && nPosX <= this.dialogMenu.getMenuElem(this.activeMenuElemeID).getPosXE() + this.dialogMenu.getMenuElem(this.activeMenuElemeID).getWidthE() && nPosY >= this.dialogMenu.getMenuElem(this.activeMenuElemeID).getPosY() && nPosY <= this.dialogMenu.getMenuElem(this.activeMenuElemeID).getPosY() + this.dialogMenu.getMenuElem(this.activeMenuElemeID).getHeightE()) {
@@ -10939,6 +11054,17 @@ public class MenuManager {
         this.menus.get(this.IN_GAME_MENU).get(this.INGAME_CONQURED_PROVINCES).updateMenuElements_IsInView();
     }
 
+    public final void rebuildInGame_CivProvinces() {
+        int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosX();
+        int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosY();
+        this.menus.get(this.IN_GAME_MENU).set(this.INGAME_SEND_MESSAGE, new Menu_InGame_CivProvinces());
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosX(tPosX);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosY(tPosY);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(true);
+        this.setOrderOfMenuID(this.INGAME_SEND_MESSAGE);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).updateMenuElements_IsInView();
+    }
+
     public final void rebuildInGame_VictoryConditions() {
         int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_VICOTORY_CONDITIONS).getPosX();
         int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_VICOTORY_CONDITIONS).getPosY();
@@ -11776,6 +11902,25 @@ public class MenuManager {
         this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).updateMenuElements_IsInView();
     }
 
+    public final void rebuildInGame_DisbandAllArmies() {
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setVisibleM(false);
+        int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getPosX();
+        int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getPosY();
+        int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getHeightM();
+        this.menus.get(this.IN_GAME_MENU).set(this.INGAME_PLUNDER, new Menu_InGame_DisbandAllArmies());
+        if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        }
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setPosX(tPosX);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setPosY(tPosY);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setHeight(tHeight);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setVisibleM(true);
+        this.setOrderOfMenuID(this.INGAME_PLUNDER);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).updateMenuElements_IsInView();
+    }
+
     public final void rebuildInGame_FormUnion(int onCivID) {
         this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(false);
         int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosX();
@@ -11849,6 +11994,27 @@ public class MenuManager {
         int tWidth = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getWidthM();
         int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getHeightM();
         this.menus.get(this.IN_GAME_MENU).set(this.INGAME_SEND_MESSAGE, new Menu_InGame_SpreadPropaganda(civID));
+        if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        }
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosX(tPosX);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosY(tPosY);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setWidth(tWidth);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setHeight(tHeight);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(true);
+        this.setOrderOfMenuID(this.INGAME_SEND_MESSAGE);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).updateMenuElements_IsInView();
+    }
+
+    public final void rebuildInGame_SendSpy(int civID) {
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(false);
+        int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosX();
+        int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosY();
+        int tWidth = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getWidthM();
+        int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getHeightM();
+        this.menus.get(this.IN_GAME_MENU).set(this.INGAME_SEND_MESSAGE, new Menu_InGame_SendSpy(civID));
         if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
             tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
         } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
@@ -12189,6 +12355,25 @@ public class MenuManager {
         this.menus.get(this.IN_GAME_MENU).get(this.INGAME_WONDERS).setVisibleM(true);
         this.setOrderOfMenuID(this.INGAME_WONDERS);
         this.menus.get(this.IN_GAME_MENU).get(this.INGAME_WONDERS).updateMenuElements_IsInView();
+    }
+
+    public final void rebuildInGame_PlunderAllArmies() {
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setVisibleM(false);
+        int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getPosX();
+        int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getPosY();
+        int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getHeightM();
+        this.menus.get(this.IN_GAME_MENU).set(this.INGAME_PLUNDER, new Menu_InGame_PlunderAllArmies());
+        if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        }
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setPosX(tPosX);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setPosY(tPosY);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setHeight(tHeight);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).setVisibleM(true);
+        this.setOrderOfMenuID(this.INGAME_PLUNDER);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_PLUNDER).updateMenuElements_IsInView();
     }
 
     public final void rebuildInGame_RepayLoan(int onCivID, int iLoanID) {
@@ -12821,6 +13006,48 @@ public class MenuManager {
         int tWidth = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getWidthM();
         int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getHeightM();
         this.menus.get(this.IN_GAME_MENU).set(this.INGAME_SEND_MESSAGE, new Menu_InGame_Build_Workshop(nProvinceID));
+        if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        }
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosX(tPosX);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosY(tPosY);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setWidth(tWidth);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setHeight(tHeight);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(true);
+        this.setOrderOfMenuID(this.INGAME_SEND_MESSAGE);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).updateMenuElements_IsInView();
+    }
+
+    public final void rebuildInGame_BuildBank() {
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(false);
+        int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosX();
+        int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosY();
+        int tWidth = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getWidthM();
+        int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getHeightM();
+        this.menus.get(this.IN_GAME_MENU).set(this.INGAME_SEND_MESSAGE, new Menu_InGame_Build_Bank());
+        if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
+            tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
+        }
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosX(tPosX);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setPosY(tPosY);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setWidth(tWidth);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setHeight(tHeight);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(true);
+        this.setOrderOfMenuID(this.INGAME_SEND_MESSAGE);
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).updateMenuElements_IsInView();
+    }
+
+    public final void rebuildInGame_NationalBank(int civID) {
+        this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).setVisibleM(false);
+        int tPosX = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosX();
+        int tPosY = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getPosY();
+        int tWidth = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getWidthM();
+        int tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getHeightM();
+        this.menus.get(this.IN_GAME_MENU).set(this.INGAME_SEND_MESSAGE, new Menu_InGame_NationalBank(civID));
         if (tHeight > this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
             tHeight = this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD;
         } else if (tHeight < this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getPosY() + this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElem(this.menus.get(this.IN_GAME_MENU).get(this.INGAME_SEND_MESSAGE).getMenuElemsSize() - 1).getHeightE() + CFG.PADD) {
@@ -13611,6 +13838,10 @@ public class MenuManager {
 
     public final void setCreate_Scenario_AssignUndoButton(boolean isClickable) {
         this.menus.get(this.CREATE_SCENARIO_ASSIGN).get(0).getMenuElem(6).setClickable(isClickable);
+    }
+
+    public final void setInGame_AssignUndoButton(boolean isClickable) {
+        this.menus.get(this.INGAME_ASSIGN).get(0).getMenuElem(5).setClickable(isClickable);
     }
 
     public final void disposeFlagsCreate_Scenario_Assign() {

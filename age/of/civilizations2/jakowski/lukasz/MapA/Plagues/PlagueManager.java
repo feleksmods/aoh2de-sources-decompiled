@@ -47,6 +47,9 @@ public class PlagueManager {
             catch (NullPointerException e) {
                 CFG.exceptionStack(e);
             }
+            if (CFG.DISABLE_DISEASES) {
+                return;
+            }
             for (int i2 = this.plaguesActive.size() - 1; i2 >= 0; --i2) {
                 this.plaguesActive.get(i2).spreadDisease();
             }

@@ -26,4 +26,6 @@ implements Serializable {
     public boolean A_E = false;
     public boolean A_D = false;
     public int INVITED_CIVS_HRE = 0;
+    public List<Integer> spyInCivID = new ArrayList<Integer>();
+    public List<Integer> spyInCivID_ExpiresTurnID = new ArrayList<Integer>();
 }

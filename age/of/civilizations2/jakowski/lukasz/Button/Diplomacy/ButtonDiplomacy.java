@@ -18,6 +18,7 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Menus.Civilization.Menu_InGame_Civ_Diplomacy;
 import age.of.civilizations2.jakowski.lukasz.Menus.Population.Menu_InGame_View_Population;
 import age.of.civilizations2.jakowski.lukasz.Menus.Rank.Menu_InGame_Rank_List;
+import age.of.civilizations2.jakowski.lukasz.Renderer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,7 +29,7 @@ import java.util.List;
 public class ButtonDiplomacy
 extends ButtonM {
     public static int iDiploWidth = 0;
-    private int iDiploImageID;
+    public int iDiploImageID;
     public List<Integer> lCivs;
     private boolean row = false;
     private boolean moveable = false;
@@ -58,6 +59,18 @@ extends ButtonM {
         }
         this.updateMoveable();
         this.typeOfMenuElemUI = MenuElemUI.TypeOfMenuElemUI.DIPLOMACY_INFO;
+        this.fontID = CFG.FONT_REGULAR_SMALL;
+        this.setTextE("" + this.lCivs.size());
+    }
+
+    @Override
+    public void drawTextE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+        Renderer.drawTextWithShadow(oSB, this.fontID, this.getTextE(), this.getPosXE() + iDiploWidth - this.getTextWidthU() - CFG.PADD - CFG.PADD / 2 + iTranslateX, this.getPosY() + this.getHeightE() - this.iTextHeight - CFG.PADD - CFG.PADD / 2 + iTranslateY, this.getColorE(isActive));
+    }
+
+    @Override
+    public Color getColorE(boolean isActive) {
+        return isActive ? CFG.COLOR_TEXT_GRAY_NS_ACTIVE : (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS_HOVER : CFG.COLOR_TEXT_GRAY_NS);
     }
 
     @Override

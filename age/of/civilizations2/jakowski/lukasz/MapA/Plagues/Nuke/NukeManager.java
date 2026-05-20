@@ -7,11 +7,13 @@ import age.of.civilizations2.jakowski.lukasz.Images;
 import age.of.civilizations2.jakowski.lukasz.MapA.Mode.MapModesManager;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.MEHover_2E;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Flag;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Flag_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Image;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Image_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Space;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_TextDesc;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Messages.Province.Nuke.Message_Nuke_OurProvince;
@@ -59,6 +61,9 @@ public class NukeManager {
             return false;
         }
         if (!NukeManager.canBuildNuke_Year()) {
+            return false;
+        }
+        if (CFG.core.getCiv(civID).getRankPos() > CFG.NUKES_TOP_CIVS) {
             return false;
         }
         CFG.core.getCiv(civID).setGold(CFG.core.getCiv(civID).getGold() - (long)NukeManager.getAtomicBombCost(civID));
@@ -226,6 +231,22 @@ public class NukeManager {
         nData.add(new ME_Hover_2Type_Text(CFG.lang.get("EnableNuclearWeapons") + ": "));
         nData.add(new ME_Hover_2Type_Text("" + (CFG.ENABLE_NUKES ? CFG.lang.get("On") : CFG.lang.get("Off")), CFG.ENABLE_NUKES ? CFG.COLOR_POSITIVE : CFG.COLOR_NEGATIVE_2));
         nData.add(new ME_Hover_2Type_Image(Images.nuke, CFG.PADD, 0));
+        nElements.add(new MEHover_2E(nData));
+        nData.clear();
+        nData.add(new ME_Hover_2Type_Space());
+        nElements.add(new MEHover_2E(nData));
+        nData.clear();
+        nData.add(new ME_Hover_2Type_Text(CFG.lang.get("NukesRestrictedToTopCivilizations") + ": "));
+        nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.NUKES_TOP_CIVS) + " / " + (CFG.core.getCivsSize() - 1), CFG.COLOR_HOVER_TITLE));
+        nData.add(new ME_Hover_2Type_Image(Images.rank, CFG.PADD, 0));
+        nElements.add(new MEHover_2E(nData));
+        nData.clear();
+        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("NuclearWeaponsCanOnlyBeBuiltByTheTopRankedCivs")));
+        nElements.add(new MEHover_2E(nData));
+        nData.clear();
+        nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Ranking") + ": "));
+        nData.add(new ME_Hover_2Type_Text("" + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos(), CFG.COLOR_HOVER_TITLE));
+        nData.add(new ME_Hover_2Type_Flag(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.PADD, 0));
         nElements.add(new MEHover_2E(nData));
         nData.clear();
         return new ME_Hover_v2(nElements);

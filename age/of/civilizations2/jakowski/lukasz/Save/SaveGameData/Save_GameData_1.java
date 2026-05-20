@@ -28,7 +28,9 @@ implements Serializable {
     public float REBELS_POWER;
     public boolean SANDBOX_MODE;
     public boolean SANDBOX_MODE_AI;
+    public boolean INGAME_WORLD_EDITOR = false;
     public boolean LEADERS_CAN_DIE;
+    public boolean DISABLE_DISEASES = false;
     public int MAX_PROVINCES_FOR_ALLIANCE_PROPOSAL;
     public int PROPOSE_ALLIANCE_CHANCE_100;
     public float ARMY_RETREAT;
@@ -52,6 +54,7 @@ implements Serializable {
     public int COLONIZATION_AUTO_EXPAND_CHANCE;
     public int GET_SPY_MESSAGE_ABOUT_AI_PREPARING_FOR_WAR_CHANCE_1000;
     public int BUILD_NUKES_EXTRA_COST = 0;
+    public int NUKES_TOP_CIVS = 14;
     public float NUKES_REQUIRED_TECH_LVL = 0.0f;
     public float PLUNDER_MODIFIER = 1.0f;
     public int TECHNOLOGY_LEVEL_BONUS_ARMY_DEFENSE;
@@ -82,6 +85,8 @@ implements Serializable {
         this.iYear = GameCalendar.currYear;
         this.GAME_SPEED = GameCalendar.GAME_SPEED;
         this.SANDBOX_MODE = CFG.SANDBOX_MODE;
+        this.DISABLE_DISEASES = CFG.DISABLE_DISEASES;
+        this.INGAME_WORLD_EDITOR = CFG.INGAME_WORLD_EDITOR;
         this.ENABLE_COLONIZATION = GameCalendar.ENABLE_COLONIZATION;
         this.ENABLE_COLONIZATION_NEUTRAL_PROVINCES = GameCalendar.ENABLE_COLONIZATION_NEUTRAL_PROVINCES;
         this.COLONIZATION_TECH_LEVEL = GameCalendar.COLONIZATION_TECH_LEVEL;
@@ -124,6 +129,7 @@ implements Serializable {
         this.AI_VASSALS_CAN_DECLARE_WARS = CFG.AI_VASSALS_CAN_DECLARE_WARS;
         this.AI_CONQUER_OWN_VASSALS_IF_OVER = CFG.AI_CONQUER_OWN_VASSALS_IF_OVER;
         this.BUILD_NUKES_EXTRA_COST = CFG.BUILD_NUKES_EXTRA_COST;
+        this.NUKES_TOP_CIVS = CFG.NUKES_TOP_CIVS;
         this.NUKES_REQUIRED_TECH_LVL = CFG.NUKES_REQUIRED_TECH_LVL;
         this.PLUNDER_MODIFIER = CFG.PLUNDER_MODIFIER;
         this.AI_PLUNDER_ENABLED = CFG.AI_PLUNDER_ENABLED;

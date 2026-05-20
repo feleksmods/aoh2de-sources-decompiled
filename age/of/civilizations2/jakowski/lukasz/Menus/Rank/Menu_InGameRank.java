@@ -24,6 +24,7 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_TextDesc;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
+import age.of.civilizations2.jakowski.lukasz.Menus.Provinces.Menu_InGame_CivProvinces;
 import age.of.civilizations2.jakowski.lukasz.Renderer;
 import age.of.civilizations2.jakowski.lukasz.Title.TitleM_TextSmall;
 import com.badlogic.gdx.graphics.Color;
@@ -440,6 +441,15 @@ extends Menu {
                         public Color getColorE(boolean isActive) {
                             return isActive ? CFG.COLOR_TEXT_GRAY_LEFT_NS_ACTIVE : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_LEFT_NS_HOVER : CFG.COLOR_TEXT_GRAY_LEFT_NS) : CFG.COLOR_BUTTON_MENU_TEXT_NOT_CLICKABLE);
                         }
+
+                        @Override
+                        public void actionElemPPM() {
+                            CFG.core.setActiveProvID(-1);
+                            Menu_InGame_CivProvinces.PAGES = 1;
+                            Menu_InGame_CivProvinces.ACTIVE_PAGE = 0;
+                            Menu_InGame_CivProvinces.civID = this.getCurr();
+                            CFG.menus.rebuildInGame_CivProvinces();
+                        }
                     });
                 } else {
                     menuElements.add(new Button_Stats_Flag_Clip2(-1, "" + (i6 + 1) + ". " + CFG.lang.get("Undiscovered"), CFG.PADD, CFG.PADD * 2, tPosY, CFG.BUTTON_W * 2, tElemHeight2, CFG.getCivilizationRanking_IMG_STAR_CIVID((Integer)tSorted.get(i6))){
@@ -467,6 +477,15 @@ extends Menu {
                     public Color getColorE(boolean isActive) {
                         return isActive ? CFG.COLOR_TEXT_GRAY_LEFT_NS_ACTIVE : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_LEFT_NS_HOVER : CFG.COLOR_TEXT_GRAY_LEFT_NS) : CFG.COLOR_BUTTON_MENU_TEXT_NOT_CLICKABLE);
                     }
+
+                    @Override
+                    public void actionElemPPM() {
+                        CFG.core.setActiveProvID(-1);
+                        Menu_InGame_CivProvinces.PAGES = 1;
+                        Menu_InGame_CivProvinces.ACTIVE_PAGE = 0;
+                        Menu_InGame_CivProvinces.civID = this.getCurr();
+                        CFG.menus.rebuildInGame_CivProvinces();
+                    }
                 });
             }
             int buttonCivID = CFG.FOG_OF_WAR == 2 ? (CFG.getMetCiv((Integer)tSorted.get(i6)) ? (Integer)tSorted.get(i6) : -1) : (Integer)tSorted.get(i6);
@@ -489,30 +508,27 @@ extends Menu {
                 }
 
                 @Override
+                public Color getColorE(boolean isActive) {
+                    if (detailsMode) {
+                        return isActive ? CFG.COLOR_POPULATION_ACTIVE : (this.getIsHovered() ? CFG.COLOR_POPULATION_HOVER : CFG.COLOR_POPULATION);
+                    }
+                    return super.getColorE(isActive);
+                }
+
+                @Override
                 public void buildElemHover() {
                     try {
-                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
                         if (this.getCurr() > 0) {
-                            nData.add(new ME_Hover_2Type_Flag_Big(this.getCurr()));
-                            nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getCiv(this.getCurr()).getCivName(), CFG.COLOR_HOVER_TITLE));
-                            nElements.add(new MEHover_2E(nData));
-                            nData.clear();
-                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Population") + ": "));
-                            nData.add(new ME_Hover_2Type_Text(CFG.getNumberWthSpaces("" + CFG.core.getCiv(this.getCurr()).countPop()), CFG.COLOR_POPULATION));
-                            nData.add(new ME_Hover_2Type_Image(Images.pop, CFG.PADD, 0));
-                            nElements.add(new MEHover_2E(nData));
-                            nData.clear();
-                            nData.add(new ME_Hover_2Type_Graph(Graph2.GraphType.CIV_POPULATION, this.getCurr()));
-                            nElements.add(new MEHover_2E(nData));
-                            nData.clear();
+                            this.menuElemHover = CFG.core.getHover_PopulationOfCiv(this.getCurr());
                         } else {
+                            ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                            ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
                             nData.add(new ME_Hover_2Type_Flag_Big(-1));
                             nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Undiscovered"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                             nElements.add(new MEHover_2E(nData));
                             nData.clear();
+                            this.menuElemHover = new ME_Hover_v2(nElements);
                         }
-                        this.menuElemHover = new ME_Hover_v2(nElements);
                     }
                     catch (IndexOutOfBoundsException indexOutOfBoundsException) {
                         // empty catch block
@@ -532,6 +548,14 @@ extends Menu {
                 }
 
                 @Override
+                public Color getColorE(boolean isActive) {
+                    if (detailsMode) {
+                        return isActive ? CFG.COLOR_ECONOMY_ACTIVE : (this.getIsHovered() ? CFG.COLOR_ECONOMY_HOVER : CFG.COLOR_ECONOMY);
+                    }
+                    return super.getColorE(isActive);
+                }
+
+                @Override
                 public void actionElem(int iID) {
                     detailsMode = !detailsMode;
                     CFG.menus.rebuildInGame_Rank();
@@ -540,28 +564,17 @@ extends Menu {
                 @Override
                 public void buildElemHover() {
                     try {
-                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
                         if (this.getCurr() > 0) {
-                            nData.add(new ME_Hover_2Type_Flag_Big(this.getCurr()));
-                            nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getCiv(this.getCurr()).getCivName(), CFG.COLOR_HOVER_TITLE));
-                            nElements.add(new MEHover_2E(nData));
-                            nData.clear();
-                            nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Economy") + ": "));
-                            nData.add(new ME_Hover_2Type_Text(CFG.getNumberWthSpaces("" + CFG.core.getCiv(this.getCurr()).countEco()), CFG.COLOR_ECONOMY));
-                            nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, 0));
-                            nElements.add(new MEHover_2E(nData));
-                            nData.clear();
-                            nData.add(new ME_Hover_2Type_Graph(Graph2.GraphType.CIV_ECONOMY, this.getCurr()));
-                            nElements.add(new MEHover_2E(nData));
-                            nData.clear();
+                            this.menuElemHover = CFG.core.getHover_EcoOfCiv(this.getCurr());
                         } else {
+                            ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                            ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
                             nData.add(new ME_Hover_2Type_Flag_Big(-1));
                             nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Undiscovered"), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                             nElements.add(new MEHover_2E(nData));
                             nData.clear();
+                            this.menuElemHover = new ME_Hover_v2(nElements);
                         }
-                        this.menuElemHover = new ME_Hover_v2(nElements);
                     }
                     catch (IndexOutOfBoundsException indexOutOfBoundsException) {
                         // empty catch block
@@ -573,6 +586,24 @@ extends Menu {
                 @Override
                 public int getPosXE() {
                     return Menu_InGameRank.this.getElementW() * 6 + CFG.PADD * 2;
+                }
+
+                @Override
+                public void actionElem(int iID) {
+                    detailsMode = !detailsMode;
+                    CFG.menus.rebuildInGame_Rank();
+                }
+
+                @Override
+                public void buildElemHover() {
+                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Prestige") + ": "));
+                    nData.add(new ME_Hover_2Type_Text_Big(this.getTextE(), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.rank, CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    this.menuElemHover = new ME_Hover_v2(nElements);
                 }
 
                 @Override
@@ -590,6 +621,12 @@ extends Menu {
                 @Override
                 public int getWidthE() {
                     return Menu_InGameRank.this.getW() - Menu_InGameRank.this.getElementW() * 7;
+                }
+
+                @Override
+                public void actionElem(int iID) {
+                    detailsMode = !detailsMode;
+                    CFG.menus.rebuildInGame_Rank();
                 }
 
                 @Override

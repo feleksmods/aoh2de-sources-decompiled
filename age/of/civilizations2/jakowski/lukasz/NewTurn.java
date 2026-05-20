@@ -209,6 +209,7 @@ extends Thread {
             Core.updateOverInvestment();
             GameManager.checkCivsHatedCivilizations_IfStillExists();
             GameManager.updatePlayersFriendlyCivs();
+            GameManager.updateSpies();
             for (i = 0; i < CFG.core.getWarsSize(); ++i) {
                 ++CFG.core.getWar((int)i).iLastFight_InTurns;
             }
@@ -222,6 +223,7 @@ extends Thread {
             }
             try {
                 NewTurn.updateAlliances();
+                NewTurn.updateVassals();
             }
             catch (Exception i5) {
                 // empty catch block
@@ -250,6 +252,7 @@ extends Thread {
                     int civ = CFG.core.getPlayer((int)i).playerGD.migrationF.get(j);
                     boolean remove = true;
                     for (int k = 0; k < CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getNumOfProvs(); ++k) {
+                        if (CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getProvID(k)).isOccupied()) continue;
                         for (int o = CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getProvID(k)).getPop().getNatsSize() - 1; o >= 0; --o) {
                             int maxPop;
                             if (CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getProvID(k)).getPop().getCivID(o) != civ || (maxPop = CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getProvID(k)).getPop().getPopulationID(o)) <= 0) continue;
@@ -300,6 +303,7 @@ extends Thread {
                         try {
                             CFG.core.getCiv(this.id).setUpdateRegions(false);
                             CFG.core.buildCivilizationRegions(this.id);
+                            CFG.core.getCiv((int)this.id).uFOL = true;
                         }
                         catch (Exception exception) {
                             // empty catch block
@@ -312,6 +316,7 @@ extends Thread {
                     public void update() {
                         try {
                             CFG.core.getCiv((int)this.id).civNeighbors.buildNeighbors(this.id);
+                            CFG.core.getCiv((int)this.id).uFOL = true;
                         }
                         catch (Exception exception) {
                             // empty catch block
@@ -336,6 +341,12 @@ extends Thread {
         finally {
             CFG.menus.getInGameProvInfo().getMenuElem(0).setClickable(true);
             Menu_InGame_2.TIME_CONTINUE = System.currentTimeMillis();
+        }
+        try {
+            CFG.oAI.updateFOL();
+        }
+        catch (Exception exception) {
+            // empty catch block
         }
     }
 
@@ -1070,6 +1081,18 @@ extends Thread {
             catch (Exception exr) {
                 CFG.exceptionStack(exr);
             }
+        }
+    }
+
+    public static void updateVassals() {
+        try {
+            for (int i = GameCalendar.TURNID % 16; i < CFG.core.getCivsSize(); i += 16) {
+                if (CFG.core.getCiv(i).getNumOfProvs() > 0 || CFG.core.getCiv(i).getPuppetOfCiv() == i) continue;
+                CFG.core.getCiv(i).setPuppetOfCivId(i);
+            }
+        }
+        catch (Exception exr) {
+            CFG.exceptionStack(exr);
         }
     }
 

@@ -19,7 +19,6 @@ extends MenuElemUI {
     private int iHeightOfSlider;
     private boolean moveable = false;
     private int extraPosY = CFG.PADD + CFG.PADD / 2;
-    private float FONT_SCALE = 1.0f;
     private int iMaxHeight = 0;
     private boolean scrollModeY = false;
     private int iScrollPosY = -1;
@@ -45,7 +44,6 @@ extends MenuElemUI {
 
     private final void init(int nPosX, int nPosY, int nWidth, int nHeight, int nMaxHeight, float nFONT_SCALE) {
         this.typeOfMenuElemUI = MenuElemUI.TypeOfMenuElemUI.TEXT_SLIDER;
-        this.FONT_SCALE = nFONT_SCALE;
         this.iMaxHeight = nMaxHeight;
         this.setPosX(nPosX);
         this.setPosY(nPosY);
@@ -57,7 +55,7 @@ extends MenuElemUI {
 
     @Override
     public final void addText(String sText, int extraHeight) {
-        this.lLine.add(new TextSlider_Line(sText, this.getWidthE() - CFG.PADD * 2, extraHeight, TextSlider_Line.Align.LEFT, this.FONT_SCALE));
+        this.lLine.add(new TextSlider_Line(sText, this.getWidthE() - CFG.PADD * 2, extraHeight, TextSlider_Line.Align.LEFT, 1.0f, this.fontID));
         this.updateMoveable();
     }
 
@@ -75,14 +73,12 @@ extends MenuElemUI {
         oSB.flush();
         ScissorStack.pushScissors(clipBounds);
         oSB.setColor(new Color(0.8627451f, 0.9019608f, 0.8627451f, 1.0f));
-        CFG.fontMain.get(0).getData().setScale(this.FONT_SCALE);
         int tY = 0;
         int iSize = this.lLine.size();
         for (int i = 0; i < iSize; ++i) {
             this.lLine.get(i).draw(oSB, this.getPosXE() + CFG.PADD + iTranslateX, this.getPosY() + this.extraPosY + tY + this.iSliderPosY + iTranslateY, this.getWidthE(), this.getColor(isActive), this.fontID);
             tY += this.lLine.get(i).getHeight();
         }
-        CFG.fontMain.get(0).getData().setScale(1.0f);
         oSB.setColor(Color.WHITE);
         try {
             oSB.flush();

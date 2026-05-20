@@ -262,7 +262,7 @@ public class PNM {
     }
 
     public static final void uDPN() {
-        dPN = CFG.menus.getIn_InitMenu() || CFG.menus.getInGamesMenu() || CFG.menus.getInEditorMenu() || CFG.menus.getIn_SKMenu() || CFG.menus.getIn_MMMenu() || CFG.menus.getIn_FBMenu() || CFG.menus.getIn_NVMenu() || CFG.menus.getInNextPlayerTurn() || CFG.menus.getIn_Game_CivilizationView() || CFG.menus.getInLoadMap() || CFG.menus.getInLoadSave() || CFG.menus.getIn_SaveTheGame() ? new DPNAM(){
+        dPN = CFG.menus.getIn_InitMenu() || CFG.menus.getInFlagPainter() || CFG.menus.getInGamesMenu() || CFG.menus.getInEditorMenu() || CFG.menus.getIn_SKMenu() || CFG.menus.getIn_MMMenu() || CFG.menus.getIn_FBMenu() || CFG.menus.getIn_NVMenu() || CFG.menus.getInNextPlayerTurn() || CFG.menus.getIn_Game_CivilizationView() || CFG.menus.getInLoadMap() || CFG.menus.getInLoadSave() || CFG.menus.getIn_SaveTheGame() ? new DPNAM(){
 
             @Override
             public void dPNA(SpriteBatch oSB) {

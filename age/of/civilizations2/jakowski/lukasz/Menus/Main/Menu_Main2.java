@@ -192,6 +192,8 @@ extends Menu {
         CFG.USE_NEW_DECLARE_WAR_SYSTEM = true;
         CFG.USE_OLD_DECLARE_WAR_CHANGE_100 = 0;
         CFG.SANDBOX_MODE = false;
+        CFG.INGAME_WORLD_EDITOR = false;
+        CFG.DISABLE_DISEASES = false;
         CFG.RANDOM_PLACEMENT = false;
         CFG.RANDOM_FILL = false;
         GameCalendar.GAME_SPEED = 1.0f;
@@ -229,6 +231,7 @@ extends Menu {
         CFG.AI_CONQUER_OWN_VASSALS_IF_OVER = GameValues.gvAiDeclareWar.AI_CONQUER_OWN_VASSALS_IF_OVER;
         CFG.SANDBOX_MODE_AI = false;
         CFG.BUILD_NUKES_EXTRA_COST = 0;
+        CFG.NUKES_TOP_CIVS = CFG.NUKES_TOP_CIVS_DEFAULT;
         CFG.NUKES_REQUIRED_TECH_LVL = GameValues.gvAtomic.NUKES_REQUIRED_TECH_LVL;
         CFG.PLUNDER_MODIFIER = 1.0f;
         CFG.AI_PLUNDER_ENABLED = true;

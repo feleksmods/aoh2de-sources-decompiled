@@ -81,7 +81,7 @@ extends Menu {
                     nData.add(new ME_Hover_2Type_Space());
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
-                    if (CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCitSize() > 0) {
+                    if (CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getWastelandLvl() < 0 && CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCitiesSize() > 0) {
                         nData.add(new ME_Hover_2Type_Image(CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCivId() == CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() ? Images.iconTrue : Images.iconFalse));
                         nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Capital") + ": "));
                         nData.add(new ME_Hover_2Type_Text(CFG.core.getProv(CFG.formableCivs_GameData.getCapitalProvinceID()).getCit(0).getCityName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));

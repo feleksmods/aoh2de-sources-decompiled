@@ -16,11 +16,11 @@ extends TextLeftSide {
 
     @Override
     public void drawE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive, boolean scrollableY) {
-        IMGManager.getIMG(this.iImageID).drawO(oSB, this.getPosXE() - CFG.PADD - (int)((float)IMGManager.getIMG(this.iImageID).getWidth() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight())) + iTranslateX, this.getPosY() + (this.getHeightE() - (int)((float)IMGManager.getIMG(this.iImageID).getHeight() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight()))) / 2 - IMGManager.getIMG(this.iImageID).getHeight() + iTranslateY, (int)((float)IMGManager.getIMG(this.iImageID).getWidth() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight())), (int)((float)IMGManager.getIMG(this.iImageID).getHeight() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight())));
+        IMGManager.getIMG(this.iImageID).draw(oSB, this.getPosXE() - CFG.PADD - (int)((float)IMGManager.getIMG(this.iImageID).getWidth() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight())) + iTranslateX, this.getPosY() + (this.getHeightE() - (int)((float)IMGManager.getIMG(this.iImageID).getHeight() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight()))) / 2 + iTranslateY, (int)((float)IMGManager.getIMG(this.iImageID).getWidth() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight())), (int)((float)IMGManager.getIMG(this.iImageID).getHeight() * this.getImageScale(IMGManager.getIMG(this.iImageID).getHeight())));
         super.drawE(oSB, iTranslateX, iTranslateY, isActive, scrollableY);
     }
 
-    private final float getImageScale(int nImageHeight) {
+    public final float getImageScale(int nImageHeight) {
         return (float)this.getHeightE() / (float)nImageHeight < 1.0f ? (float)this.getHeightE() / (float)nImageHeight : 1.0f;
     }
 }

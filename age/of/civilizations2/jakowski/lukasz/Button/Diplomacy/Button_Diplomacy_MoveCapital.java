@@ -25,7 +25,7 @@ extends ButtonStats {
         this.sCost = "" + CFG.getNumberWthSpaces("" + nCost);
         CFG.glyphLay.setText(CFG.fontMain.get(this.fontID), this.sCost);
         this.iCostWidth = (int)CFG.glyphLay.width;
-        this.sProvinceName = "" + (CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName());
+        this.sProvinceName = "" + (CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(nProvinceID).getCit(0).getCityName() : CFG.core.getProv(nProvinceID).getName());
     }
 
     @Override

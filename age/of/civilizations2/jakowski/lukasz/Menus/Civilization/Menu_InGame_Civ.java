@@ -24,12 +24,15 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Religio
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Religion_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Space;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_TextDesc;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Big;
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
-import age.of.civilizations2.jakowski.lukasz.Menus.Colonization.Menu_MM;
+import age.of.civilizations2.jakowski.lukasz.Menus.Civilization.Menu_InGame_Civ_Actions;
+import age.of.civilizations2.jakowski.lukasz.Menus.Provinces.Menu_InGame_CivProvinces;
 import age.of.civilizations2.jakowski.lukasz.Menus.ZRest.Menu_InGame_CivilizationView;
 import age.of.civilizations2.jakowski.lukasz.Renderer;
 import age.of.civilizations2.jakowski.lukasz.SFXManager;
+import age.of.civilizations2.jakowski.lukasz.Save.SaveGameManager;
 import age.of.civilizations2.jakowski.lukasz.TextB.Text;
 import age.of.civilizations2.jakowski.lukasz.TextB.Texts.TextProvincesTech;
 import age.of.civilizations2.jakowski.lukasz.TextB.Texts.TextScrollable;
@@ -156,6 +159,26 @@ extends Menu {
                 nData.add(new ME_Hover_2Type_Space());
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
+                nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("RightClickToOpenRheFlagPainter"), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Image_Big(Images.brush, CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Space());
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                if (SaveGameManager.saveTag == null) {
+                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("FlagPainterSaveDesc"), CFG.COLOR_NEGATIVE_2));
+                } else {
+                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("FlagPainterSaveDesc")));
+                }
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("FlagPainterSaveDesc2")));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Space());
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("CivRank") + ": "));
                 nData.add(new ME_Hover_2Type_Text("" + CFG.core.getCiv(CFG.getActiveCivInfoId()).getRankPos() + "/" + CFG.core.getCivsSize(), CFG.COLOR_HOVER_TITLE));
                 nData.add(new ME_Hover_2Type_Image(CFG.getCivilizationRanking_IMG_STAR_CIVID(CFG.getActiveCivInfoId()), CFG.PADD, 0));
@@ -176,8 +199,7 @@ extends Menu {
 
             @Override
             public void actionElemPPM() {
-                Menu_MM.goBack = View.eINGAME;
-                CFG.menus.setMenuID(View.eMM);
+                Menu_InGame_Civ_Actions.actionFlagPainter(CFG.activeCivInfoId);
             }
         });
         menuElements.add(new TextProvincesTech(null, ButtonFlagBig.getButtonW() + CFG.PADD * 3, CFG.PADD * 4 + CFG.TEXT_HEIGHT_DEFAULT, CFG.FONT_REGULAR_SMALL){
@@ -195,6 +217,33 @@ extends Menu {
             @Override
             public int getWidthE() {
                 return Menu_InGame_Civ.getMenuCivInfoWidth() - ButtonFlagBig.getButtonW() - CFG.PADD * 5 - 2;
+            }
+
+            @Override
+            public void actionElemPPM() {
+                try {
+                    if (CFG.core.getCiv(CFG.getActiveCivInfoId()).getNumOfProvs() > 0) {
+                        Menu_InGame_CivilizationView.iCivID = CFG.getActiveCivInfoId();
+                        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iBefore_PosX = CFG.map.getMpC().getPX();
+                        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iBefore_PosY = CFG.map.getMpC().getPY();
+                        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).fBefore_Scale = CFG.map.getMpS().getCurrSc();
+                        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iBefore_ActiveProvince = CFG.core.getActiveProvID();
+                        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iACTIVE_VIEW_MODE = CFG.mapModesManager.getActiveMapModeID();
+                        CFG.mapModesManager.disableAllViews();
+                        CFG.menus.setMenuID(View.eINGAME_CIV_VIEW);
+                        if (CFG.FOG_OF_WAR == 2) {
+                            CFG.core.enableDrawCivilizationRegions_FogOfWar(Menu_InGame_CivilizationView.iCivID, 0);
+                        } else {
+                            CFG.core.enableDrawCivilizationRegions(Menu_InGame_CivilizationView.iCivID, 0);
+                        }
+                        CFG.map.getMpB().updateWorldMap_Shaders();
+                        CFG.toastM.addM(CFG.core.getCiv(Menu_InGame_CivilizationView.iCivID).getCivName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES);
+                        CFG.toastM.setTimeInView(1500);
+                    }
+                }
+                catch (Exception ex) {
+                    Menu_InGame_CivilizationView.iCivID = CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId();
+                }
             }
         });
         menuElements.add(new Text("", ButtonFlagBig.getButtonW() + CFG.PADD * 3, CFG.PADD * 4 + CFG.TEXT_HEIGHT_DEFAULT, CFG.FONT_REGULAR_SMALL){
@@ -352,28 +401,10 @@ extends Menu {
                 break;
             }
             case 3: {
-                try {
-                    if (CFG.core.getCiv(CFG.getActiveCivInfoId()).getNumOfProvs() <= 0) break;
-                    Menu_InGame_CivilizationView.iCivID = CFG.getActiveCivInfoId();
-                    CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iBefore_PosX = CFG.map.getMpC().getPX();
-                    CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iBefore_PosY = CFG.map.getMpC().getPY();
-                    CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).fBefore_Scale = CFG.map.getMpS().getCurrSc();
-                    CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iBefore_ActiveProvince = CFG.core.getActiveProvID();
-                    CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).iACTIVE_VIEW_MODE = CFG.mapModesManager.getActiveMapModeID();
-                    CFG.mapModesManager.disableAllViews();
-                    CFG.menus.setMenuID(View.eINGAME_CIV_VIEW);
-                    if (CFG.FOG_OF_WAR == 2) {
-                        CFG.core.enableDrawCivilizationRegions_FogOfWar(Menu_InGame_CivilizationView.iCivID, 0);
-                    } else {
-                        CFG.core.enableDrawCivilizationRegions(Menu_InGame_CivilizationView.iCivID, 0);
-                    }
-                    CFG.map.getMpB().updateWorldMap_Shaders();
-                    CFG.toastM.addM(CFG.core.getCiv(Menu_InGame_CivilizationView.iCivID).getCivName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES);
-                    CFG.toastM.setTimeInView(1500);
-                }
-                catch (Exception ex) {
-                    Menu_InGame_CivilizationView.iCivID = CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId();
-                }
+                Menu_InGame_CivProvinces.PAGES = 1;
+                Menu_InGame_CivProvinces.ACTIVE_PAGE = 0;
+                Menu_InGame_CivProvinces.civID = CFG.getActiveCivInfoId();
+                CFG.menus.rebuildInGame_CivProvinces();
                 break;
             }
             case 4: {

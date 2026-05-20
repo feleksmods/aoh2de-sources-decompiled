@@ -41,6 +41,11 @@ public class Menu_InGameProvAction
 extends Menu {
     private String sMigration = "";
     private int iMigrationWidth = -1;
+    public static int numOfUnits = 0;
+    public static String sUnits = "";
+    public static int textHeight = CFG.TEXT_HEIGHT_DEFAULT;
+    public static int textWidth = 10;
+    public static int armyIconWidth = 0;
 
     @Override
     public int getPosX() {
@@ -72,7 +77,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "Q";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -148,7 +162,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "W";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -311,7 +334,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "E";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -377,7 +409,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "R";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -443,7 +484,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "T";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -531,6 +581,20 @@ extends Menu {
             }
 
             @Override
+            public void setTextE(String sText) {
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
+            }
+
+            @Override
             public int getTextWidthU() {
                 return this.getIsClickable() ? super.getTextWidthU() + CFG.PADD + CFG.CIV_FLAG_WIDTH : Math.max(super.getTextWidthU() + CFG.PADD + CFG.CIV_FLAG_WIDTH, Menu_InGameProvAction.this.iMigrationWidth);
             }
@@ -615,7 +679,16 @@ extends Menu {
 
             @Override
             public void setTextE(String sText) {
-                super.setTextE(sText);
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
                 this.sKey = "Y";
                 CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_REGULAR_SMALL), this.sKey);
                 this.iKeyWidth = (int)CFG.glyphLay.width;
@@ -717,6 +790,20 @@ extends Menu {
             }
 
             @Override
+            public void setTextE(String sText) {
+                try {
+                    super.setTextE(sText);
+                    int tWMax = 0;
+                    while (this.iTextWidth > this.getWidthE() - CFG.PADD && this.getTextE().length() > 5 && ++tWMax < 100) {
+                        super.setTextE(this.getTextE().substring(0, Math.max(1, this.getTextE().length() - 3)) + "..");
+                    }
+                }
+                catch (Exception ex) {
+                    CFG.exceptionStack(ex);
+                }
+            }
+
+            @Override
             public void drawButtonBGE(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
                 super.drawButtonBGE(oSB, iTranslateX, iTranslateY, isActive);
                 if (isActive) {
@@ -805,6 +892,60 @@ extends Menu {
         }
         IMGManager.getIMG(Images.bgGameAction).draw2(oSB, this.getPosX() + iTranslateX, this.getPosY() - 1 + iTranslateY, tWidth += CFG.PADD + 1, this.getHeightM() + 1, true, false);
         super.draw(oSB, iTranslateX, iTranslateY, sliderMenuIsActive);
+        Menu_InGameProvAction.draw4(oSB, this.getPosX() + iTranslateX, this.getPosY() + iTranslateY, sliderMenuIsActive);
+    }
+
+    public static void draw4(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean sliderMenuIsActive) {
+        block8: {
+            if (!TouchManager.lMABX.isEmpty()) {
+                try {
+                    int units = 0;
+                    for (int i = 0; i < TouchManager.lMABX.size(); ++i) {
+                        units += CFG.core.getProv(TouchManager.lMABX.get(i)).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+                    }
+                    if (units <= 0) break block8;
+                    if (units != numOfUnits) {
+                        numOfUnits = units;
+                        sUnits = CFG.getNumberWthSpaces("" + units);
+                        try {
+                            if (sUnits != null && sUnits.length() > 0) {
+                                CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_BOLD), sUnits);
+                                textWidth = (int)CFG.glyphLay.width;
+                                textHeight = (int)CFG.glyphLay.height;
+                            }
+                        }
+                        catch (Exception i) {
+                            // empty catch block
+                        }
+                        armyIconWidth = (int)((float)IMGManager.getIMG(Images.diploArmy).getWidth() * Menu_InGameProvAction.getImageScale(Images.diploArmy));
+                    }
+                    int width = textWidth + CFG.PADD * 7 + IMGManager.getIMG(Images.flagRect2).getWidth() + armyIconWidth;
+                    int height = Math.max(textHeight, IMGManager.getIMG(Images.flagRect2).getHeight()) + CFG.PADD * 4;
+                    int posX = CFG.PADD * 2 + iTranslateX;
+                    int posY = -CFG.PADD * 2 - height + iTranslateY;
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DARK_BLUE.r, CFG.COLOR_GRADIENT_DARK_BLUE.g, CFG.COLOR_GRADIENT_DARK_BLUE.b, 0.925f));
+                    Renderer.drawBox2(oSB, Images.statsRectBG, posX, posY, width, height, 1.0f);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.25f));
+                    IMGManager.getIMG(Images.gradientFull).draw(oSB, posX, posY, width, height);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DIPLOMACY.r, CFG.COLOR_GRADIENT_DIPLOMACY.g, CFG.COLOR_GRADIENT_DIPLOMACY.b, 0.25f));
+                    IMGManager.getIMG(Images.gradientXY).draw(oSB, posX, posY, width, height);
+                    oSB.setColor(new Color(CFG.COLOR_GRADIENT_DARK_BLUE.r, CFG.COLOR_GRADIENT_DARK_BLUE.g, CFG.COLOR_GRADIENT_DARK_BLUE.b, 0.25f));
+                    Renderer.drawBox2(oSB, Images.statsRectBGBorder, posX + 1, posY + 1, width - 2, height - 2, 1.0f);
+                    oSB.setColor(new Color(0.0f, 0.0f, 0.0f, 0.25f));
+                    Renderer.drawBox2(oSB, Images.statsRectBGBorder, posX, posY, width, height, 1.0f);
+                    Core.drawFlagRect(oSB, posX + CFG.PADD * 2, posY + height / 2 - IMGManager.getIMG(Images.flagRect2).getHeight() / 2, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+                    Renderer.drawTextWithShadow(oSB, CFG.FONT_BOLD, sUnits, posX + CFG.PADD * 4 + IMGManager.getIMG(Images.flagRect2).getWidth(), posY + height / 2 - textHeight / 2, CFG.COLOR_NEUTRAL2);
+                    IMGManager.getIMG(Images.diploArmy).draw(oSB, posX + CFG.PADD * 5 + IMGManager.getIMG(Images.flagRect2).getWidth() + textWidth, posY + height / 2 - (int)((float)IMGManager.getIMG(Images.diploArmy).getHeight() * Menu_InGameProvAction.getImageScale(Images.diploArmy)) / 2, armyIconWidth, (int)((float)IMGManager.getIMG(Images.diploArmy).getHeight() * Menu_InGameProvAction.getImageScale(Images.diploArmy)));
+                }
+                catch (Exception exception) {
+                    // empty catch block
+                }
+            }
+        }
+    }
+
+    public static final float getImageScale(int iImageID) {
+        return Math.min(1.0f, (float)CFG.TEXT_HEIGHT_DEFAULT / (float)IMGManager.getIMG(iImageID).getHeight());
     }
 
     @Override

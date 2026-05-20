@@ -1390,7 +1390,7 @@ extends Menu {
                 Keyboard.changeAllianceNameMode = -1;
                 Keyboard.changeProvinceNameMode = CFG.core.getActiveProvID();
                 Keyboard.changeCityNameIDToo = -1;
-                for (int c = 0; c < CFG.core.getProv(Keyboard.changeProvinceNameMode).getCitSize(); ++c) {
+                for (int c = 0; c < CFG.core.getProv(Keyboard.changeProvinceNameMode).getCitiesSize(); ++c) {
                     if (!CFG.core.getProv(Keyboard.changeProvinceNameMode).getCit(c).getCityName().equals(this.getMenuElem(iID).getTextE())) continue;
                     Keyboard.changeCityNameIDToo = c;
                     break;
@@ -1722,48 +1722,52 @@ extends Menu {
     }
 
     public static final ME_Hover_v2 getHoverProvince() {
+        return Menu_InGame_ProvInfo.getHoverProvince(CFG.ACTIVE_PROVINCE_INFO);
+    }
+
+    public static final ME_Hover_v2 getHoverProvince(int id) {
         try {
             ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
             ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-            if (CFG.ACTIVE_PROVINCE_INFO >= 0 && CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getName().length() > 0) {
+            if (id >= 0 && CFG.core.getProv(id).getName().length() > 0) {
                 nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("ProvinceName") + ": "));
-                nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getName(), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getProv(id).getName(), CFG.COLOR_HOVER_TITLE));
                 if (CFG.FOG_OF_WAR == 2) {
-                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getMetCiv(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCivId()) ? CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCivId() : -1, CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getMetCiv(CFG.core.getProv(id).getCivId()) ? CFG.core.getProv(id).getCivId() : -1, CFG.PADD, 0));
                 } else {
-                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCivId(), CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(id).getCivId(), CFG.PADD, 0));
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).isOccupied()) {
+                if (CFG.core.getProv(id).isOccupied()) {
                     nData.add(new ME_Hover_2Type_Image_Big(Images.pattern, CFG.PADD, 0));
                     if (CFG.FOG_OF_WAR == 2) {
-                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.getMetCiv(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getTrueOwnerOfProv()) ? CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getTrueOwnerOfProv() : -1, CFG.PADD, 0));
+                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.getMetCiv(CFG.core.getProv(id).getTrueOwnerOfProv()) ? CFG.core.getProv(id).getTrueOwnerOfProv() : -1, CFG.PADD, 0));
                     } else {
-                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getTrueOwnerOfProv(), CFG.PADD, 0));
+                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getProv(id).getTrueOwnerOfProv(), CFG.PADD, 0));
                     }
                 }
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).isOccupied()) {
+                if (CFG.core.getProv(id).isOccupied()) {
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("RightfulOwner") + ": "));
-                    nData.add(new ME_Hover_2Type_Text(CFG.core.getCiv(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getTrueOwnerOfProv()).getCivName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
-                    nData.add(new ME_Hover_2Type_Flag(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getTrueOwnerOfProv(), CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Text(CFG.core.getCiv(CFG.core.getProv(id).getTrueOwnerOfProv()).getCivName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Flag(CFG.core.getProv(id).getTrueOwnerOfProv(), CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("OccupiedBy") + ": "));
-                    nData.add(new ME_Hover_2Type_Text(CFG.core.getCiv(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCivId()).getCivName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
-                    nData.add(new ME_Hover_2Type_Flag(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCivId(), CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Text(CFG.core.getCiv(CFG.core.getProv(id).getCivId()).getCivName(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Flag(CFG.core.getProv(id).getCivId(), CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Continent") + ": "));
-                nData.add(new ME_Hover_2Type_Text(CFG.map.getMapContinents().getName(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getContinent()), CFG.map.getMapContinents().getColor(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getContinent())));
+                nData.add(new ME_Hover_2Type_Text(CFG.map.getMapContinents().getName(CFG.core.getProv(id).getContinent()), CFG.map.getMapContinents().getColor(CFG.core.getProv(id).getContinent())));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getMountainsSize() > 0) {
-                    for (int i = 0; i < CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getMountainsSize(); ++i) {
+                if (CFG.core.getProv(id).getMountainsSize() > 0) {
+                    for (int i = 0; i < CFG.core.getProv(id).getMountainsSize(); ++i) {
                         nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Mountain") + ": "));
-                        nData.add(new ME_Hover_2Type_Text(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getMountain(i).getName() + " ", CFG.COLOR_HOVER_TITLE));
-                        nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getMountain(i).getElevation() + "m / " + CFG.getMetersToFeet(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getMountain(i).getElevation()) + "ft", CFG.COLOR_NEUTRAL));
+                        nData.add(new ME_Hover_2Type_Text(CFG.core.getProv(id).getMountain(i).getName() + " ", CFG.COLOR_HOVER_TITLE));
+                        nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getMountain(i).getElevation() + "m / " + CFG.getMetersToFeet(CFG.core.getProv(id).getMountain(i).getElevation()) + "ft", CFG.COLOR_NEUTRAL));
                         nData.add(new ME_Hover_2Type_Image(Images.mount, CFG.PADD, 0));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
@@ -1773,38 +1777,38 @@ extends Menu {
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("StartingPopulation") + ": "));
-                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingPopulation), CFG.COLOR_POPULATION));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)id).provGD.startingPopulation), CFG.COLOR_POPULATION));
                 nData.add(new ME_Hover_2Type_Image(Images.pop, CFG.PADD, CFG.PADD));
-                long difference = CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getPop().getPops() - CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingPopulation;
+                long difference = CFG.core.getProv(id).getPop().getPops() - CFG.core.getProv((int)id).provGD.startingPopulation;
                 nData.add(new ME_Hover_2Type_Text((difference > 0L ? "+" : "") + CFG.getNumberWthSpaces("" + difference), difference == 0L ? CFG.COLOR_NEUTRAL : (difference > 0L ? CFG.COLOR_POSITIVE : CFG.COLOR_NEGATIVE_1)));
                 nData.add(new ME_Hover_2Type_Image(Images.pop, CFG.PADD, 0));
-                nData.add(new ME_Hover_2Type_Text(" [" + (difference > 0L ? "+" : "") + CFG.getPercentage2Old(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getPop().getPops() - CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingPopulation, CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingPopulation, 100) + "%]", CFG.COLOR_NEUTRAL));
+                nData.add(new ME_Hover_2Type_Text(" [" + (difference > 0L ? "+" : "") + CFG.getPercentage2Old(CFG.core.getProv(id).getPop().getPops() - CFG.core.getProv((int)id).provGD.startingPopulation, CFG.core.getProv((int)id).provGD.startingPopulation, 100) + "%]", CFG.COLOR_NEUTRAL));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("StartingEconomy") + ": "));
-                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingEconomy), CFG.COLOR_ECONOMY));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)id).provGD.startingEconomy), CFG.COLOR_ECONOMY));
                 nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, CFG.PADD));
-                difference = CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getEco() - CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingEconomy;
+                difference = CFG.core.getProv(id).getEco() - CFG.core.getProv((int)id).provGD.startingEconomy;
                 nData.add(new ME_Hover_2Type_Text((difference > 0L ? "+" : "") + CFG.getNumberWthSpaces("" + difference), difference == 0L ? CFG.COLOR_NEUTRAL : (difference > 0L ? CFG.COLOR_POSITIVE : CFG.COLOR_NEGATIVE_1)));
                 nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, 0));
-                nData.add(new ME_Hover_2Type_Text(" [" + (difference > 0L ? "+" : "") + CFG.getPercentage2Old(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getEco() - CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingEconomy, CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.startingEconomy, 100) + "%]", CFG.COLOR_NEUTRAL));
+                nData.add(new ME_Hover_2Type_Text(" [" + (difference > 0L ? "+" : "") + CFG.getPercentage2Old(CFG.core.getProv(id).getEco() - CFG.core.getProv((int)id).provGD.startingEconomy, CFG.core.getProv((int)id).provGD.startingEconomy, 100) + "%]", CFG.COLOR_NEUTRAL));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Space());
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
-                boolean showsRecruitedArmy = CFG.SPECTATOR_MODE || CFG.FOG_OF_WAR < 1 || CFG.core.isAlly(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCivId());
+                boolean showsRecruitedArmy = CFG.SPECTATOR_MODE || CFG.FOG_OF_WAR < 1 || CFG.core.isAlly(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(id).getCivId());
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalUnitsRecruitedFromProvince") + ": "));
-                nData.add(new ME_Hover_2Type_Text("" + (showsRecruitedArmy ? CFG.getNumberWthSpaces("" + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iNumOfRecruitedArmyTotal) : "?"), CFG.COLOR_NEUTRAL));
+                nData.add(new ME_Hover_2Type_Text("" + (showsRecruitedArmy ? CFG.getNumberWthSpaces("" + CFG.core.getProv((int)id).provGD.iNumOfRecruitedArmyTotal) : "?"), CFG.COLOR_NEUTRAL));
                 nData.add(new ME_Hover_2Type_Image(Images.pop, CFG.PADD, 0));
                 nData.add(new ME_Hover_2Type_Image(Images.diploArmy, CFG.PADD, 0));
                 if (showsRecruitedArmy) {
-                    nData.add(new ME_Hover_2Type_Text(" [" + CFG.getPercentage2Old(CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iNumOfRecruitedArmyTotal, CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getPop().getPops() + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iNumOfRecruitedArmyTotal + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iPlaguesDeaths, 100) + "%]", CFG.COLOR_NEUTRAL));
+                    nData.add(new ME_Hover_2Type_Text(" [" + CFG.getPercentage2Old(CFG.core.getProv((int)id).provGD.iNumOfRecruitedArmyTotal, CFG.core.getProv(id).getPop().getPops() + CFG.core.getProv((int)id).provGD.iNumOfRecruitedArmyTotal + CFG.core.getProv((int)id).provGD.iPlaguesDeaths, 100) + "%]", CFG.COLOR_NEUTRAL));
                 }
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalArmyCasualtiesInProvince") + ": "));
-                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.totalCasualtiesInProvince), CFG.COLOR_NEGATIVE_1));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)id).provGD.totalCasualtiesInProvince), CFG.COLOR_NEGATIVE_1));
                 nData.add(new ME_Hover_2Type_Image(Images.diploArmy, CFG.PADD, 0));
                 nData.add(new ME_Hover_2Type_Image(Images.pop, CFG.PADD, 0));
                 nData.add(new ME_Hover_2Type_Image(Images.skull, CFG.PADD, 0));
@@ -1814,27 +1818,27 @@ extends Menu {
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalNumberOfAllDiseasesInProvince") + ": "));
-                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iPlaguesDeaths), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)id).provGD.iPlaguesDeaths), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                 nData.add(new ME_Hover_2Type_Image(Images.disease, CFG.PADD, 0));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
                 nData.add(new ME_Hover_2Type_Text(CFG.lang.get("TotalDeathsDueToDiseases") + ": "));
-                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iPlaguesDeaths), CFG.COLOR_NEGATIVE_1));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.core.getProv((int)id).provGD.iPlaguesDeaths), CFG.COLOR_NEGATIVE_1));
                 nData.add(new ME_Hover_2Type_Image(Images.disease, CFG.PADD, 0));
                 nData.add(new ME_Hover_2Type_Image(Images.skull, CFG.PADD, 0));
-                nData.add(new ME_Hover_2Type_Text(" [" + CFG.getPercentage2Old(CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iPlaguesDeaths, CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getPop().getPops() + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iNumOfRecruitedArmyTotal + CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.iPlaguesDeaths, 100) + "%]", CFG.COLOR_NEUTRAL));
+                nData.add(new ME_Hover_2Type_Text(" [" + CFG.getPercentage2Old(CFG.core.getProv((int)id).provGD.iPlaguesDeaths, CFG.core.getProv(id).getPop().getPops() + CFG.core.getProv((int)id).provGD.iNumOfRecruitedArmyTotal + CFG.core.getProv((int)id).provGD.iPlaguesDeaths, 100) + "%]", CFG.COLOR_NEUTRAL));
                 nElements.add(new MEHover_2E(nData));
                 nData.clear();
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFort() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWatchTower() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfPort() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfLibrary() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFarm() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWorkshop() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfArmoury() > 0 || CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfSupply() > 0 || CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.wonderBuilt) {
+                if (CFG.core.getProv(id).getLvlOfFort() > 0 || CFG.core.getProv(id).getLvlOfWatchTower() > 0 || CFG.core.getProv(id).getLvlOfPort() > 0 || CFG.core.getProv(id).getLvlOfLibrary() > 0 || CFG.core.getProv(id).getLvlOfFarm() > 0 || CFG.core.getProv(id).getLvlOfWorkshop() > 0 || CFG.core.getProv(id).getLvlOfArmoury() > 0 || CFG.core.getProv(id).getLvlOfSupply() > 0 || CFG.core.getProv((int)id).provGD.wonderBuilt) {
                     nData.add(new ME_Hover_2Type_Space());
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
                 try {
-                    if (CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).provGD.wonderBuilt) {
-                        nData.add(new ME_Hover_2Type_Text(CFG.lang.get(CFG.core.getProv((int)CFG.ACTIVE_PROVINCE_INFO).getWonder((int)0).sName) + ": "));
+                    if (CFG.core.getProv((int)id).provGD.wonderBuilt) {
+                        nData.add(new ME_Hover_2Type_Text(CFG.lang.get(CFG.core.getProv((int)id).getWonder((int)0).sName) + ": "));
                         nData.add(new ME_Hover_2Type_Text("+" + (int)(GameValues.gvWonder.GROWTH_RATE * 100.0f) + "%", CFG.COLOR_HOVER_TITLE));
-                        nData.add(new ME_Hover_2Type_Wonder(CFG.ACTIVE_PROVINCE_INFO, 0, CFG.PADD, 0));
+                        nData.add(new ME_Hover_2Type_Wonder(id, 0, CFG.PADD, 0));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
                     }
@@ -1842,11 +1846,11 @@ extends Menu {
                 catch (Exception exception) {
                     // empty catch block
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFort() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getFort_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFort())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfFort() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getFort_Name(CFG.core.getProv(id).getLvlOfFort())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bFort, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFort(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfFort(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
@@ -1855,15 +1859,15 @@ extends Menu {
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("DefenseBonus") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + BuildingsManager.getFort_DefenseBonus(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFort()) + "%", CFG.COLOR_POSITIVE));
+                    nData.add(new ME_Hover_2Type_Text("+" + BuildingsManager.getFort_DefenseBonus(CFG.core.getProv(id).getLvlOfFort()) + "%", CFG.COLOR_POSITIVE));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWatchTower() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getTower_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWatchTower())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfWatchTower() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getTower_Name(CFG.core.getProv(id).getLvlOfWatchTower())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bTower, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWatchTower(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfWatchTower(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
@@ -1872,15 +1876,15 @@ extends Menu {
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("DefenseBonus") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + BuildingsManager.getTower_DefenseBonus(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWatchTower()) + "%", CFG.COLOR_POSITIVE));
+                    nData.add(new ME_Hover_2Type_Text("+" + BuildingsManager.getTower_DefenseBonus(CFG.core.getProv(id).getLvlOfWatchTower()) + "%", CFG.COLOR_POSITIVE));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfPort() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getPort_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfPort())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfPort() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getPort_Name(CFG.core.getProv(id).getLvlOfPort())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bPort, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfPort(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfPort(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
@@ -1890,56 +1894,56 @@ extends Menu {
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("IncomeProduction") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + (int)(BuildingsManager.getPort_IncomeProduction(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfPort()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
+                    nData.add(new ME_Hover_2Type_Text("+" + (int)(BuildingsManager.getPort_IncomeProduction(CFG.core.getProv(id).getLvlOfPort()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
                     nData.add(new ME_Hover_2Type_Image(Images.economy, CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfLibrary() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getLibrary_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfLibrary())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfLibrary() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getLibrary_Name(CFG.core.getProv(id).getLvlOfLibrary())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bLibrary, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfLibrary(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfLibrary(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("+1"), CFG.COLOR_RESEARCH));
                     nData.add(new ME_Hover_2Type_Image(Images.research, CFG.PADD, CFG.PADD));
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("ResearchPerTurnForEveryXPeopleInProvince", BuildingsManager.getLibrary_ResearchPerPopulation(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfLibrary())), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get("ResearchPerTurnForEveryXPeopleInProvince", BuildingsManager.getLibrary_ResearchPerPopulation(CFG.core.getProv(id).getLvlOfLibrary())), CFG.COLOR_HOVER_TITLE));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFarm() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getFarm_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFarm())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfFarm() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getFarm_Name(CFG.core.getProv(id).getLvlOfFarm())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bFarm, CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("GrowthRate") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + (int)(BuildingsManager.getFarm_GrowthRateBonus(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfFarm()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
+                    nData.add(new ME_Hover_2Type_Text("+" + (int)(BuildingsManager.getFarm_GrowthRateBonus(CFG.core.getProv(id).getLvlOfFarm()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
                     nData.add(new ME_Hover_2Type_Image(Images.popGrowth, CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWorkshop() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getWorkshop_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWorkshop())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfWorkshop() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getWorkshop_Name(CFG.core.getProv(id).getLvlOfWorkshop())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bWorkshop, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWorkshop(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfWorkshop(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("IncomeProduction") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("+" + (int)(BuildingsManager.getWorkshop_IncomeProduction(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfWorkshop()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
+                    nData.add(new ME_Hover_2Type_Text("+" + (int)(BuildingsManager.getWorkshop_IncomeProduction(CFG.core.getProv(id).getLvlOfWorkshop()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
                     nData.add(new ME_Hover_2Type_Image(Images.popGrowth, CFG.PADD, 0));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfArmoury() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getArmoury_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfArmoury())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfArmoury() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getArmoury_Name(CFG.core.getProv(id).getLvlOfArmoury())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bArmoury, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfArmoury(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfArmoury(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
@@ -1947,26 +1951,26 @@ extends Menu {
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfSupply() > 0) {
-                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getSupply_Name(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfSupply())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                if (CFG.core.getProv(id).getLvlOfSupply() > 0) {
+                    nData.add(new ME_Hover_2Type_Text(CFG.lang.get(BuildingsManager.getSupply_Name(CFG.core.getProv(id).getLvlOfSupply())), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nData.add(new ME_Hover_2Type_Image(Images.bSupply, CFG.PADD, CFG.PADD));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Level") + ": ", CFG.COLOR_NEUTRAL));
-                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfSupply(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
+                    nData.add(new ME_Hover_2Type_Text("" + CFG.core.getProv(id).getLvlOfSupply(), CFG.COLOR_TEXT_NUM_OF_PROVINCES));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                     nData.add(new ME_Hover_2Type_Text(" - "));
                     nData.add(new ME_Hover_2Type_Text(CFG.lang.get("MilitaryUpkeep") + ": "));
-                    nData.add(new ME_Hover_2Type_Text("-" + (int)(BuildingsManager.getSupply_Bonus(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getLvlOfSupply()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
+                    nData.add(new ME_Hover_2Type_Text("-" + (int)(BuildingsManager.getSupply_Bonus(CFG.core.getProv(id).getLvlOfSupply()) * 100.0f) + "%", CFG.COLOR_POSITIVE));
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
-                if (CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCitSize() > 1) {
+                if (CFG.core.getProv(id).getCitiesSize() > 1) {
                     nData.add(new ME_Hover_2Type_Space());
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
-                    for (int a = CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCitSize() - 1; a >= 0; --a) {
-                        nData.add(new ME_Hover_2Type_Text(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCit(a).getCityName(), CFG.COLOR_HOVER_TITLE));
-                        nData.add(new ME_Hover_2Type_Image(CFG.core.getProv(CFG.ACTIVE_PROVINCE_INFO).getCit(a).getCityLevel(), CFG.PADD, 0));
+                    for (int a = CFG.core.getProv(id).getCitiesSize() - 1; a >= 0; --a) {
+                        nData.add(new ME_Hover_2Type_Text(CFG.core.getProv(id).getCit(a).getCityName(), CFG.COLOR_HOVER_TITLE));
+                        nData.add(new ME_Hover_2Type_Image(CFG.core.getProv(id).getCit(a).getCityLevel(), CFG.PADD, 0));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
                     }
@@ -1976,7 +1980,7 @@ extends Menu {
             }
             return new ME_Hover_v2(nElements);
         }
-        catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+        catch (Exception exception) {
             return null;
         }
     }

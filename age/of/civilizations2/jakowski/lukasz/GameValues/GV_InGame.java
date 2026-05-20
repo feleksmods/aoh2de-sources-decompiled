@@ -1,7 +1,7 @@
 package age.of.civilizations2.jakowski.lukasz.GameValues;
 
 public class GV_InGame {
-    public int MENUS_LEFT_WIDTH = 320;
+    public int MENUS_LEFT_WIDTH = 325;
     public int TOP_PROVINCES_LIMIT = 100;
     public boolean LOAD_LEADERS_ENABLED = true;
     public boolean LOAD_SEA_PROVINCES_IMAGES = true;

@@ -62,7 +62,7 @@ extends Menu {
             public void buildElemHover() {
                 ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
                 ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                if (CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCapitalProvID()).getCitSize() > 0) {
+                if (CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCapitalProvID()).getCitiesSize() > 0) {
                     nData.add(new ME_Hover_2Type_Flag_Big(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()));
                     nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("Capital") + ": "));
                     nData.add(new ME_Hover_2Type_Text_Big(CFG.core.getProv(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCapitalProvID()).getCit(0).getCityName(), CFG.COLOR_HOVER_TITLE));
@@ -737,6 +737,22 @@ extends Menu {
                     nElements.add(new MEHover_2E(nData));
                     nData.clear();
                 }
+                nData.add(new ME_Hover_2Type_Space());
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("NukesRestrictedToTopCivilizations") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.NUKES_TOP_CIVS) + " / " + (CFG.core.getCivsSize() - 1), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Image(Images.rank, CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("NuclearWeaponsCanOnlyBeBuiltByTheTopRankedCivs")));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Ranking") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos(), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Flag(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
                 this.menuElemHover = new ME_Hover_v2(nElements);
             }
         });

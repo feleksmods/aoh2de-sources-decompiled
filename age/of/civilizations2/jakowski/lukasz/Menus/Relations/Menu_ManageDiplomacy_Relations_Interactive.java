@@ -15,6 +15,7 @@ import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text_Bi
 import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Sliders.InGame.Diplomacy.Slider_Relations;
 import age.of.civilizations2.jakowski.lukasz.Sliders.InGame.Diplomacy.Slider_Relations2;
+import age.of.civilizations2.jakowski.lukasz.View;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
@@ -162,5 +163,8 @@ extends Menu {
     private final void updateRelation() {
         CFG.core.setCivRelationOfCivBWar(CFG.MANAGE_DIPLOMACY_CUSTOMIZE_RELATIONS_CIV_ID, CFG.MANAGE_DIPLOMACY_CUSTOMIZE_RELATIONS_CIV_ID2, this.getMenuElem(2).getCurr());
         CFG.core.setCivRelationOfCivBWar(CFG.MANAGE_DIPLOMACY_CUSTOMIZE_RELATIONS_CIV_ID2, CFG.MANAGE_DIPLOMACY_CUSTOMIZE_RELATIONS_CIV_ID, this.getMenuElem(5).getCurr());
+        if (CFG.backToMenu == View.eINGAME) {
+            CFG.core.addWarData(CFG.MANAGE_DIPLOMACY_CUSTOMIZE_RELATIONS_CIV_ID2, CFG.MANAGE_DIPLOMACY_CUSTOMIZE_RELATIONS_CIV_ID);
+        }
     }
 }

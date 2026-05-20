@@ -6,6 +6,7 @@ import age.of.civilizations2.jakowski.lukasz.IMGManager;
 import age.of.civilizations2.jakowski.lukasz.Images;
 import age.of.civilizations2.jakowski.lukasz.Keyboard;
 import age.of.civilizations2.jakowski.lukasz.Menus.Alliance.Menu_InGame_Alliance;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainter;
 import age.of.civilizations2.jakowski.lukasz.Pallet_Manager;
 import age.of.civilizations2.jakowski.lukasz.Z_Other.ColorPicker.ColorPicker_AoC_Action;
 import age.of.civilizations2.jakowski.lukasz.Z_Other.ST.sUM;
@@ -76,6 +77,20 @@ public class ColorPicker_AoC {
                         }
                         CFG.menus.getColorPicker().setActiveRGBColor(CFG.core.getCiv(CFG.core.getProv(CFG.core.getActiveProvID()).getCivId()).getR(), CFG.core.getCiv(CFG.core.getProv(CFG.core.getActiveProvID()).getCivId()).getG(), CFG.core.getCiv(CFG.core.getProv(CFG.core.getActiveProvID()).getCivId()).getB());
                         CFG.menus.getColorPicker().updateColors();
+                    }
+                };
+                break;
+            }
+            case FLAG_PAINTER: {
+                this.ColorPicker_AoC_Action = new ColorPicker_AoC_Action(){
+
+                    @Override
+                    public void update() {
+                        Menu_InGame_FlagPainter.brushColor = new Color(((ColorPicker_AoC)ColorPicker_AoC.this).activeColor.r, ((ColorPicker_AoC)ColorPicker_AoC.this).activeColor.g, ((ColorPicker_AoC)ColorPicker_AoC.this).activeColor.b, 1.0f);
+                    }
+
+                    @Override
+                    public void setActiveProvince_Action() {
                     }
                 };
                 break;
@@ -616,6 +631,24 @@ public class ColorPicker_AoC {
         }
     }
 
+    public final void updateColors2() {
+        try {
+            this.lColorsBoxes.clear();
+            this.lColors.clear();
+            int nBoxWidth = this.getColorBoxWidth();
+            this.lColorsBoxes.add(new Box(0, CFG.PADD, nBoxWidth, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 2));
+            this.lColors.add(Menu_InGame_FlagPainter.FLAG_COLORS[0]);
+            int i = this.lColorsBoxes.get(0).getPosX() + this.lColorsBoxes.get(0).getWidth();
+            for (int j = 1; j < Menu_InGame_FlagPainter.FLAG_COLORS.length && i < CFG.GAMEWIDTH; i += nBoxWidth, ++j) {
+                this.lColorsBoxes.add(new Box(i, CFG.PADD, nBoxWidth, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 2));
+                this.lColors.add(Menu_InGame_FlagPainter.FLAG_COLORS[j]);
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
+    }
+
     public final void draw(SpriteBatch oSB, int iTranslateX) {
         oSB.setColor(1.0f, 1.0f, 1.0f, this.fAlpha);
         IMGManager.getIMG(Images.gameTopEdge).draw2O(oSB, this.iPosX - CFG.PADD * 2 + iTranslateX, this.iPosY - CFG.PADD * 2 - IMGManager.getIMG(Images.gameTopEdge).getHeight(), this.getWidth() + CFG.PADD * 4 - IMGManager.getIMG(Images.gameTopEdge).getWidth(), this.getHeight() + CFG.PADD * 4 - IMGManager.getIMG(Images.gameTopEdge).getHeight());
@@ -1113,7 +1146,8 @@ public class ColorPicker_AoC {
         EDITOR_CIV_FLAG_OVERLAY_COLOR,
         MAP_EDITOR_TRADE_ZONES,
         PB_STRA,
-        PB_DASH;
+        PB_DASH,
+        FLAG_PAINTER;
 
     }
 

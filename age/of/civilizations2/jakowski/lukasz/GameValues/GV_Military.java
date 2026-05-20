@@ -16,4 +16,6 @@ public class GV_Military {
     public float ARMY_EXPERIENCE_MILITARY_SPENDING_MAX_VALUE = 37.5f;
     public float ARMY_EXPERIENCE_PER_CONQUERED_PROVINCE = 0.57f;
     public int AI_MILITARY_EXPERTISE_ATTACK_CHANCE_100 = 60;
+    public float ARMY_UPKEEP_TIME_GROWTH_PER_TURN = 7.5E-4f;
+    public float ARMY_UPKEEP_TIME_MAX_MODIFIER = 1.5f;
 }

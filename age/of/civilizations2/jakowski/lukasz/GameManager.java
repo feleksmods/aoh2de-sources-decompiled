@@ -65,6 +65,7 @@ import age.of.civilizations2.jakowski.lukasz.Messages.Info.Message_TechPoints;
 import age.of.civilizations2.jakowski.lukasz.Messages.Info.Message_Uncivilized;
 import age.of.civilizations2.jakowski.lukasz.Messages.Invest.Message_InvestForeignBuilding_Receiving;
 import age.of.civilizations2.jakowski.lukasz.Messages.Invest.Message_InvestForeign_Receiving;
+import age.of.civilizations2.jakowski.lukasz.Messages.Invest.Message_SpyMissionEnd;
 import age.of.civilizations2.jakowski.lukasz.Messages.LoanRQ.Message_LoanRequest;
 import age.of.civilizations2.jakowski.lukasz.Messages.LoanRQ.Message_LoanRequest_Accepted;
 import age.of.civilizations2.jakowski.lukasz.Messages.LoanRQ.Message_LoanRequest_Refused;
@@ -172,6 +173,12 @@ public class GameManager {
         try {
             if (nMoney > 0 && provinceID >= 0 && CFG.core.getProv(provinceID).getCivId() > 0 && !CFG.core.getProv(provinceID).getSeaProv() && CFG.core.getProv(provinceID).getWastelandLvl() < 0) {
                 if (CFG.core.getCiv(civID).areSanctionsAdded(civID, CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), civID)) {
+                    return false;
+                }
+                if (CFG.core.getProv(provinceID).isOccupied()) {
+                    return false;
+                }
+                if (CFG.core.getNumOfForeignInvestments(provinceID) >= GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE) {
                     return false;
                 }
                 if ((nMoney = (int)Math.min((long)nMoney, CFG.core.getCiv(civID).getGold())) <= 0) {
@@ -439,6 +446,9 @@ public class GameManager {
         try {
             if (provinceID >= 0 && CFG.core.getProv(provinceID).getCivId() > 0) {
                 if (CFG.core.getCiv(civID).areSanctionsAdded(civID, CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), civID)) {
+                    return false;
+                }
+                if (CFG.core.getProv(provinceID).isOccupied()) {
                     return false;
                 }
                 block13: for (int a = 0; a < build.size(); ++a) {
@@ -1779,7 +1789,7 @@ public class GameManager {
                 }
                 if (CFG.core.getCiv(iFromCivID).getCapitalProvID() >= 0) {
                     CFG.core.getProv(CFG.core.getCiv(iFromCivID).getCapitalProvID()).setIsCapital(false);
-                    for (i = 0; i < CFG.core.getProv(CFG.core.getCiv(iFromCivID).getCapitalProvID()).getCitSize(); ++i) {
+                    for (i = 0; i < CFG.core.getProv(CFG.core.getCiv(iFromCivID).getCapitalProvID()).getCitiesSize(); ++i) {
                         if (CFG.core.getProv(CFG.core.getCiv(iFromCivID).getCapitalProvID()).getCit(i).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                         CFG.core.getProv(CFG.core.getCiv(iFromCivID).getCapitalProvID()).getCit(i).setCityLevel(CFG.getEditorCityLevel(1));
                     }
@@ -1951,362 +1961,383 @@ public class GameManager {
             }
         }
         if (everyoneAccepted) {
-            try {
-                int m;
-                int nCivNewOwner;
-                int nArmyNewOwner;
-                int tempCiv0;
-                int tempArmy0;
-                int u;
-                boolean zeroProvinces;
-                int o;
-                int k;
-                int i2;
-                int nCivNewOwner2;
-                int nArmyNewOwner2;
-                int nCiv0;
-                int nArmy0;
-                for (i = 0; i < peaceTreaty.civsDemandsDefenders.size(); ++i) {
-                    try {
-                        int j;
-                        for (j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.size(); ++j) {
-                            CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getCivId()).removePlunder_ProvinceID(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j));
-                            nArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getArmyID(0);
-                            nCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getCivId();
-                            nArmyNewOwner2 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getArmyCivID1(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
-                            nCivNewOwner2 = peaceTreaty.civsDemandsDefenders.get((int)i).iCivID;
-                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(0);
-                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, 0);
-                            if (CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getCivId() == peaceTreaty.civsDemandsDefenders.get((int)i).iCivID) {
-                                CFG.timelapseManager.addChange(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j), peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, false);
-                            }
-                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).setTrueOwnerOfProv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
-                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).setCivId(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, false, true);
-                            if (!CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).isCapital()) {
-                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).removeCapitalCityIcon();
-                            }
-                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(nCiv0, nArmy0);
-                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(nCivNewOwner2, nArmyNewOwner2);
-                        }
-                        for (j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.size(); ++j) {
-                            CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).addWarReparationsGets(peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.get(j));
-                            CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.get(j)).addWarReparationsPay(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
-                        }
-                        if (peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID > 0) {
-                            try {
-                                if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
-                                    CFG.core.updateCivilizationIdeology(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()).getExtraTag());
-                                }
-                            }
-                            catch (Exception j2) {
-                                // empty catch block
-                            }
-                        }
-                        if (peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID <= 0 || CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getReligionID() == CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID).getReligionID()) continue;
-                        CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).setReligionID(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID).getReligionID());
-                        continue;
-                    }
-                    catch (Exception exr) {
-                        CFG.exceptionStack(exr);
-                    }
-                }
-                for (i = 0; i < peaceTreaty.civsDemandsAggressors.size(); ++i) {
-                    try {
-                        int j;
-                        for (j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.size(); ++j) {
-                            CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getCivId()).removePlunder_ProvinceID(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j));
-                            nArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getArmyID(0);
-                            nCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getCivId();
-                            nArmyNewOwner2 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getArmyCivID1(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
-                            nCivNewOwner2 = peaceTreaty.civsDemandsAggressors.get((int)i).iCivID;
-                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(0);
-                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, 0);
-                            if (CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getCivId() == peaceTreaty.civsDemandsAggressors.get((int)i).iCivID) {
-                                CFG.timelapseManager.addChange(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j), peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, false);
-                            }
-                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).setTrueOwnerOfProv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
-                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).setCivId(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, false, true);
-                            if (!CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).isCapital()) {
-                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).removeCapitalCityIcon();
-                            }
-                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(nCiv0, nArmy0);
-                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(nCivNewOwner2, nArmyNewOwner2);
-                        }
-                        for (j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.size(); ++j) {
-                            CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).addWarReparationsGets(peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.get(j));
-                            CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.get(j)).addWarReparationsPay(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
-                        }
-                        if (peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID > 0) {
-                            try {
-                                if (CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
-                                    CFG.core.updateCivilizationIdeology(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()).getExtraTag());
-                                }
-                            }
-                            catch (Exception j3) {
-                                // empty catch block
-                            }
-                        }
-                        if (peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID <= 0 || CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getReligionID() == CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID).getReligionID()) continue;
-                        CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).setReligionID(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID).getReligionID());
-                        continue;
-                    }
-                    catch (Exception exr) {
-                        CFG.exceptionStack(exr);
-                    }
-                }
+            block107: {
                 try {
+                    int m;
+                    int nCivNewOwner;
+                    int nArmyNewOwner;
+                    int tempCiv0;
+                    int tempArmy0;
+                    int u;
+                    boolean zeroProvinces;
+                    int o;
+                    int k;
+                    int i2;
+                    int nCivNewOwner2;
+                    int nArmyNewOwner2;
+                    int nCiv0;
+                    int nArmy0;
                     for (i = 0; i < peaceTreaty.civsDemandsDefenders.size(); ++i) {
-                        for (int j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.size(); ++j) {
-                            CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j)).setPuppetOfCivId(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
-                            CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsDefenders.get((int)i).iCivID), 22.0f));
-                            CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j), Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j)), 22.0f));
-                            CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j)));
-                        }
-                    }
-                }
-                catch (Exception ex) {
-                    CFG.exceptionStack(ex);
-                }
-                try {
-                    for (int i3 = 0; i3 < peaceTreaty.civsDemandsAggressors.size(); ++i3) {
-                        for (int j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.size(); ++j) {
-                            CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j)).setPuppetOfCivId(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID);
-                            CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID), 22.0f));
-                            CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j), Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j)), 22.0f));
-                            CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j)));
-                        }
-                    }
-                }
-                catch (Exception ex) {
-                    CFG.exceptionStack(ex);
-                }
-                for (i2 = 0; i2 < peaceTreaty.civsDemandsDefenders.size(); ++i2) {
-                    try {
-                        for (int j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.size(); ++j) {
-                            for (k = 0; k < peaceTreaty.civsDemandsAggressors.size(); ++k) {
-                                if (peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iFromCivID != peaceTreaty.civsDemandsAggressors.get((int)k).iCivID) continue;
-                                for (o = 0; o < peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.size(); ++o) {
-                                    if (peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).iCivID != peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) continue;
-                                    zeroProvinces = CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).getNumOfProvs() == 0;
-                                    for (u = 0; u < peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.size(); ++u) {
-                                        tempArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyID(0);
-                                        tempCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId();
-                                        nArmyNewOwner = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyCivID1(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID);
-                                        nCivNewOwner = peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID;
-                                        CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(0);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, 0);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setTrueOwnerOfProv(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setCivId(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, false, true);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(tempCiv0, tempArmy0);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, nArmyNewOwner);
-                                        if (zeroProvinces) {
-                                            CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).setPuppetOfCivId(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID);
-                                            CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID));
-                                            if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
-                                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
-                                            }
-                                            if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
-                                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
-                                            }
-                                            zeroProvinces = false;
-                                        }
-                                        for (m = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivsSize() - 1; m >= 0; --m) {
-                                            if (CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) == CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() > 0 && CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() == CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getAlliance()) continue;
-                                            CFG.gameAction.accessLost_MoveArmyToClosetsProvince(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m), peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u));
-                                        }
+                        try {
+                            int j;
+                            for (j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.size(); ++j) {
+                                CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getCivId()).removePlunder_ProvinceID(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j));
+                                nArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getArmyID(0);
+                                nCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getCivId();
+                                nArmyNewOwner2 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getArmyCivID1(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
+                                nCivNewOwner2 = peaceTreaty.civsDemandsDefenders.get((int)i).iCivID;
+                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(0);
+                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, 0);
+                                if (CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).getCivId() == peaceTreaty.civsDemandsDefenders.get((int)i).iCivID) {
+                                    CFG.timelapseManager.addChange(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j), peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, false);
+                                }
+                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).setTrueOwnerOfProv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
+                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).setCivId(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, false, true);
+                                if (!CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).isCapital()) {
+                                    CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).removeCapitalCityIcon();
+                                }
+                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(nCiv0, nArmy0);
+                                CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)i).lDemands.get(j)).updateArmy4(nCivNewOwner2, nArmyNewOwner2);
+                            }
+                            for (j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.size(); ++j) {
+                                CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).addWarReparationsGets(peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.get(j));
+                                CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).lWarReparationsFromCivsID.get(j)).addWarReparationsPay(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
+                            }
+                            if (peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID > 0) {
+                                try {
+                                    if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
+                                        CFG.core.updateCivilizationIdeology(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeGovernmentTypeToCivID).getIdeology()).getExtraTag());
                                     }
                                 }
-                            }
-                        }
-                        continue;
-                    }
-                    catch (Exception exr) {
-                        CFG.exceptionStack(exr);
-                    }
-                }
-                for (i2 = 0; i2 < peaceTreaty.civsDemandsAggressors.size(); ++i2) {
-                    try {
-                        for (int j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.size(); ++j) {
-                            for (k = 0; k < peaceTreaty.civsDemandsDefenders.size(); ++k) {
-                                if (peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iFromCivID != peaceTreaty.civsDemandsDefenders.get((int)k).iCivID) continue;
-                                for (o = 0; o < peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.size(); ++o) {
-                                    if (peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).iCivID != peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) continue;
-                                    zeroProvinces = CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).getNumOfProvs() == 0;
-                                    for (u = 0; u < peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.size(); ++u) {
-                                        tempArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyID(0);
-                                        tempCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId();
-                                        nArmyNewOwner = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyCivID1(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID);
-                                        nCivNewOwner = peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID;
-                                        CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(0);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, 0);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setTrueOwnerOfProv(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setCivId(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, false, true);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(tempCiv0, tempArmy0);
-                                        CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, nArmyNewOwner);
-                                        if (zeroProvinces) {
-                                            CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).setPuppetOfCivId(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID);
-                                            CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID));
-                                            if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
-                                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
-                                            }
-                                            if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
-                                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
-                                            }
-                                            zeroProvinces = false;
-                                        }
-                                        for (m = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivsSize() - 1; m >= 0; --m) {
-                                            if (CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) == CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() > 0 && CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() == CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getAlliance()) continue;
-                                            CFG.gameAction.accessLost_MoveArmyToClosetsProvince(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m), peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u));
-                                        }
-                                    }
+                                catch (Exception j2) {
+                                    // empty catch block
                                 }
                             }
+                            if (peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID <= 0 || CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).getReligionID() == CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID).getReligionID()) continue;
+                            CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID).setReligionID(CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).changeReligionToCivID).getReligionID());
+                            continue;
                         }
-                        continue;
+                        catch (Exception exr) {
+                            CFG.exceptionStack(exr);
+                        }
                     }
-                    catch (Exception exr) {
-                        CFG.exceptionStack(exr);
+                    for (i = 0; i < peaceTreaty.civsDemandsAggressors.size(); ++i) {
+                        try {
+                            int j;
+                            for (j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.size(); ++j) {
+                                CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getCivId()).removePlunder_ProvinceID(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j));
+                                nArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getArmyID(0);
+                                nCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getCivId();
+                                nArmyNewOwner2 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getArmyCivID1(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
+                                nCivNewOwner2 = peaceTreaty.civsDemandsAggressors.get((int)i).iCivID;
+                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(0);
+                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, 0);
+                                if (CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).getCivId() == peaceTreaty.civsDemandsAggressors.get((int)i).iCivID) {
+                                    CFG.timelapseManager.addChange(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j), peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, false);
+                                }
+                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).setTrueOwnerOfProv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
+                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).setCivId(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, false, true);
+                                if (!CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).isCapital()) {
+                                    CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).removeCapitalCityIcon();
+                                }
+                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(nCiv0, nArmy0);
+                                CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)i).lDemands.get(j)).updateArmy4(nCivNewOwner2, nArmyNewOwner2);
+                            }
+                            for (j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.size(); ++j) {
+                                CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).addWarReparationsGets(peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.get(j));
+                                CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).lWarReparationsFromCivsID.get(j)).addWarReparationsPay(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID);
+                            }
+                            if (peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID > 0) {
+                                try {
+                                    if (CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getIdeology() != CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()) {
+                                        CFG.core.updateCivilizationIdeology(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID, CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getCivTag()) + CFG.ideologiesMgr.getIdeologyID(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeGovernmentTypeToCivID).getIdeology()).getExtraTag());
+                                    }
+                                }
+                                catch (Exception j3) {
+                                    // empty catch block
+                                }
+                            }
+                            if (peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID <= 0 || CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).getReligionID() == CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID).getReligionID()) continue;
+                            CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).iCivID).setReligionID(CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i).changeReligionToCivID).getReligionID());
+                            continue;
+                        }
+                        catch (Exception exr) {
+                            CFG.exceptionStack(exr);
+                        }
                     }
-                }
-                try {
+                    try {
+                        for (i = 0; i < peaceTreaty.civsDemandsDefenders.size(); ++i) {
+                            for (int j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.size(); ++j) {
+                                CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j)).setPuppetOfCivId(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID);
+                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsDefenders.get((int)i).iCivID), 22.0f));
+                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j), Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j)), 22.0f));
+                                CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsDefenders.get((int)i).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i).lWillVassalizeCivsID.get(j)));
+                            }
+                        }
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
+                    try {
+                        for (int i3 = 0; i3 < peaceTreaty.civsDemandsAggressors.size(); ++i3) {
+                            for (int j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.size(); ++j) {
+                                CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j)).setPuppetOfCivId(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID);
+                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j), peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID), 22.0f));
+                                CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j), Math.max(CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j)), 22.0f));
+                                CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsAggressors.get((int)i3).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i3).lWillVassalizeCivsID.get(j)));
+                            }
+                        }
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
                     for (i2 = 0; i2 < peaceTreaty.civsDemandsDefenders.size(); ++i2) {
-                        for (int j = 0; j < peaceTreaty.civsDemandsAggressors.size(); ++j) {
-                            if (CFG.core.getCivsAtWar(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID)) {
-                                CFG.core.acceptPeaceOffer(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.TRUCE_LENGTH + 1);
-                                if (CFG.core.getMilitaryAccess(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID) <= 0 && CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsAggressors.get((int)j).iCivID && CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) {
-                                    CFG.gameAction.accessLost_UpdateArmies(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID);
+                        try {
+                            for (int j = 0; j < peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.size(); ++j) {
+                                for (k = 0; k < peaceTreaty.civsDemandsAggressors.size(); ++k) {
+                                    if (peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iFromCivID != peaceTreaty.civsDemandsAggressors.get((int)k).iCivID) continue;
+                                    for (o = 0; o < peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.size(); ++o) {
+                                        if (peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).iCivID != peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) continue;
+                                        zeroProvinces = CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).getNumOfProvs() == 0;
+                                        for (u = 0; u < peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.size(); ++u) {
+                                            tempArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyID(0);
+                                            tempCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId();
+                                            nArmyNewOwner = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyCivID1(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID);
+                                            nCivNewOwner = peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID;
+                                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(0);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, 0);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setTrueOwnerOfProv(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setCivId(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, false, true);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(tempCiv0, tempArmy0);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, nArmyNewOwner);
+                                            if (zeroProvinces) {
+                                                CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).setPuppetOfCivId(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID);
+                                                CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID));
+                                                if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
+                                                    CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
+                                                }
+                                                if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
+                                                    CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
+                                                }
+                                                zeroProvinces = false;
+                                            }
+                                            for (m = CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivsSize() - 1; m >= 0; --m) {
+                                                if (CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) == CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() > 0 && CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() == CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getAlliance()) continue;
+                                                CFG.gameAction.accessLost_MoveArmyToClosetsProvince(CFG.core.getProv(peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m), peaceTreaty.civsDemandsAggressors.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u));
+                                            }
+                                        }
+                                    }
                                 }
-                                if (CFG.core.getMilitaryAccess(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) > 0 || CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID).getPuppetOfCiv() == peaceTreaty.civsDemandsAggressors.get((int)j).iCivID || CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getPuppetOfCiv() == peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) continue;
-                                CFG.gameAction.accessLost_UpdateArmies(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID);
-                                continue;
                             }
-                            if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsAggressors.get((int)j).iCivID && CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) continue;
-                            CFG.core.acceptPeaceOffer(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.TRUCE_LENGTH + 1);
+                            continue;
+                        }
+                        catch (Exception exr) {
+                            CFG.exceptionStack(exr);
                         }
                     }
-                }
-                catch (Exception exr) {
-                    CFG.exceptionStack(exr);
-                }
-                try {
-                    for (int j = 0; j < peaceTreaty.civsDemandsDefenders.size(); ++j) {
-                        if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)j).iCivID).getNumOfProvs() != 0) continue;
-                        for (int i4 = 1; i4 < CFG.core.getCivsSize(); ++i4) {
-                            if (CFG.core.getCiv(i4).getPuppetOfCiv() != peaceTreaty.civsDemandsDefenders.get((int)j).iCivID) continue;
-                            CFG.core.getCiv(i4).setPuppetOfCivId(i4);
-                        }
-                        if (!CFG.hreMgr.getHRE().getIsElector(peaceTreaty.civsDemandsDefenders.get((int)j).iCivID)) continue;
-                        CFG.hreMgr.getHRE().removeElector(peaceTreaty.civsDemandsDefenders.get((int)j).iCivID);
-                        CFG.hreMgr.getHRE().addStrongestPrinceAsElector();
-                    }
-                }
-                catch (Exception exr) {
-                    CFG.exceptionStack(exr);
-                }
-                try {
-                    for (int j = 0; j < peaceTreaty.civsDemandsAggressors.size(); ++j) {
-                        if (CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getNumOfProvs() != 0) continue;
-                        for (int i5 = 1; i5 < CFG.core.getCivsSize(); ++i5) {
-                            if (CFG.core.getCiv(i5).getPuppetOfCiv() == peaceTreaty.civsDemandsAggressors.get((int)j).iCivID) {
-                                CFG.core.getCiv(i5).setPuppetOfCivId(i5);
+                    for (i2 = 0; i2 < peaceTreaty.civsDemandsAggressors.size(); ++i2) {
+                        try {
+                            for (int j = 0; j < peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.size(); ++j) {
+                                for (k = 0; k < peaceTreaty.civsDemandsDefenders.size(); ++k) {
+                                    if (peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iFromCivID != peaceTreaty.civsDemandsDefenders.get((int)k).iCivID) continue;
+                                    for (o = 0; o < peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.size(); ++o) {
+                                        if (peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).iCivID != peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) continue;
+                                        zeroProvinces = CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).getNumOfProvs() == 0;
+                                        for (u = 0; u < peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.size(); ++u) {
+                                            tempArmy0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyID(0);
+                                            tempCiv0 = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId();
+                                            nArmyNewOwner = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getArmyCivID1(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID);
+                                            nCivNewOwner = peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID;
+                                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(0);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, 0);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setTrueOwnerOfProv(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).setCivId(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, false, true);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(tempCiv0, tempArmy0);
+                                            CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).updateArmy4(nCivNewOwner, nArmyNewOwner);
+                                            if (zeroProvinces) {
+                                                CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID).setPuppetOfCivId(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID);
+                                                CFG.historyManager.addHistoryLog(new HistoryLog_IsVassal(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID));
+                                                if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
+                                                    CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
+                                                }
+                                                if (CFG.core.getCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID) < GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION) {
+                                                    CFG.core.setCivRelationOfCivB(peaceTreaty.civsDemandsAggressors.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)i2).lReleasableCivs_TakeControl.get((int)j).iVassalCivID, GameValues.gvVassal.RELEASED_VASSAL_MIN_OPINION);
+                                                }
+                                                zeroProvinces = false;
+                                            }
+                                            for (m = CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivsSize() - 1; m >= 0; --m) {
+                                                if (CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) == CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId() || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getPuppetOfCiv() == CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m) || CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() > 0 && CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m)).getAlliance() == CFG.core.getCiv(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId()).getAlliance()) continue;
+                                                CFG.gameAction.accessLost_MoveArmyToClosetsProvince(CFG.core.getProv(peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u)).getCivId(m), peaceTreaty.civsDemandsDefenders.get((int)k).lReleasableCivs.get((int)o).lProvinces.get(u));
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            if (!CFG.hreMgr.getHRE().getIsElector(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID)) continue;
-                            CFG.hreMgr.getHRE().removeElector(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID);
+                            continue;
+                        }
+                        catch (Exception exr) {
+                            CFG.exceptionStack(exr);
+                        }
+                    }
+                    try {
+                        for (i2 = 0; i2 < peaceTreaty.civsDemandsDefenders.size(); ++i2) {
+                            for (int j = 0; j < peaceTreaty.civsDemandsAggressors.size(); ++j) {
+                                if (CFG.core.getCivsAtWar(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID)) {
+                                    CFG.core.acceptPeaceOffer(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.TRUCE_LENGTH + 1);
+                                    if (CFG.core.getMilitaryAccess(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID) <= 0 && CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsAggressors.get((int)j).iCivID && CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) {
+                                        CFG.gameAction.accessLost_UpdateArmies(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID);
+                                    }
+                                    if (CFG.core.getMilitaryAccess(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) > 0 || CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID).getPuppetOfCiv() == peaceTreaty.civsDemandsAggressors.get((int)j).iCivID || CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getPuppetOfCiv() == peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) continue;
+                                    CFG.gameAction.accessLost_UpdateArmies(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID);
+                                    continue;
+                                }
+                                if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsAggressors.get((int)j).iCivID && CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getPuppetOfCiv() != peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID) continue;
+                                CFG.core.acceptPeaceOffer(peaceTreaty.civsDemandsDefenders.get((int)i2).iCivID, peaceTreaty.civsDemandsAggressors.get((int)j).iCivID, peaceTreaty.TRUCE_LENGTH + 1);
+                            }
+                        }
+                    }
+                    catch (Exception exr) {
+                        CFG.exceptionStack(exr);
+                    }
+                    try {
+                        for (int j = 0; j < peaceTreaty.civsDemandsDefenders.size(); ++j) {
+                            if (CFG.core.getCiv(peaceTreaty.civsDemandsDefenders.get((int)j).iCivID).getNumOfProvs() != 0) continue;
+                            for (int i4 = 1; i4 < CFG.core.getCivsSize(); ++i4) {
+                                if (CFG.core.getCiv(i4).getPuppetOfCiv() != peaceTreaty.civsDemandsDefenders.get((int)j).iCivID) continue;
+                                CFG.core.getCiv(i4).setPuppetOfCivId(i4);
+                            }
+                            if (!CFG.hreMgr.getHRE().getIsElector(peaceTreaty.civsDemandsDefenders.get((int)j).iCivID)) continue;
+                            CFG.hreMgr.getHRE().removeElector(peaceTreaty.civsDemandsDefenders.get((int)j).iCivID);
                             CFG.hreMgr.getHRE().addStrongestPrinceAsElector();
                         }
                     }
-                }
-                catch (Exception exr) {
-                    CFG.exceptionStack(exr);
-                }
-                try {
-                    for (int i6 = 0; i6 < peaceTreaty.civsDataDefenders.size(); ++i6) {
-                        Core.addSimpleTask(new Core.SimpleTask("buildCivilizationRegions" + peaceTreaty.civsDataDefenders.get((int)i6).iCivID, peaceTreaty.civsDataDefenders.get((int)i6).iCivID){
-
-                            @Override
-                            public void update() {
-                                try {
-                                    CFG.core.buildCivilizationRegions(this.id);
+                    catch (Exception exr) {
+                        CFG.exceptionStack(exr);
+                    }
+                    try {
+                        for (int j = 0; j < peaceTreaty.civsDemandsAggressors.size(); ++j) {
+                            if (CFG.core.getCiv(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID).getNumOfProvs() != 0) continue;
+                            for (int i5 = 1; i5 < CFG.core.getCivsSize(); ++i5) {
+                                if (CFG.core.getCiv(i5).getPuppetOfCiv() == peaceTreaty.civsDemandsAggressors.get((int)j).iCivID) {
+                                    CFG.core.getCiv(i5).setPuppetOfCivId(i5);
                                 }
-                                catch (Exception exception) {
-                                    // empty catch block
-                                }
+                                if (!CFG.hreMgr.getHRE().getIsElector(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID)) continue;
+                                CFG.hreMgr.getHRE().removeElector(peaceTreaty.civsDemandsAggressors.get((int)j).iCivID);
+                                CFG.hreMgr.getHRE().addStrongestPrinceAsElector();
                             }
-                        });
+                        }
                     }
-                }
-                catch (Exception exr) {
-                    CFG.exceptionStack(exr);
-                }
-                try {
-                    for (int i7 = 0; i7 < peaceTreaty.civsDataAggressors.size(); ++i7) {
-                        Core.addSimpleTask(new Core.SimpleTask("buildCivilizationRegions" + peaceTreaty.civsDataAggressors.get((int)i7).iCivID, peaceTreaty.civsDataAggressors.get((int)i7).iCivID){
+                    catch (Exception exr) {
+                        CFG.exceptionStack(exr);
+                    }
+                    try {
+                        for (int i6 = 0; i6 < peaceTreaty.civsDataDefenders.size(); ++i6) {
+                            Core.addSimpleTask(new Core.SimpleTask("buildCivilizationRegions" + peaceTreaty.civsDataDefenders.get((int)i6).iCivID, peaceTreaty.civsDataDefenders.get((int)i6).iCivID){
 
-                            @Override
-                            public void update() {
-                                try {
-                                    CFG.core.buildCivilizationRegions(this.id);
+                                @Override
+                                public void update() {
+                                    try {
+                                        CFG.core.buildCivilizationRegions(this.id);
+                                    }
+                                    catch (Exception exception) {
+                                        // empty catch block
+                                    }
                                 }
-                                catch (Exception exception) {
-                                    // empty catch block
+                            });
+                        }
+                    }
+                    catch (Exception exr) {
+                        CFG.exceptionStack(exr);
+                    }
+                    try {
+                        for (int i7 = 0; i7 < peaceTreaty.civsDataAggressors.size(); ++i7) {
+                            Core.addSimpleTask(new Core.SimpleTask("buildCivilizationRegions" + peaceTreaty.civsDataAggressors.get((int)i7).iCivID, peaceTreaty.civsDataAggressors.get((int)i7).iCivID){
+
+                                @Override
+                                public void update() {
+                                    try {
+                                        CFG.core.buildCivilizationRegions(this.id);
+                                    }
+                                    catch (Exception exception) {
+                                        // empty catch block
+                                    }
                                 }
+                            });
+                        }
+                    }
+                    catch (Exception exr) {
+                        CFG.exceptionStack(exr);
+                    }
+                    try {
+                        int i8;
+                        for (i8 = 0; i8 < peaceTreaty.civsDataDefenders.size(); ++i8) {
+                            if (CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).getNumOfProvs() != 0) continue;
+                            for (int z = CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).getArmyInAnotherProvinceSize() - 1; z >= 0; --z) {
+                                CFG.core.getProv(CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).getArmyInAnotherProviP(z)).updateArmy4(peaceTreaty.civsDataDefenders.get((int)i8).iCivID, 0);
                             }
-                        });
-                    }
-                }
-                catch (Exception exr) {
-                    CFG.exceptionStack(exr);
-                }
-                try {
-                    int i8;
-                    for (i8 = 0; i8 < peaceTreaty.civsDataDefenders.size(); ++i8) {
-                        if (CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).getNumOfProvs() != 0) continue;
-                        for (int z = CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).getArmyInAnotherProvinceSize() - 1; z >= 0; --z) {
-                            CFG.core.getProv(CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).getArmyInAnotherProviP(z)).updateArmy4(peaceTreaty.civsDataDefenders.get((int)i8).iCivID, 0);
+                            CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).setNumberOfUnits(0);
                         }
-                        CFG.core.getCiv(peaceTreaty.civsDataDefenders.get((int)i8).iCivID).setNumberOfUnits(0);
-                    }
-                    for (i8 = 0; i8 < peaceTreaty.civsDataAggressors.size(); ++i8) {
-                        if (CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).getNumOfProvs() != 0) continue;
-                        for (int z = CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).getArmyInAnotherProvinceSize() - 1; z >= 0; --z) {
-                            CFG.core.getProv(CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).getArmyInAnotherProviP(z)).updateArmy4(peaceTreaty.civsDataAggressors.get((int)i8).iCivID, 0);
+                        for (i8 = 0; i8 < peaceTreaty.civsDataAggressors.size(); ++i8) {
+                            if (CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).getNumOfProvs() != 0) continue;
+                            for (int z = CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).getArmyInAnotherProvinceSize() - 1; z >= 0; --z) {
+                                CFG.core.getProv(CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).getArmyInAnotherProviP(z)).updateArmy4(peaceTreaty.civsDataAggressors.get((int)i8).iCivID, 0);
+                            }
+                            CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).setNumberOfUnits(0);
                         }
-                        CFG.core.getCiv(peaceTreaty.civsDataAggressors.get((int)i8).iCivID).setNumberOfUnits(0);
                     }
-                }
-                catch (Exception ex) {
-                    CFG.exceptionStack(ex);
-                }
-                int tWarID = -1;
-                try {
-                    for (int i9 = 0; i9 < CFG.core.getWarsSize(); ++i9) {
-                        if (!CFG.core.getWar((int)i9).WAR_TAG.equals(peaceTreaty.WAR_TAG)) continue;
-                        tWarID = i9;
-                        break;
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
                     }
-                }
-                catch (Exception ex) {
-                    CFG.exceptionStack(ex);
-                }
-                try {
-                    if (tWarID >= 0) {
+                    int tWarID = -1;
+                    try {
+                        for (int i9 = 0; i9 < CFG.core.getWarsSize(); ++i9) {
+                            if (!CFG.core.getWar((int)i9).WAR_TAG.equals(peaceTreaty.WAR_TAG)) continue;
+                            tWarID = i9;
+                            break;
+                        }
+                    }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
+                    try {
                         int i10;
+                        if (tWarID < 0) break block107;
                         boolean everyoneAtPeace = true;
-                        block71: for (i10 = 0; i10 < CFG.core.getWar(tWarID).getDefendersSize(); ++i10) {
+                        try {
+                            if (CFG.core.getWar((int)tWarID).rebelsWar && CFG.core.getWar(tWarID).getAggressorID(0).getCivID() > 0 && CFG.core.getCiv(CFG.core.getWar(tWarID).getAggressorID(0).getCivID()).getNumOfProvs() > 0) {
+                                int aggCivID = CFG.core.getWar(tWarID).getAggressorID(0).getCivID();
+                                CFG.core.getCiv(aggCivID).setGold(Math.max(100L, CFG.core.getCiv(aggCivID).getGold()));
+                                String nRealTag = CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(aggCivID).getCivTag());
+                                for (int a = 0; a < CFG.core.getCiv(aggCivID).getNumOfProvs(); ++a) {
+                                    if (CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).isOccupied()) continue;
+                                    for (int b = CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().getNatsSize() - 1; b >= 0; --b) {
+                                        if (CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().getCivID(b) == aggCivID || !nRealTag.equals(CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().getCivID(b)).getCivTag()))) continue;
+                                        CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().setPopulationOfCivID(aggCivID, CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().getPopulationOfCivID(aggCivID) + CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().getPopulationID(b));
+                                        CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().setPopulationOfCivID(CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getPop().getCivID(b), 10);
+                                    }
+                                    CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).setRevRisk(Math.min(CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getRevRisk(), GameValues.gvRebels.REBELS_WON_MAX_REV_RISK));
+                                    CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).setHappi(Math.max(CFG.core.getProv(CFG.core.getCiv(aggCivID).getProvID(a)).getHappi(), GameValues.gvRebels.REBELS_WON_MIN_HAPPINESS));
+                                    GameManager.addAssimilateFree(aggCivID, CFG.core.getCiv(aggCivID).getProvID(a), GameValues.gvAssimilate.ASSIMILATE_NUM_OF_TURNS_MAX);
+                                }
+                            }
+                        }
+                        catch (Exception ex) {
+                            CFG.exceptionStack(ex);
+                        }
+                        block75: for (i10 = 0; i10 < CFG.core.getWar(tWarID).getDefendersSize(); ++i10) {
                             for (int j = 0; j < CFG.core.getWar(tWarID).getAggressorsSize(); ++j) {
                                 if (!CFG.core.getCivsAtWar(CFG.core.getWar(tWarID).getDefenderID(i10).getCivID(), CFG.core.getWar(tWarID).getAggressorID(j).getCivID())) continue;
                                 everyoneAtPeace = false;
                                 i10 = CFG.core.getWar(tWarID).getDefendersSize();
-                                continue block71;
+                                continue block75;
                             }
                         }
                         if (everyoneAtPeace) {
                             CFG.core.removeWarData(tWarID);
                         } else {
                             int j;
-                            boolean isAtPeace;
                             for (i10 = CFG.core.getWar(tWarID).getDefendersSize() - 1; i10 >= 0; --i10) {
-                                isAtPeace = true;
+                                boolean isAtPeace = true;
                                 for (j = 0; j < CFG.core.getWar(tWarID).getAggressorsSize(); ++j) {
                                     if (!CFG.core.getCivsAtWar(CFG.core.getWar(tWarID).getDefenderID(i10).getCivID(), CFG.core.getWar(tWarID).getAggressorID(j).getCivID())) continue;
                                     isAtPeace = false;
@@ -2316,7 +2347,7 @@ public class GameManager {
                                 CFG.core.getWar(tWarID).removeDefender(CFG.core.getWar(tWarID).getDefenderID(i10).getCivID());
                             }
                             for (i10 = CFG.core.getWar(tWarID).getAggressorsSize() - 1; i10 >= 0; --i10) {
-                                isAtPeace = true;
+                                boolean isAtPeace = true;
                                 for (j = 0; j < CFG.core.getWar(tWarID).getDefendersSize(); ++j) {
                                     if (!CFG.core.getCivsAtWar(CFG.core.getWar(tWarID).getDefenderID(j).getCivID(), CFG.core.getWar(tWarID).getAggressorID(i10).getCivID())) continue;
                                     isAtPeace = false;
@@ -2330,13 +2361,13 @@ public class GameManager {
                             }
                         }
                     }
+                    catch (Exception ex) {
+                        CFG.exceptionStack(ex);
+                    }
                 }
                 catch (Exception ex) {
                     CFG.exceptionStack(ex);
                 }
-            }
-            catch (Exception ex) {
-                CFG.exceptionStack(ex);
             }
             CFG.core.lPeaceTreaties.remove(peaceID);
         }
@@ -2667,13 +2698,76 @@ public class GameManager {
     }
 
     public static final void checkCivsHatedCivilizations_IfStillExists() {
-        for (int i = 1 + GameCalendar.TURNID % GameValues.gvUpdate.HATED_CIVS_CHECK_INTERVAL_TURNS; i < CFG.core.getCivsSize(); i += GameValues.gvUpdate.HATED_CIVS_CHECK_INTERVAL_TURNS) {
-            if (CFG.core.getCiv(i).getNumOfProvs() <= 0) continue;
-            for (int z = CFG.core.getCiv(i).getHatedCivsSize() - 1; z >= 0; --z) {
-                if (CFG.core.getCiv(CFG.core.getCiv((int)i).getHatedCiv((int)z).iCivID).getNumOfProvs() != 0) continue;
-                CFG.core.getCiv(i).removeHatedCiv(CFG.core.getCiv((int)i).getHatedCiv((int)z).iCivID);
+        try {
+            int z;
+            int i;
+            for (i = 1 + GameCalendar.TURNID % GameValues.gvUpdate.HATED_CIVS_CHECK_INTERVAL_TURNS; i < CFG.core.getCivsSize(); i += GameValues.gvUpdate.HATED_CIVS_CHECK_INTERVAL_TURNS) {
+                if (CFG.core.getCiv(i).getNumOfProvs() <= 0) continue;
+                for (z = CFG.core.getCiv(i).getHatedCivsSize() - 1; z >= 0; --z) {
+                    if (CFG.core.getCiv(CFG.core.getCiv((int)i).getHatedCiv((int)z).iCivID).getNumOfProvs() != 0) continue;
+                    CFG.core.getCiv(i).removeHatedCiv(CFG.core.getCiv((int)i).getHatedCiv((int)z).iCivID);
+                }
+            }
+            for (i = 1 + GameCalendar.TURNID % GameValues.gvUpdate.HATED_CIVS_CHECK_INTERVAL_TURNS; i < CFG.core.getCivsSize(); i += GameValues.gvUpdate.HATED_CIVS_CHECK_INTERVAL_TURNS) {
+                if (CFG.core.getCiv(i).getNumOfProvs() <= 0) continue;
+                for (z = CFG.core.getCiv(i).getFriendlyCivsSize() - 1; z >= 0; --z) {
+                    if (!(CFG.core.getCivRelationOfCivB(CFG.core.getCiv((int)i).getFriendlyCiv((int)z).iCivID, i) < (float)(GameValues.gvRelations.FRIENDLY_MIN_RELATION - 5))) continue;
+                    CFG.core.getCiv(i).removeFriendlyCiv(CFG.core.getCiv((int)i).getFriendlyCiv((int)z).iCivID);
+                }
             }
         }
+        catch (Exception exception) {
+            // empty catch block
+        }
+    }
+
+    public static void updateSpies() {
+        try {
+            for (int a = 0; a < CFG.core.getPlayersSize(); ++a) {
+                for (int i = CFG.core.getPlayer((int)a).playerGD.spyInCivID_ExpiresTurnID.size() - 1; i >= 0; --i) {
+                    if (GameCalendar.TURNID < CFG.core.getPlayer((int)a).playerGD.spyInCivID_ExpiresTurnID.get(i) && !CFG.core.getCivsAtWar(CFG.core.getPlayer(a).getCivId(), CFG.core.getPlayer((int)a).playerGD.spyInCivID.get(i))) continue;
+                    CFG.core.getCiv((int)CFG.core.getPlayer((int)a).getCivId()).getCivDiploGD().messageBox.addMessage(new Message_SpyMissionEnd(CFG.core.getPlayer((int)a).playerGD.spyInCivID.get(i)));
+                    CFG.core.getPlayer((int)a).playerGD.spyInCivID.remove(i);
+                    CFG.core.getPlayer((int)a).playerGD.spyInCivID_ExpiresTurnID.remove(i);
+                }
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
+    }
+
+    public static int sendSpyCost(int byCivID, int toCivID) {
+        int costOut = (int)((float)(CFG.core.getCiv((int)byCivID).incomeTaxation + CFG.core.getCiv((int)byCivID).incomeProduction) * GameValues.gvRelations.SPY_COST_PLAYER_CIV_INCOME_MODIFIER + (float)(CFG.core.getCiv((int)toCivID).incomeTaxation + CFG.core.getCiv((int)toCivID).incomeProduction) * GameValues.gvRelations.SPY_COST_TO_CIV_INCOME_MODIFIER);
+        return Math.max(GameValues.gvRelations.SPY_COST_MIN, costOut);
+    }
+
+    public static boolean haveASpy(int civID) {
+        try {
+            if (civID > 0) {
+                for (int i = CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).playerGD.spyInCivID.size() - 1; i >= 0; --i) {
+                    if (civID != CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).playerGD.spyInCivID.get(i)) continue;
+                    return true;
+                }
+            }
+        }
+        catch (Exception exception) {
+            // empty catch block
+        }
+        return false;
+    }
+
+    public static boolean sendSpy(int byCivID, int toCivID) {
+        if (GameManager.haveASpy(toCivID)) {
+            return false;
+        }
+        CFG.core.getCiv(byCivID).setGold(CFG.core.getCiv(byCivID).getGold() - (long)GameManager.sendSpyCost(byCivID, toCivID));
+        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).playerGD.spyInCivID.add(toCivID);
+        CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).playerGD.spyInCivID_ExpiresTurnID.add(GameCalendar.TURNID + GameValues.gvRelations.SPY_NUMBER_OF_TURNS);
+        for (int i = 0; i < CFG.core.getCiv(toCivID).getNumOfProvs(); ++i) {
+            CFG.core.getProv(CFG.core.getCiv(toCivID).getProvID(i)).updateDrawArmyInProv();
+        }
+        return true;
     }
 
     public static final void updateFriendlyCiv(int nCivA, int nCivB) {
@@ -2730,8 +2824,14 @@ public class GameManager {
     }
 
     public static boolean decreaseRelation(int iCivA, int iCivB, int nNumOfTurns) {
-        if (CFG.core.getCiv(iCivA).getDiploPoints() >= GameValues.gvRelationDecrease.COST_OFFER_DECREASE_RELATIONS_DIPLOMACY_POINTS) {
-            CFG.core.getCiv(iCivA).setDiploPoints(CFG.core.getCiv(iCivA).getDiploPoints() - GameValues.gvRelationDecrease.COST_OFFER_DECREASE_RELATIONS_DIPLOMACY_POINTS);
+        return GameManager.decreaseRelation(iCivA, iCivB, nNumOfTurns, false);
+    }
+
+    public static boolean decreaseRelation(int iCivA, int iCivB, int nNumOfTurns, boolean free) {
+        if (CFG.core.getCiv(iCivA).getDiploPoints() >= GameValues.gvRelationDecrease.COST_OFFER_DECREASE_RELATIONS_DIPLOMACY_POINTS || free) {
+            if (!free) {
+                CFG.core.getCiv(iCivA).setDiploPoints(CFG.core.getCiv(iCivA).getDiploPoints() - GameValues.gvRelationDecrease.COST_OFFER_DECREASE_RELATIONS_DIPLOMACY_POINTS);
+            }
             if (CFG.core.getCiv(iCivB).getIsPlayer()) {
                 CFG.core.getCiv((int)iCivB).getCivDiploGD().messageBox.addMessage(new Message_Relations_Insult(iCivA));
             }
@@ -2791,7 +2891,7 @@ public class GameManager {
         if (CFG.core.getCivTruce(iLord, iVassal) > 0) {
             return;
         }
-        if (CFG.VASSALS_CAN_DECLARE_INDEPENDENCE && !CFG.core.getCiv(iVassal).getIsPlayer()) {
+        if (!CFG.VASSALS_CAN_DECLARE_INDEPENDENCE && !CFG.core.getCiv(iVassal).getIsPlayer()) {
             return;
         }
         if (CFG.core.getCiv(iVassal).getPuppetOfCiv() == iLord) {

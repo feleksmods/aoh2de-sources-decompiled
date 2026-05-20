@@ -145,10 +145,12 @@ extends Menu {
         } else {
             int j;
             boolean add;
+            String name;
             int i;
             int iSize = tagsSPLITED.length;
             for (i = 0; i < iSize; ++i) {
-                if (CFG.lang.getCiv(tagsSPLITED[i]).charAt(0) != CFG.chosenAlphabetCharachter.charAt(0) || CFG.isInFormableCivs(tagsSPLITED[i])) continue;
+                name = CFG.lang.getCiv(tagsSPLITED[i]);
+                if (name.isEmpty() || name.charAt(0) != CFG.chosenAlphabetCharachter.charAt(0) || CFG.isInFormableCivs(tagsSPLITED[i])) continue;
                 add = true;
                 for (j = 0; j < tagsSPLITED_ADDEDLength; ++j) {
                     if (!tagsSPLITED_ADDED[j].equals(tagsSPLITED[i])) continue;
@@ -156,12 +158,13 @@ extends Menu {
                     break;
                 }
                 if (!add) continue;
-                lTempNames.add(CFG.lang.getCiv(tagsSPLITED[i]));
+                lTempNames.add(name);
                 lTempTags.add(tagsSPLITED[i]);
             }
             iSize = tagsSPLITED_ED.length;
             for (i = 0; i < iSize; ++i) {
-                if (CFG.lang.getCiv(tagsSPLITED_ED[i]).charAt(0) != CFG.chosenAlphabetCharachter.charAt(0) || CFG.isInFormableCivs(tagsSPLITED_ED[i])) continue;
+                name = CFG.lang.getCiv(tagsSPLITED_ED[i]);
+                if (name.isEmpty() || name.charAt(0) != CFG.chosenAlphabetCharachter.charAt(0) || CFG.isInFormableCivs(tagsSPLITED_ED[i])) continue;
                 add = true;
                 for (j = 0; j < tagsSPLITED_ADDEDLength; ++j) {
                     if (!tagsSPLITED_ADDED[j].equals(tagsSPLITED_ED[i])) continue;
@@ -169,7 +172,7 @@ extends Menu {
                     break;
                 }
                 if (!add) continue;
-                lTempNames.add(CFG.lang.getCiv(tagsSPLITED_ED[i]));
+                lTempNames.add(name);
                 lTempTags.add(tagsSPLITED_ED[i]);
             }
             int nPosY = 0;

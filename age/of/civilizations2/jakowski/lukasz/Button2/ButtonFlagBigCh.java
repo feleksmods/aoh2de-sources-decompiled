@@ -159,7 +159,7 @@ extends ButtonM {
         int pY = this.getPosY() + this.getHeightE() - CFG.PADD - IMGManager.getIMG(Images.flagBigOver).getHeight() + iTranslateY;
         int pX = this.getPosXE() + CFG.PADD + iTranslateX;
         if (GameCalendar.currYear > year) {
-            if (this.isFlagNearest || GameN.FUEVG) {
+            if (this.isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
                 oSB.setShader(Renderer.shaderAlpha);
                 this.getFlag().getTexture().bind(1);
                 Gdx.gl.glActiveTexture(33984);
@@ -180,7 +180,7 @@ extends ButtonM {
                 IMGManager.getIMG(Images.flagBigOver2).draw(oSB, pX + (IMGManager.getIMG(Images.flagBigMask2).getWidth() - IMGManager.getIMG(Images.flagBigOver2).getWidth()) / 2, pY);
             }
         } else {
-            if (this.isFlagNearest || GameN.FUEVG) {
+            if (this.isFlagNearest || GameN.FUEVG || !CFG.settingsGD.ENABLE_FLAG_WAVING) {
                 oSB.setShader(Renderer.shaderAlpha);
                 this.getFlag().getTexture().bind(1);
                 Gdx.gl.glActiveTexture(33984);

@@ -790,6 +790,10 @@ public class AoCGame {
             @Override
             public boolean keyUp(int keycode) {
                 try {
+                    if (CFG.getIsDesktop() && keycode == 140 && (CFG.settingsGD.ENABLE_HIDE_UI_HOTKEY || CFG.HIDE_UI)) {
+                        CFG.HIDE_UI = !CFG.HIDE_UI;
+                        return true;
+                    }
                     if (CFG.menus.getIn_SKMenu()) {
                         try {
                             if (keycode == 21) {

@@ -35,73 +35,13 @@ extends Menu {
     }
 
     public Menu_InGame_RelocatePopulation(int nFromProvinceID) {
-        int i;
         ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
         fromProvinceID = nFromProvinceID;
-        int maxPopulation = 0;
-        int sliderButtonID = -1;
-        if (relocate.isEmpty()) {
-            for (i = 0; i < CFG.core.getProv(fromProvinceID).getPop().getNatsSize(); ++i) {
-                relocate.add(true);
-            }
-        }
-        try {
-            for (i = 0; i < CFG.core.getProv(fromProvinceID).getPop().getNatsSize(); ++i) {
-                if (!relocate.get(i).booleanValue()) continue;
-                maxPopulation += CFG.core.getProv(fromProvinceID).getPop().getPopulationID(i);
-            }
-        }
-        catch (Exception ex) {
-            CFG.exceptionStack(ex);
-        }
-        if (maxPopulation < popToRelocate || popToRelocate == 0) {
-            popToRelocate = maxPopulation;
-        }
         int tempWidth = CFG.CIV_INFO_MENU_WIDTH * 2;
         int tY = 0;
-        menuElements.add(new TextBuildTitle(CFG.lang.get("FromProvince"), -1, 0, tY, CFG.BUTTON_W, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4){
-
-            @Override
-            public Color getColor(boolean isActive) {
-                return isActive ? CFG.COLOR_TEXT_GRAY_NS_HOVER : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS : Color.WHITE) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
-            }
-
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW2();
-            }
-        });
-        menuElements.add(new ButtonN_Pop(new Color((float)CFG.core.getCiv(CFG.core.getProv(fromProvinceID).getCivId()).getR() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(fromProvinceID).getCivId()).getG() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(fromProvinceID).getCivId()).getB() / 255.0f, 1.0f), CFG.core.getProv(fromProvinceID).getProvName(), CFG.core.getProv(fromProvinceID).getCivId(), CFG.lang.get("Population") + ": ", CFG.getNumberWthSpaces("" + CFG.core.getProv(fromProvinceID).getPop().getPops()), Images.pop, CFG.COLOR_POPULATION, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), CFG.BUTTON_W){
-
-            @Override
-            public void buildElemHover() {
-                this.menuElemHover = Button_View_Population.getHoverPopulation(fromProvinceID);
-            }
-
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW2();
-            }
-
-            @Override
-            public void actionElem(int iID) {
-            }
-        });
-        menuElements.add(new TextBuildTitle(CFG.lang.get("DestinationProvince"), -1, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), CFG.BUTTON_W, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4){
-
-            @Override
-            public Color getColor(boolean isActive) {
-                return isActive ? CFG.COLOR_TEXT_GRAY_NS_HOVER : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS : Color.WHITE) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
-            }
-
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW2();
-            }
-        });
-        tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
-        if (toProvinceID < 0) {
-            menuElements.add(new TextScale(CFG.lang.get("ChooseAProvince"), -1, 0, tY, CFG.BUTTON_W, CFG.BUTTON_H * 3 / 4, 0.75f){
+        int sliderButtonID = -1;
+        if (CFG.core.getProv(fromProvinceID).isOccupied()) {
+            menuElements.add(new TextScale(CFG.lang.get("ActionNotAvailableInOccupiedProvinces"), -1, 0, 0, CFG.BUTTON_W, CFG.BUTTON_H, 0.75f){
 
                 @Override
                 public int getWidthE() {
@@ -110,16 +50,59 @@ extends Menu {
 
                 @Override
                 public void actionElem(int iID) {
-                    CFG.toastM.addM(CFG.lang.get("ChooseAProvince"), CFG.COLOR_TEXT_NUM_OF_PROVINCES);
+                    CFG.toastM.addM(CFG.lang.get("ActionNotAvailableInOccupiedProvinces"), CFG.COLOR_TEXT_NUM_OF_PROVINCES);
                 }
             });
-            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+        } else if (CFG.core.getProv(fromProvinceID).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) {
+            menuElements.add(new TextScale(CFG.lang.get("ActionAvailableOnlyInOwnedProvinces"), -1, 0, 0, CFG.BUTTON_W, CFG.BUTTON_H, 0.75f){
+
+                @Override
+                public int getWidthE() {
+                    return Menu_InGame_RelocatePopulation.this.getElementW2();
+                }
+
+                @Override
+                public void actionElem(int iID) {
+                    CFG.toastM.addM(CFG.lang.get("ActionAvailableOnlyInOwnedProvinces"), CFG.COLOR_TEXT_NUM_OF_PROVINCES);
+                }
+            });
         } else {
-            menuElements.add(new ButtonN_Pop(new Color((float)CFG.core.getCiv(CFG.core.getProv(toProvinceID).getCivId()).getR() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(toProvinceID).getCivId()).getG() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(toProvinceID).getCivId()).getB() / 255.0f, 1.0f), CFG.core.getProv(toProvinceID).getProvName(), CFG.core.getProv(toProvinceID).getCivId(), CFG.lang.get("Population") + ": ", CFG.getNumberWthSpaces("" + CFG.core.getProv(toProvinceID).getPop().getPops()), Images.pop, CFG.COLOR_POPULATION, 0, tY, CFG.BUTTON_W){
+            int i;
+            int maxPopulation = 0;
+            if (relocate.isEmpty()) {
+                for (i = 0; i < CFG.core.getProv(fromProvinceID).getPop().getNatsSize(); ++i) {
+                    relocate.add(true);
+                }
+            }
+            try {
+                for (i = 0; i < CFG.core.getProv(fromProvinceID).getPop().getNatsSize(); ++i) {
+                    if (!relocate.get(i).booleanValue()) continue;
+                    maxPopulation += CFG.core.getProv(fromProvinceID).getPop().getPopulationID(i);
+                }
+            }
+            catch (Exception ex) {
+                CFG.exceptionStack(ex);
+            }
+            if (maxPopulation < popToRelocate || popToRelocate == 0) {
+                popToRelocate = maxPopulation;
+            }
+            menuElements.add(new TextBuildTitle(CFG.lang.get("FromProvince"), -1, 0, tY, CFG.BUTTON_W, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4){
+
+                @Override
+                public Color getColor(boolean isActive) {
+                    return isActive ? CFG.COLOR_TEXT_GRAY_NS_HOVER : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS : Color.WHITE) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
+                }
+
+                @Override
+                public int getWidthE() {
+                    return Menu_InGame_RelocatePopulation.this.getElementW2();
+                }
+            });
+            menuElements.add(new ButtonN_Pop(new Color((float)CFG.core.getCiv(CFG.core.getProv(fromProvinceID).getCivId()).getR() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(fromProvinceID).getCivId()).getG() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(fromProvinceID).getCivId()).getB() / 255.0f, 1.0f), CFG.core.getProv(fromProvinceID).getProvName(), CFG.core.getProv(fromProvinceID).getCivId(), CFG.lang.get("Population") + ": ", CFG.getNumberWthSpaces("" + CFG.core.getProv(fromProvinceID).getPop().getPops()), Images.pop, CFG.COLOR_POPULATION, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), CFG.BUTTON_W){
 
                 @Override
                 public void buildElemHover() {
-                    this.menuElemHover = Button_View_Population.getHoverPopulation(toProvinceID);
+                    this.menuElemHover = Button_View_Population.getHoverPopulation(fromProvinceID);
                 }
 
                 @Override
@@ -131,134 +114,179 @@ extends Menu {
                 public void actionElem(int iID) {
                 }
             });
-            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
-            menuElements.add(new Slider_InGame_Population(CFG.lang.get("PopulationToRelocate"), CFG.PADD * 2, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), tempWidth - CFG.PADD * 3 - CFG.BUTTON_W, Math.max(CFG.BUTTON_H * 3 / 4, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 6), 0, maxPopulation, popToRelocate, 0.65f){
+            menuElements.add(new TextBuildTitle(CFG.lang.get("DestinationProvince"), -1, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), CFG.BUTTON_W, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4){
 
                 @Override
-                public void actionElem(int iID) {
-                    Menu_InGame_RelocatePopulation.this.getMenuElem(iID + 1).setCurr(Menu_InGame_RelocatePopulation.this.getCostRelocate(this.getCurr()));
-                    popToRelocate = this.getCurr();
+                public Color getColor(boolean isActive) {
+                    return isActive ? CFG.COLOR_TEXT_GRAY_NS_HOVER : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS : Color.WHITE) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
                 }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_RelocatePopulation.this.getElementW2() - CFG.PADD * 4;
-                }
-
-                @Override
-                public int getSliderHeight() {
-                    return CFG.PADD * 2;
-                }
-
-                @Override
-                public Color getColorLEFT() {
-                    return new Color(CFG.COLOR_POPULATION.r, CFG.COLOR_POPULATION.g, CFG.COLOR_POPULATION.b, 0.65f);
-                }
-            });
-            sliderButtonID = menuElements.size() - 1;
-            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
-            menuElements.add(new Slider_InGame_Gold(CFG.lang.get("Cost"), CFG.PADD * 2, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, tempWidth - CFG.PADD * 3 - CFG.BUTTON_W, Math.max(CFG.BUTTON_H * 3 / 4, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 6), 0, this.getCostRelocate(maxPopulation), 0, 0.65f){
-
-                @Override
-                public void actionElem(int iID) {
-                    this.setCurr(Menu_InGame_RelocatePopulation.this.getCostRelocate(popToRelocate));
-                }
-
-                @Override
-                public int getWidthE() {
-                    return Menu_InGame_RelocatePopulation.this.getElementW2() - CFG.PADD * 4;
-                }
-
-                @Override
-                public int getSliderHeight() {
-                    return CFG.PADD * 2;
-                }
-
-                @Override
-                public Color getColorLEFT() {
-                    return new Color(CFG.COLOR_GOLD.r, CFG.COLOR_GOLD.g, CFG.COLOR_GOLD.b, 0.65f);
-                }
-            });
-            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
-        }
-        menuElements.add(new Button_InGameAction(CFG.lang.get("Cancel"), -1, 2 + CFG.PADD, tY += CFG.PADD, CFG.BUTTON_W, true){
-
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW() - CFG.PADD - CFG.PADD / 2;
-            }
-
-            @Override
-            public void actionElem(int iID) {
-                Menu_InGame_RelocatePopulation.this.setVisibleM(false);
-            }
-        });
-        menuElements.add(new Button_InGameAction(CFG.lang.get("Confirm"), -1, 2, tY, CFG.BUTTON_W, true){
-
-            @Override
-            public int getPosXE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW() + CFG.PADD / 2;
-            }
-
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW() - CFG.PADD - CFG.PADD / 2;
-            }
-
-            @Override
-            public void actionElem(int iID) {
-                Menu_InGame_RelocatePopulation.this.relocatePopulation();
-                Menu_InGame_RelocatePopulation.this.setVisibleM(false);
-            }
-
-            @Override
-            public boolean getIsClickable() {
-                return toProvinceID >= 0;
-            }
-        });
-        menuElements.add(new TextBuildTitle(CFG.lang.get("PopulationByOrigin") + ": " + CFG.core.getProv(fromProvinceID).getProvName(), -1, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, CFG.BUTTON_W, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4){
-
-            @Override
-            public Color getColor(boolean isActive) {
-                return isActive ? CFG.COLOR_TEXT_GRAY_NS_HOVER : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS : Color.WHITE) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
-            }
-
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_RelocatePopulation.this.getElementW2();
-            }
-        });
-        tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
-        for (int i2 = 0; i2 < CFG.core.getProv(fromProvinceID).getPop().getNatsSize(); ++i2) {
-            menuElements.add(new Button_RelocatePop(i2, CFG.core.getProv(fromProvinceID).getPop().getCivID(i2), CFG.core.getProv(fromProvinceID).getPop().getPopulationID(i2), 0, tY, CFG.BUTTON_W * 2){
 
                 @Override
                 public int getWidthE() {
                     return Menu_InGame_RelocatePopulation.this.getElementW2();
                 }
+            });
+            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            if (toProvinceID < 0) {
+                menuElements.add(new TextScale(CFG.lang.get("ChooseAProvince"), -1, 0, tY, CFG.BUTTON_W, CFG.BUTTON_H * 3 / 4, 0.75f){
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_RelocatePopulation.this.getElementW2();
+                    }
+
+                    @Override
+                    public void actionElem(int iID) {
+                        CFG.toastM.addM(CFG.lang.get("ChooseAProvince"), CFG.COLOR_TEXT_NUM_OF_PROVINCES);
+                    }
+                });
+                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            } else {
+                menuElements.add(new ButtonN_Pop(new Color((float)CFG.core.getCiv(CFG.core.getProv(toProvinceID).getCivId()).getR() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(toProvinceID).getCivId()).getG() / 255.0f, (float)CFG.core.getCiv(CFG.core.getProv(toProvinceID).getCivId()).getB() / 255.0f, 1.0f), CFG.core.getProv(toProvinceID).getProvName(), CFG.core.getProv(toProvinceID).getCivId(), CFG.lang.get("Population") + ": ", CFG.getNumberWthSpaces("" + CFG.core.getProv(toProvinceID).getPop().getPops()), Images.pop, CFG.COLOR_POPULATION, 0, tY, CFG.BUTTON_W){
+
+                    @Override
+                    public void buildElemHover() {
+                        this.menuElemHover = Button_View_Population.getHoverPopulation(toProvinceID);
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_RelocatePopulation.this.getElementW2();
+                    }
+
+                    @Override
+                    public void actionElem(int iID) {
+                    }
+                });
+                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+                menuElements.add(new Slider_InGame_Population(CFG.lang.get("PopulationToRelocate"), CFG.PADD * 2, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE(), tempWidth - CFG.PADD * 3 - CFG.BUTTON_W, Math.max(CFG.BUTTON_H * 3 / 4, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 6), 0, maxPopulation, popToRelocate, 0.65f){
+
+                    @Override
+                    public void actionElem(int iID) {
+                        Menu_InGame_RelocatePopulation.this.getMenuElem(iID + 1).setCurr(Menu_InGame_RelocatePopulation.this.getCostRelocate(this.getCurr()));
+                        popToRelocate = this.getCurr();
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_RelocatePopulation.this.getElementW2() - CFG.PADD * 4;
+                    }
+
+                    @Override
+                    public int getSliderHeight() {
+                        return CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public Color getColorLEFT() {
+                        return new Color(CFG.COLOR_POPULATION.r, CFG.COLOR_POPULATION.g, CFG.COLOR_POPULATION.b, 0.65f);
+                    }
+                });
+                sliderButtonID = menuElements.size() - 1;
+                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+                menuElements.add(new Slider_InGame_Gold(CFG.lang.get("Cost"), CFG.PADD * 2, ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getPosY() + ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, tempWidth - CFG.PADD * 3 - CFG.BUTTON_W, Math.max(CFG.BUTTON_H * 3 / 4, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 6), 0, this.getCostRelocate(maxPopulation), 0, 0.65f){
+
+                    @Override
+                    public void actionElem(int iID) {
+                        this.setCurr(Menu_InGame_RelocatePopulation.this.getCostRelocate(popToRelocate));
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_RelocatePopulation.this.getElementW2() - CFG.PADD * 4;
+                    }
+
+                    @Override
+                    public int getSliderHeight() {
+                        return CFG.PADD * 2;
+                    }
+
+                    @Override
+                    public Color getColorLEFT() {
+                        return new Color(CFG.COLOR_GOLD.r, CFG.COLOR_GOLD.g, CFG.COLOR_GOLD.b, 0.65f);
+                    }
+                });
+                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+            }
+            menuElements.add(new Button_InGameAction(CFG.lang.get("Cancel"), -1, 2 + CFG.PADD, tY += CFG.PADD, CFG.BUTTON_W, true){
+
+                @Override
+                public int getWidthE() {
+                    return Menu_InGame_RelocatePopulation.this.getElementW() - CFG.PADD - CFG.PADD / 2;
+                }
 
                 @Override
                 public void actionElem(int iID) {
-                    try {
-                        relocate.set(this.id, relocate.get(this.id) == false);
-                        CFG.menus.rebuildInGame_Build_RelocatePopulation(fromProvinceID);
-                    }
-                    catch (Exception ex) {
-                        CFG.exceptionStack(ex);
-                    }
+                    Menu_InGame_RelocatePopulation.this.setVisibleM(false);
+                }
+            });
+            menuElements.add(new Button_InGameAction(CFG.lang.get("Confirm"), -1, 2, tY, CFG.BUTTON_W, true){
+
+                @Override
+                public int getPosXE() {
+                    return Menu_InGame_RelocatePopulation.this.getElementW() + CFG.PADD / 2;
                 }
 
                 @Override
-                public boolean getCheckboxSt() {
-                    try {
-                        return relocate.get(this.id);
-                    }
-                    catch (Exception exception) {
-                        return false;
-                    }
+                public int getWidthE() {
+                    return Menu_InGame_RelocatePopulation.this.getElementW() - CFG.PADD - CFG.PADD / 2;
+                }
+
+                @Override
+                public void actionElem(int iID) {
+                    Menu_InGame_RelocatePopulation.this.relocatePopulation();
+                    Menu_InGame_RelocatePopulation.this.setVisibleM(false);
+                }
+
+                @Override
+                public boolean getIsClickable() {
+                    return toProvinceID >= 0;
                 }
             });
-            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            menuElements.add(new TextBuildTitle(CFG.lang.get("PopulationByOrigin") + ": " + CFG.core.getProv(fromProvinceID).getProvName(), -1, 0, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, CFG.BUTTON_W, CFG.TEXT_HEIGHT_DEFAULT + CFG.PADD * 4){
+
+                @Override
+                public Color getColor(boolean isActive) {
+                    return isActive ? CFG.COLOR_TEXT_GRAY_NS_HOVER : (this.getIsClickable() ? (this.getIsHovered() ? CFG.COLOR_TEXT_GRAY_NS : Color.WHITE) : new Color(0.78f, 0.78f, 0.78f, 0.7f));
+                }
+
+                @Override
+                public int getWidthE() {
+                    return Menu_InGame_RelocatePopulation.this.getElementW2();
+                }
+            });
+            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+            for (int i2 = 0; i2 < CFG.core.getProv(fromProvinceID).getPop().getNatsSize(); ++i2) {
+                menuElements.add(new Button_RelocatePop(i2, CFG.core.getProv(fromProvinceID).getPop().getCivID(i2), CFG.core.getProv(fromProvinceID).getPop().getPopulationID(i2), 0, tY, CFG.BUTTON_W * 2){
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_RelocatePopulation.this.getElementW2();
+                    }
+
+                    @Override
+                    public void actionElem(int iID) {
+                        try {
+                            relocate.set(this.id, relocate.get(this.id) == false);
+                            CFG.menus.rebuildInGame_Build_RelocatePopulation(fromProvinceID);
+                        }
+                        catch (Exception ex) {
+                            CFG.exceptionStack(ex);
+                        }
+                    }
+
+                    @Override
+                    public boolean getCheckboxSt() {
+                        try {
+                            return relocate.get(this.id);
+                        }
+                        catch (Exception exception) {
+                            return false;
+                        }
+                    }
+                });
+                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            }
         }
         int tempMenuPosY = IMGManager.getIMG(Images.topBar).getHeight() + CFG.PADD * 2 + CFG.BUTTON_H * 3 / 4;
         this.initMenu(new TitleM_TextSmall(CFG.lang.get("RelocatePopulation"), CFG.BUTTON_H * 3 / 4, true, true){

@@ -47,6 +47,7 @@ extends Menu {
         tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
         HashMap<Integer, Integer> natioMap = new HashMap<Integer, Integer>();
         for (i2 = 0; i2 < CFG.core.getCiv(civID).getNumOfProvs(); ++i2) {
+            if (CFG.core.getProv(CFG.core.getCiv(civID).getProvID(i2)).isOccupied()) continue;
             for (int j = 0; j < CFG.core.getProv(CFG.core.getCiv(civID).getProvID(i2)).getPop().getNatsSize(); ++j) {
                 int otherCivID = CFG.core.getProv(CFG.core.getCiv(civID).getProvID(i2)).getPop().getCivID(j);
                 if (civID == otherCivID) continue;

@@ -180,8 +180,12 @@ public class Images {
     public static int bWorkshop;
     public static int bSupply;
     public static int bMarket;
+    public static int bBarracks;
     public static int buildAll;
     public static int nuke;
+    public static int sandbox;
+    public static int brush;
+    public static int bank;
     public static int botEndLeft;
     public static int botProvName;
     public static int botProvNameLeft;
@@ -213,6 +217,7 @@ public class Images {
     public static int infoBuild;
     public static int infoNuke;
     public static int mapWar;
+    public static int mapTruce;
     public static int skull;
     public static int goods;
     public static int religion;

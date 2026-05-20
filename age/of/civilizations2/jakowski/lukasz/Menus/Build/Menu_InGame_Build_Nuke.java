@@ -3,7 +3,9 @@ package age.of.civilizations2.jakowski.lukasz.Menus.Build;
 import age.of.civilizations2.jakowski.lukasz.Button.Build.Button_Build_Nuke;
 import age.of.civilizations2.jakowski.lukasz.Button.Flag.Button_InGameAction;
 import age.of.civilizations2.jakowski.lukasz.Button.MenuElemUI;
+import age.of.civilizations2.jakowski.lukasz.Button2.Text_Desc;
 import age.of.civilizations2.jakowski.lukasz.CFG;
+import age.of.civilizations2.jakowski.lukasz.Colors;
 import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.GameCalendar;
 import age.of.civilizations2.jakowski.lukasz.GameValues.GameValues;
@@ -11,6 +13,13 @@ import age.of.civilizations2.jakowski.lukasz.IMGManager;
 import age.of.civilizations2.jakowski.lukasz.Images;
 import age.of.civilizations2.jakowski.lukasz.MapA.Plagues.Nuke.NukeManager;
 import age.of.civilizations2.jakowski.lukasz.Menu;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.MEHover_2E;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Flag;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Image;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_Text;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_2Type_TextDesc;
+import age.of.civilizations2.jakowski.lukasz.MenuE_HoverP.ME_Hover_v2;
 import age.of.civilizations2.jakowski.lukasz.Menus.Messages.Diplomacy.Menu_InGame_Message_Alliance;
 import age.of.civilizations2.jakowski.lukasz.Menus.Relations.Actions.Menu_InGameOfferAlliance;
 import age.of.civilizations2.jakowski.lukasz.Renderer;
@@ -45,6 +54,73 @@ extends Menu {
             }
         });
         ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setMin((int)(CFG.NUKES_REQUIRED_TECH_LVL * 100.0f));
+        menuElements.add(new Text_Desc(CFG.lang.get("NukesRestrictedToTopCivilizations") + ": " + CFG.getNumberWthSpaces("" + CFG.NUKES_TOP_CIVS) + " / " + (CFG.core.getCivsSize() - 1), 2, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, tempWidth - 4){
+
+            @Override
+            protected Color getColor(boolean isActive) {
+                if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos() > CFG.NUKES_TOP_CIVS) {
+                    return CFG.COLOR_NEGATIVE_2;
+                }
+                return Colors.getColorButtonHover2(isActive, this.getIsHovered());
+            }
+
+            @Override
+            public int getWidthE() {
+                return Menu_InGame_Build_Nuke.this.getElementW() * 2;
+            }
+
+            @Override
+            public void buildElemHover() {
+                ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("NukesRestrictedToTopCivilizations") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.NUKES_TOP_CIVS) + " / " + (CFG.core.getCivsSize() - 1), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Image(Images.rank, CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("NuclearWeaponsCanOnlyBeBuiltByTheTopRankedCivs")));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Ranking") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos(), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Flag(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                this.menuElemHover = new ME_Hover_v2(nElements);
+            }
+        });
+        menuElements.add(new Text_Desc(CFG.lang.get("NuclearWeaponsCanOnlyBeBuiltByTheTopRankedCivs"), 2, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, tempWidth - 4){
+
+            @Override
+            protected Color getColor(boolean isActive) {
+                return Colors.getColorButtonHover2(isActive, this.getIsHovered());
+            }
+
+            @Override
+            public int getWidthE() {
+                return Menu_InGame_Build_Nuke.this.getElementW() * 2;
+            }
+
+            @Override
+            public void buildElemHover() {
+                ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("NukesRestrictedToTopCivilizations") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.getNumberWthSpaces("" + CFG.NUKES_TOP_CIVS) + " / " + (CFG.core.getCivsSize() - 1), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Image(Images.rank, CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("NuclearWeaponsCanOnlyBeBuiltByTheTopRankedCivs")));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                nData.add(new ME_Hover_2Type_Text(CFG.lang.get("Ranking") + ": "));
+                nData.add(new ME_Hover_2Type_Text("" + CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos(), CFG.COLOR_HOVER_TITLE));
+                nData.add(new ME_Hover_2Type_Flag(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.PADD, 0));
+                nElements.add(new MEHover_2E(nData));
+                nData.clear();
+                this.menuElemHover = new ME_Hover_v2(nElements);
+            }
+        });
         tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
         menuElements.add(new Button_InGameAction(CFG.lang.get("Cancel"), -1, 2 + CFG.PADD, tY += CFG.PADD, CFG.BUTTON_W, true){
 
@@ -72,7 +148,7 @@ extends Menu {
 
             @Override
             public boolean getIsClickable() {
-                return CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)NukeManager.getAtomicBombCost(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel() >= CFG.NUKES_REQUIRED_TECH_LVL && (!CFG.NUKES_MIN_YEAR_ENABLED || GameCalendar.currYear >= GameValues.gvAtomic.ATOMIC_BOMB_MIN_YEAR);
+                return CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)NukeManager.getAtomicBombCost(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos() <= CFG.NUKES_TOP_CIVS && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel() >= CFG.NUKES_REQUIRED_TECH_LVL && (!CFG.NUKES_MIN_YEAR_ENABLED || GameCalendar.currYear >= GameValues.gvAtomic.ATOMIC_BOMB_MIN_YEAR);
             }
 
             @Override
@@ -94,7 +170,7 @@ extends Menu {
 
             @Override
             public boolean getIsClickable() {
-                return CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)NukeManager.getAtomicBombCost(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel() >= CFG.NUKES_REQUIRED_TECH_LVL && (!CFG.NUKES_MIN_YEAR_ENABLED || GameCalendar.currYear >= GameValues.gvAtomic.ATOMIC_BOMB_MIN_YEAR);
+                return CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)NukeManager.getAtomicBombCost(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos() <= CFG.NUKES_TOP_CIVS && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel() >= CFG.NUKES_REQUIRED_TECH_LVL && (!CFG.NUKES_MIN_YEAR_ENABLED || GameCalendar.currYear >= GameValues.gvAtomic.ATOMIC_BOMB_MIN_YEAR);
             }
 
             @Override
@@ -188,6 +264,9 @@ extends Menu {
                 CFG.menus.setVisible_Menu_InGame_CurrentWars(true);
             } else if (CFG.NUKES_REQUIRED_TECH_LVL > CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getTechLevel()) {
                 CFG.toastM.addM(CFG.lang.get("RequiredTechnologyLevel") + ": " + CFG.NUKES_REQUIRED_TECH_LVL, CFG.COLOR_NEGATIVE_1);
+                CFG.toastM.setTimeInView(3500);
+            } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getRankPos() > CFG.NUKES_TOP_CIVS) {
+                CFG.toastM.addM(CFG.lang.get("NukesRestrictedToTopCivilizations") + ": " + CFG.getNumberWthSpaces("" + CFG.NUKES_TOP_CIVS) + " / " + (CFG.core.getCivsSize() - 1), CFG.COLOR_NEGATIVE_1);
                 CFG.toastM.setTimeInView(3500);
             } else if (!NukeManager.canBuildMore(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
                 CFG.toastM.addM(CFG.lang.get("Limit") + ": " + NukeManager.getAtomicBombsLimit(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()), CFG.COLOR_NEGATIVE_1);

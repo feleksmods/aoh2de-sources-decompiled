@@ -26,6 +26,7 @@ extends Menu {
 
     public Menu_RandomGame_Civilizations_Select_Alphabet() {
         int a;
+        String name;
         boolean addChar;
         int i;
         ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
@@ -92,25 +93,29 @@ extends Menu {
         for (i = 0; i < iSize; ++i) {
             if (CFG.randomGameManager.isTagTaken(tagsSPLITED[i])) continue;
             addChar = true;
+            name = CFG.lang.getCiv(tagsSPLITED[i]);
+            if (name.isEmpty()) continue;
             for (a = 0; a < this.lCharacters.size(); ++a) {
-                if (this.lCharacters.get(a).charValue() != CFG.lang.getCiv(tagsSPLITED[i]).charAt(0)) continue;
+                if (this.lCharacters.get(a).charValue() != name.charAt(0)) continue;
                 addChar = false;
                 break;
             }
             if (!addChar) continue;
-            this.lCharacters.add(Character.valueOf(CFG.lang.getCiv(tagsSPLITED[i]).charAt(0)));
+            this.lCharacters.add(Character.valueOf(name.charAt(0)));
         }
         iSize = tagsSPLITED_ED.length;
         for (i = 0; i < iSize; ++i) {
             if (CFG.randomGameManager.isTagTaken(tagsSPLITED_ED[i])) continue;
             addChar = true;
+            name = CFG.lang.getCiv(tagsSPLITED_ED[i]);
+            if (name.isEmpty()) continue;
             for (a = 0; a < this.lCharacters.size(); ++a) {
-                if (this.lCharacters.get(a).charValue() != CFG.lang.getCiv(tagsSPLITED_ED[i]).charAt(0)) continue;
+                if (this.lCharacters.get(a).charValue() != name.charAt(0)) continue;
                 addChar = false;
                 break;
             }
             if (!addChar) continue;
-            this.lCharacters.add(Character.valueOf(CFG.lang.getCiv(tagsSPLITED_ED[i]).charAt(0)));
+            this.lCharacters.add(Character.valueOf(name.charAt(0)));
         }
         for (i = 0; i < this.lCharacters.size() - 1; ++i) {
             for (int j = i + 1; j < this.lCharacters.size(); ++j) {

@@ -9,6 +9,7 @@ import age.of.civilizations2.jakowski.lukasz.Editor.Editor_NeighboringProvinces;
 import age.of.civilizations2.jakowski.lukasz.GameValues.GameValues;
 import age.of.civilizations2.jakowski.lukasz.HistoryLog.HistoryLog_JoinAlliance;
 import age.of.civilizations2.jakowski.lukasz.MapScale;
+import age.of.civilizations2.jakowski.lukasz.Menus.Civilization.Menu_InGame_Civ_Decisions;
 import age.of.civilizations2.jakowski.lukasz.Menus.War.Menu_InGame_PrepareForWar;
 import age.of.civilizations2.jakowski.lukasz.Messages.Truce.SignPeace.Message_WeCanSignPeace;
 import age.of.civilizations2.jakowski.lukasz.Point_XY2;
@@ -33,7 +34,7 @@ public class Commands {
     }
 
     public static void execute(String nCommand) {
-        block247: {
+        block253: {
             if (nCommand.length() == 0) {
                 return;
             }
@@ -41,7 +42,7 @@ public class Commands {
             Commands.addMessage("#" + nCommand);
             String[] tempCommand = nCommand.toLowerCase().split(" ");
             try {
-                if (tempCommand.length <= 0) break block247;
+                if (tempCommand.length <= 0) break block253;
                 if (tempCommand[0].equals("console")) {
                     CFG.menus.setVisible_InGame_FlagAction_Console(!CFG.menus.getVisible_InGame_FlagAction_Console());
                     if (CFG.menus.getVisible_InGame_FlagAction_Console()) {
@@ -146,19 +147,19 @@ public class Commands {
                     return;
                 }
                 if (tempCommand[0].equals("removeplayer") && tempCommand.length > 1) {
-                    if (CFG.core.getPlayersSize() <= 1) break block247;
+                    if (CFG.core.getPlayersSize() <= 1) break block253;
                     try {
                         int pTID = Integer.parseInt(tempCommand[1]);
                         CFG.core.removePlayer(pTID);
                         if (pTID > 0 && CFG.PLAYER_TURN_ID == pTID) {
                             CFG.PLAYER_TURN_ID = pTID - 1;
                             CFG.gameAction.loadActivePlayerData();
-                            break block247;
+                            break block253;
                         }
                         CFG.gameAction.loadActivePlayerData();
                     }
                     catch (Exception pTID) {}
-                    break block247;
+                    break block253;
                 }
                 if (tempCommand[0].equals("removeplayer")) {
                     if (CFG.core.getPlayersSize() > 1) {
@@ -171,7 +172,7 @@ public class Commands {
                             CFG.gameAction.loadActivePlayerData();
                         }
                     }
-                    break block247;
+                    break block253;
                 }
                 if (tempCommand[0].equals("close") || tempCommand[0].equals("bye")) {
                     if (CFG.menus.getVisible_InGame_FlagAction_Console()) {
@@ -213,10 +214,10 @@ public class Commands {
                         if (CFG.core.getActiveProvID() >= 0 && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() > 0) {
                             Menu_InGame_PrepareForWar.explode(CFG.core.getProv(CFG.core.getActiveProvID()).getCivId());
                         }
-                        break block247;
+                        break block253;
                     }
                     catch (Exception pTID) {}
-                    break block247;
+                    break block253;
                 }
                 if (tempCommand[0].equals("help") || tempCommand[0].equals("commands")) {
                     if (!CFG.menus.getVisible_InGame_FlagAction_Console()) {
@@ -295,7 +296,7 @@ public class Commands {
                     CFG.menus.getKeyboard().setVisibleM(false);
                     return;
                 }
-                if (!CFG.menus.getVisible_InGame_FlagAction_Console()) break block247;
+                if (!CFG.menus.getVisible_InGame_FlagAction_Console()) break block253;
                 if (tempCommand[0].equals("clear")) {
                     sConsole.clear();
                     lFlagsParty.clear();
@@ -479,7 +480,7 @@ public class Commands {
                     CFG.toastM.addM(CFG.lang.get("ChooseAProvince"), CFG.COLOR_NEGATIVE_2);
                     Commands.addMessage(CFG.lang.get(CFG.lang.get("ChooseAProvince")));
                     Commands.addMessage("");
-                    break block247;
+                    break block253;
                 }
                 if (tempCommand[0].equals("gold")) {
                     try {
@@ -488,7 +489,7 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("sandbox")) {
@@ -497,7 +498,25 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
+                    }
+                }
+                if (tempCommand[0].equals("editor")) {
+                    try {
+                        CFG.INGAME_WORLD_EDITOR = !CFG.INGAME_WORLD_EDITOR;
+                        return;
+                    }
+                    catch (Exception ex) {
+                        break block253;
+                    }
+                }
+                if (tempCommand[0].equals("ass") || tempCommand[0].equals("assign")) {
+                    try {
+                        Menu_InGame_Civ_Decisions.assignProvinces();
+                        return;
+                    }
+                    catch (Exception ex) {
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("sandboxai")) {
@@ -506,7 +525,7 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("nuke") && tempCommand.length > 1) {
@@ -516,7 +535,7 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("nuke")) {
@@ -526,7 +545,7 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("move")) {
@@ -536,7 +555,7 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("diplo")) {
@@ -546,7 +565,7 @@ public class Commands {
                         return;
                     }
                     catch (Exception ex) {
-                        break block247;
+                        break block253;
                     }
                 }
                 if (tempCommand[0].equals("addciv")) {
@@ -639,7 +658,7 @@ public class Commands {
                             }
                             if (CFG.core.getCiv(civB).getCapitalProvID() >= 0) {
                                 CFG.core.getProv(CFG.core.getCiv(civB).getCapitalProvID()).setIsCapital(false);
-                                for (i = 0; i < CFG.core.getProv(CFG.core.getCiv(civB).getCapitalProvID()).getCitSize(); ++i) {
+                                for (i = 0; i < CFG.core.getProv(CFG.core.getCiv(civB).getCapitalProvID()).getCitiesSize(); ++i) {
                                     if (CFG.core.getProv(CFG.core.getCiv(civB).getCapitalProvID()).getCit(i).getCityLevel() != CFG.getEditorCityLevel(0)) continue;
                                     CFG.core.getProv(CFG.core.getCiv(civB).getCapitalProvID()).getCit(i).setCityLevel(CFG.getEditorCityLevel(1));
                                 }

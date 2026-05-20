@@ -35,7 +35,7 @@ extends Menu {
         menuElements.add(new Button_Transparent(0, 0, 1, 1, false));
         this.initMenu(null, 0, 0, CFG.GAMEWIDTH, CFG.GAMEHEIGHT, menuElements);
         this.iCivA = nCivID;
-        this.sWar = CFG.core.getProv(nProvinceID).getCitSize() > 0 ? CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getCit(0).getCityName()) : CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getName());
+        this.sWar = CFG.core.getProv(nProvinceID).getCitiesSize() > 0 ? CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getCit(0).getCityName()) : CFG.lang.get("CityHasBeenFounded", CFG.core.getProv(nProvinceID).getName());
         CFG.glyphLay.setText(CFG.fontMain.get(CFG.FONT_BOLD_SMALL), this.sWar);
         this.iWarWidth = (int)CFG.glyphLay.width;
         this.sDate = GameCalendar.getCurrDate();

@@ -1,7 +1,6 @@
 package age.of.civilizations2.jakowski.lukasz.Menus.CivInfo;
 
 import age.of.civilizations2.jakowski.lukasz.Button.Diplomacy.ButtonDiplomacy;
-import age.of.civilizations2.jakowski.lukasz.Button.Diplomacy.ButtonDiplomacy_InGame;
 import age.of.civilizations2.jakowski.lukasz.Button.Diplomacy.Button_Diplomacy_Wiki_Civ;
 import age.of.civilizations2.jakowski.lukasz.Button.MenuElemUI;
 import age.of.civilizations2.jakowski.lukasz.Button2.ButtonFlagBig;
@@ -60,7 +59,7 @@ extends Menu {
                 tData.add(i2);
             }
             if (!tData.isEmpty()) {
-                menuElements.add(new ButtonDiplomacy_InGame(Images.diploVassal, tData, 2, tPosY, CFG.CIV_INFO_MENU_WIDTH - 2));
+                menuElements.add(new ButtonDiplomacy(Images.diploVassal, tData, 2, tPosY, CFG.CIV_INFO_MENU_WIDTH - 2));
                 tPosY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
             }
             tData.clear();
@@ -164,7 +163,7 @@ extends Menu {
                 tData.add(CFG.core.getCiv((int)CFG.getActiveCivInfoId()).getHatedCiv((int)i).iCivID);
             }
             if (!tData.isEmpty()) {
-                menuElements.add(new ButtonDiplomacy_InGame(Images.diploRivals, tData, 2, tPosY, CFG.CIV_INFO_MENU_WIDTH - 2));
+                menuElements.add(new ButtonDiplomacy(Images.diploRivals, tData, 2, tPosY, CFG.CIV_INFO_MENU_WIDTH - 2));
                 tPosY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
             }
         }

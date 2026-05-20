@@ -6,6 +6,7 @@ import age.of.civilizations2.jakowski.lukasz.Button.Flag.Button_InGameAction;
 import age.of.civilizations2.jakowski.lukasz.Button.GameN.ButtonN_Civs;
 import age.of.civilizations2.jakowski.lukasz.Button.GameN.Population.ButtonN_Pop_TextRight;
 import age.of.civilizations2.jakowski.lukasz.Button.MenuElemUI;
+import age.of.civilizations2.jakowski.lukasz.Button2.Text_Desc;
 import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.GameManager;
@@ -136,6 +137,45 @@ extends Menu {
                 ((MenuElemUI)menuElements.get(menuElements.size() - 1)).setCurr((int)(GameManager.investForeignEconomy_ReturnRate(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), provinceID) * 10000.0f));
             }
             tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            tY += CFG.PADD;
+            if (CFG.core.getNumOfForeignInvestments(provinceID) >= GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE) {
+                menuElements.add(new Text_Desc(CFG.lang.get("ActiveForeignInvestmentsInProvince") + ": " + CFG.core.getNumOfForeignInvestments(provinceID) + " / " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE, 2, tY, tempWidth - 4){
+
+                    @Override
+                    protected Color getColor(boolean isActive) {
+                        return this.getIsHovered() || isActive ? CFG.COLOR_NEGATIVE_1 : CFG.COLOR_NEGATIVE_2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_InvestForeign.this.getElementW() * 2;
+                    }
+                });
+            } else {
+                menuElements.add(new Text_Desc(CFG.lang.get("ActiveForeignInvestmentsInProvince") + ": " + CFG.core.getNumOfForeignInvestments(provinceID) + " / " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE, 2, tY, tempWidth - 4){
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_InvestForeign.this.getElementW() * 2;
+                    }
+                });
+            }
+            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            if (CFG.core.getProv(provinceID).isOccupied()) {
+                menuElements.add(new Text_Desc(CFG.lang.get("InvestingInAnOccupiedProvinceIsNotPossible"), 2, tY += CFG.PADD, tempWidth - 4){
+
+                    @Override
+                    protected Color getColor(boolean isActive) {
+                        return this.getIsHovered() || isActive ? CFG.COLOR_NEGATIVE_1 : CFG.COLOR_NEGATIVE_2;
+                    }
+
+                    @Override
+                    public int getWidthE() {
+                        return Menu_InGame_InvestForeign.this.getElementW() * 2;
+                    }
+                });
+                tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
+            }
         } else {
             menuElements.add(new TextScale(CFG.lang.get("ChooseAProvince"), -1, 0, tY, CFG.BUTTON_W, CFG.BUTTON_H * 3 / 4, 0.75f){
 
@@ -180,6 +220,10 @@ extends Menu {
                 try {
                     if (CFG.core.getProv(provinceID).getCivId() <= 0) {
                         CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.lang.get("Neutral"), CFG.COLOR_NEGATIVE_1);
+                    } else if (CFG.core.getProv(provinceID).isOccupied()) {
+                        CFG.toastM.addM(CFG.lang.get("InvestingInAnOccupiedProvinceIsNotPossible"), CFG.COLOR_NEGATIVE_1);
+                    } else if (CFG.core.getNumOfForeignInvestments(provinceID) >= GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE) {
+                        CFG.toastM.addM(CFG.lang.get("MaxActiveForeignInvestmentsInProvince") + ": " + CFG.core.getNumOfForeignInvestments(provinceID) + " / " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE, CFG.COLOR_NEGATIVE_1);
                     } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).areSanctionsAdded(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
                         CFG.toastM.addM(CFG.lang.get("SanctionsBox1"), CFG.COLOR_NEGATIVE_1);
                     } else if (Menu_InGame_InvestForeign.this.getMenuElem(Menu_InGame_InvestForeign.this.sliderElementID).getCurr() > 0) {
@@ -245,6 +289,18 @@ extends Menu {
                         nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("MaxActiveForeignInvestmentsInProvince") + ": " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("InvestingInAnOccupiedProvinceIsNotPossible")));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
                     catch (Exception ex) {
@@ -263,7 +319,7 @@ extends Menu {
 
             @Override
             public boolean getIsClickable() {
-                return provinceID >= 0 && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMovemPoints() >= GameValues.gvInvestForeign.INVEST_ECO_COST_MOVEMENT_POINTS;
+                return provinceID >= 0 && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMovemPoints() >= GameValues.gvInvestForeign.INVEST_ECO_COST_MOVEMENT_POINTS && !CFG.core.getProv(provinceID).isOccupied();
             }
         });
         menuElements.add(new Button_InGameAction(CFG.lang.get("Confirm"), -1, 2, tY, CFG.BUTTON_W, true){
@@ -283,6 +339,10 @@ extends Menu {
                 try {
                     if (CFG.core.getProv(provinceID).getCivId() <= 0) {
                         CFG.toastM.addM(CFG.lang.get("Civilization") + ": " + CFG.lang.get("Neutral"), CFG.COLOR_NEGATIVE_1);
+                    } else if (CFG.core.getProv(provinceID).isOccupied()) {
+                        CFG.toastM.addM(CFG.lang.get("InvestingInAnOccupiedProvinceIsNotPossible"), CFG.COLOR_NEGATIVE_1);
+                    } else if (CFG.core.getNumOfForeignInvestments(provinceID) >= GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE) {
+                        CFG.toastM.addM(CFG.lang.get("MaxActiveForeignInvestmentsInProvince") + ": " + CFG.core.getNumOfForeignInvestments(provinceID) + " / " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE, CFG.COLOR_NEGATIVE_1);
                     } else if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).areSanctionsAdded(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getProv(provinceID).getCivId()) || CFG.core.getCiv(CFG.core.getProv(provinceID).getCivId()).areSanctionsAdded(CFG.core.getProv(provinceID).getCivId(), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) {
                         CFG.toastM.addM(CFG.lang.get("SanctionsBox1"), CFG.COLOR_NEGATIVE_1);
                     } else if (Menu_InGame_InvestForeign.this.getMenuElem(Menu_InGame_InvestForeign.this.sliderElementID).getCurr() > 0) {
@@ -348,6 +408,18 @@ extends Menu {
                         nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("ForeignInvestYourGoldDirectlyDesc")));
                         nElements.add(new MEHover_2E(nData));
                         nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("MaxActiveForeignInvestmentsInProvince") + ": " + GameValues.gvInvestForeign.LIMIT_OF_INVESTMENTS_IN_A_PROVINCE));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_Space());
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
+                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("InvestingInAnOccupiedProvinceIsNotPossible")));
+                        nElements.add(new MEHover_2E(nData));
+                        nData.clear();
                         this.menuElemHover = new ME_Hover_v2(nElements);
                     }
                     catch (Exception ex) {
@@ -366,7 +438,7 @@ extends Menu {
 
             @Override
             public boolean getIsClickable() {
-                return provinceID >= 0 && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMovemPoints() >= GameValues.gvInvestForeign.INVEST_ECO_COST_MOVEMENT_POINTS;
+                return provinceID >= 0 && CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getMovemPoints() >= GameValues.gvInvestForeign.INVEST_ECO_COST_MOVEMENT_POINTS && !CFG.core.getProv(provinceID).isOccupied();
             }
         });
         int tempMenuPosY = IMGManager.getIMG(Images.topBar).getHeight() + CFG.PADD * 2 + CFG.BUTTON_H * 3 / 4;

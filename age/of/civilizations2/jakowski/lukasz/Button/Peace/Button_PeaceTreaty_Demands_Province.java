@@ -30,7 +30,7 @@ extends ButtonM {
         this.fontID = CFG.FONT_BOLD_SMALL;
         super.init("" + CFG.core.getProv(nProvinceID).getName(), 0, iPosX, iPosY, iWidth, iHeight, isClickable, true, false, false);
         this.iProvinceID = nProvinceID;
-        this.iImageID = CFG.core.getProv(this.iProvinceID).getCitSize() > 0 ? CFG.core.getProv(this.iProvinceID).getCit(0).getCityLevel() : Images.city5;
+        this.iImageID = CFG.core.getProv(this.iProvinceID).getCitiesSize() > 0 ? CFG.core.getProv(this.iProvinceID).getCit(0).getCityLevel() : Images.city5;
         this.sValue = "" + CFG.core.getProvinceValue(this.iProvinceID);
         CFG.glyphLay.setText(CFG.fontMain.get(this.fontID), this.sValue);
         this.iValueWidth = (int)CFG.glyphLay.width;

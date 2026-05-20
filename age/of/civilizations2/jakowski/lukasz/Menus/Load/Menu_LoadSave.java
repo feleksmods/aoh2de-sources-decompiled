@@ -2,8 +2,10 @@ package age.of.civilizations2.jakowski.lukasz.Menus.Load;
 
 import age.of.civilizations2.jakowski.lukasz.Button.MenuElemUI;
 import age.of.civilizations2.jakowski.lukasz.CFG;
+import age.of.civilizations2.jakowski.lukasz.Core.Core;
 import age.of.civilizations2.jakowski.lukasz.Files.FileManager;
 import age.of.civilizations2.jakowski.lukasz.IMGManager;
+import age.of.civilizations2.jakowski.lukasz.Image;
 import age.of.civilizations2.jakowski.lukasz.Images;
 import age.of.civilizations2.jakowski.lukasz.MapScale;
 import age.of.civilizations2.jakowski.lukasz.Menu;
@@ -18,6 +20,8 @@ import age.of.civilizations2.jakowski.lukasz.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 
@@ -52,7 +56,7 @@ extends Menu {
     }
 
     public final void loadSave() {
-        block73: {
+        block75: {
             try {
                 ++loadStepID_TEXT;
                 if (pause) {
@@ -67,134 +71,134 @@ extends Menu {
                     FileHandle file2 = CFG.readLocalFiles() ? Gdx.files.local("saves/games/" + CFG.map.getFileActiveMapPath() + "Age_of_Civilizations") : FileManager.loadFile("saves/games/" + CFG.map.getFileActiveMapPath() + "Age_of_Civilizations");
                     String tempTags = file2.readString();
                     this.tSplted = tempTags.split(";");
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 1) {
                     CFG.core.loadSavedGame_NEW_1(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 2) {
                     if (CFG.core.loadSavedGame_NEW_2(iLoadID, this.tSplted)) {
                         pause = true;
                         return;
                     }
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 3) {
                     CFG.core.loadSavedGame_NEW_3(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 4) {
                     CFG.core.loadSavedGame_NEW_4(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 5) {
                     CFG.core.loadSavedGame_NEW_5(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 6) {
                     if (CFG.core.loadSavedGame_NEW_6(iLoadID, this.tSplted)) {
                         pause = true;
                         return;
                     }
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 7) {
                     CFG.core.loadSavedGame_NEW_7(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 8) {
                     CFG.core.loadSavedGame_NEW_8(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 9) {
                     CFG.core.loadSavedGame_NEW_9(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 10) {
                     CFG.core.loadSavedGame_NEW_10(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 11) {
                     CFG.core.loadSavedGame_NEW_11(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 12) {
                     CFG.core.loadSavedGame_NEW_12(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 13) {
                     CFG.core.loadSavedGame_NEW_13(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 14) {
                     CFG.core.loadSavedGame_NEW_14(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 15) {
                     CFG.core.loadSavedGame_NEW_15(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 16) {
                     CFG.core.loadSavedGame_NEW_16(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 17) {
                     CFG.core.loadSavedGame_NEW_16_B(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 18) {
                     CFG.core.loadSavedGame_NEW_16_C(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 19) {
                     CFG.core.loadSavedGame_NEW_16_D(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 20) {
                     CFG.core.loadSavedGame_NEW_17(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 21) {
                     CFG.core.loadSavedGame_NEW_18(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 22) {
                     CFG.core.loadSavedGame_NEW_19(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 23) {
                     CFG.core.loadSavedGame_NEW_20(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 24) {
                     CFG.core.loadSavedGame_NEW_20_A(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 25) {
                     CFG.core.loadSavedGame_NEW_20_B(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 26) {
                     CFG.core.loadSavedGame_NEW_20_C(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 27) {
                     CFG.core.loadSavedGame_NEW_20_D(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 28) {
                     CFG.core.loadSavedGame_NEW_20_E(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 29) {
                     CFG.core.loadSavedGame_NEW_21(iLoadID, this.tSplted);
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 30) {
                     CFG.core.sortCivilizationsAZ();
                     NewGameManager.buildFormableCivilizations();
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 31) {
                     if (CFG.SPECTATOR_MODE) {
@@ -208,11 +212,11 @@ extends Menu {
                             CFG.core.getCiv(CFG.core.getPlayer(i).getCivId()).setIsPlayer(true);
                         }
                     }
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 32) {
                     CFG.oAI.updateExpand();
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 33) {
                     try {
@@ -224,19 +228,19 @@ extends Menu {
                     for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
                         CFG.core.getCiv(i).updateNumberOfUnits();
                     }
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 34) {
                     CFG.map.getMpC().setDisableMovingMap(false);
                     if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCapitalProvID() >= 0) {
                         CFG.core.setActiveProvID(CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getCapitalProvID());
                     }
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 35) {
                     CFG.gameAction.updateCivsMovementPoints();
                     CFG.gameAction.updateIsSupplied();
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 36) {
                     NewGameManager.build_ArmyInAnotherProvince();
@@ -244,11 +248,11 @@ extends Menu {
                         for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
                             CFG.core.getCiv(i).buildCivPersonality_NonSavable();
                         }
-                        break block73;
+                        break block75;
                     }
                     catch (Exception ex) {
                         CFG.exceptionStack(ex);
-                        break block73;
+                        break block75;
                     }
                 }
                 if (loadStepID == 37) {
@@ -272,14 +276,14 @@ extends Menu {
                             CFG.PLAYER_TURN_ID = 0;
                         }
                     }
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 38) {
                     for (int i = 0; i < CFG.core.getProvinSize(); ++i) {
                         CFG.core.getProv(i).updateDrawArmyInProv();
                     }
                     CFG.gameAction.moveRegroupArmy();
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 39) {
                     CFG.gameAction.updateCivsHappiness_AllCivs();
@@ -288,7 +292,7 @@ extends Menu {
                     CFG.gameUpdate.updateInflationPeakValueAllCivs();
                     CFG.gameUpdate.updatePlayableProvinces();
                     TechManager.updateAverageTechLevel();
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 40) {
                     if (CFG.SANDBOX_MODE && !CFG.SPECTATOR_MODE) {
@@ -311,8 +315,24 @@ extends Menu {
                     try {
                         Images.updateGold();
                     }
+                    catch (Exception i) {
+                        // empty catch block
+                    }
+                    try {
+                        Core.addSimpleTask(new Core.SimpleTask("loadFlagPainterFlags"){
+
+                            @Override
+                            public void update() {
+                                for (int i = 0; i < CFG.core.getCivsSize(); ++i) {
+                                    if (!FileManager.loadFile("saves/games/" + CFG.map.getFileActiveMapPath() + Menu_LoadSave.this.tSplted[iLoadID] + "/flags/" + CFG.core.getCiv(i).getCivTag() + ".png").exists()) continue;
+                                    CFG.core.getCiv(i).setFlag(new Image(new Texture(FileManager.loadFile("saves/games/" + CFG.map.getFileActiveMapPath() + Menu_LoadSave.this.tSplted[iLoadID] + "/flags/" + CFG.core.getCiv(i).getCivTag() + ".png"), Pixmap.Format.RGB888, false), Texture.TextureFilter.Linear));
+                                    CFG.core.getCiv((int)i).isFlagNearest = false;
+                                }
+                            }
+                        });
+                    }
                     catch (Exception i) {}
-                    break block73;
+                    break block75;
                 }
                 if (loadStepID == 41) {
                     RTS.reset();

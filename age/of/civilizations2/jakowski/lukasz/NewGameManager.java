@@ -88,8 +88,8 @@ public class NewGameManager {
                 for (int a = 0; a < CFG.core.getCiv((int)i2).civNeighbors.civsSize; ++a) {
                     if (CFG.core.getCiv(CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID).getNumOfProvs() <= 0 || CFG.core.getCiv(i2).getAlliance() > 0 && CFG.core.getCiv(i2).getAlliance() == CFG.core.getCiv(CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID).getAlliance()) continue;
                     CFG.core.setCivNonAggressionPact(i2, CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID, 0);
-                    CFG.core.setCivRelationOfCivB(i2, CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID, GameValues.gvDiplomacy.RELATION_AT_WAR);
-                    CFG.core.setCivRelationOfCivB(CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID, i2, GameValues.gvDiplomacy.RELATION_AT_WAR);
+                    CFG.core.setCivRelationOfCivBWar(i2, CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID, GameValues.gvDiplomacy.RELATION_AT_WAR);
+                    CFG.core.setCivRelationOfCivBWar(CFG.core.getCiv((int)i2).civNeighbors.civs.get((int)a).civID, i2, GameValues.gvDiplomacy.RELATION_AT_WAR);
                 }
             }
         }
@@ -730,7 +730,7 @@ public class NewGameManager {
                 if (CFG.formableCivs_GameData != null) {
                     for (int j = CFG.formableCivs_GameData.getClaimantsSize() - 1; j >= 0; --j) {
                         for (int k = 1; k < CFG.core.getCivsSize(); ++k) {
-                            if (!CFG.core.getCiv(k).getCivTag().equals(CFG.formableCivs_GameData.getClaimant(j)) && (!CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(k).getCivTag()).equals(CFG.formableCivs_GameData.getClaimant(j)) || CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(k).getCivTag()).equals(CFG.ideologiesMgr.getRealTag(CFG.formableCivs_GameData.getFormableCivTag())))) continue;
+                            if (!CFG.core.getCiv(k).getCivTag().equals(CFG.formableCivs_GameData.getClaimant(j)) && (!CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(k).getCivTag()).equals(CFG.formableCivs_GameData.getClaimant(j)) || CFG.core.getCiv(k).getCivTag().equals(CFG.formableCivs_GameData.getFormableCivTag()))) continue;
                             CFG.core.getCiv(k).addTagsCanForm(CFG.formableCivs_GameData.getFormableCivTag());
                         }
                     }
@@ -830,7 +830,7 @@ public class NewGameManager {
                 }
                 if (CFG.formableCivs_GameData != null) {
                     for (int j = CFG.formableCivs_GameData.getClaimantsSize() - 1; j >= 0; --j) {
-                        if (!CFG.core.getCiv(nCivID).getCivTag().equals(CFG.formableCivs_GameData.getClaimant(j)) && (!CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(nCivID).getCivTag()).equals(CFG.formableCivs_GameData.getClaimant(j)) || CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(nCivID).getCivTag()).equals(CFG.ideologiesMgr.getRealTag(CFG.formableCivs_GameData.getFormableCivTag())))) continue;
+                        if (!CFG.core.getCiv(nCivID).getCivTag().equals(CFG.formableCivs_GameData.getClaimant(j)) && (!CFG.ideologiesMgr.getRealTag(CFG.core.getCiv(nCivID).getCivTag()).equals(CFG.formableCivs_GameData.getClaimant(j)) || CFG.core.getCiv(nCivID).getCivTag().equals(CFG.formableCivs_GameData.getFormableCivTag()))) continue;
                         CFG.core.getCiv(nCivID).addTagsCanForm(CFG.formableCivs_GameData.getFormableCivTag());
                     }
                 }

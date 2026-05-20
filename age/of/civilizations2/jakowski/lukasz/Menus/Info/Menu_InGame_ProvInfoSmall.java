@@ -1092,7 +1092,7 @@ extends Menu {
                 Keyboard.changeCivilizationNameMode = -1;
                 Keyboard.changeProvinceNameMode = CFG.core.getActiveProvID();
                 Keyboard.changeCityNameIDToo = -1;
-                for (int c = 0; c < CFG.core.getProv(Keyboard.changeProvinceNameMode).getCitSize(); ++c) {
+                for (int c = 0; c < CFG.core.getProv(Keyboard.changeProvinceNameMode).getCitiesSize(); ++c) {
                     if (!CFG.core.getProv(Keyboard.changeProvinceNameMode).getCit(c).getCityName().equals(this.getMenuElem(iID).getTextE())) continue;
                     Keyboard.changeCityNameIDToo = c;
                     break;

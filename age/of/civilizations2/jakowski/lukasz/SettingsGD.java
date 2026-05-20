@@ -73,6 +73,10 @@ implements Serializable {
     public float BORDER_EXTRA_THICKNESS = 0.0f;
     public Color_GameData borderStraight = new Color_GameData(0.04f, 0.04f, 0.04f);
     public Color_GameData borderDashed = new Color_GameData(0.0f, 0.0f, 0.0f);
+    public boolean ENABLE_LORD_FLAG_OVER_VASSAL_FLAG = true;
+    public boolean ENABLE_FLAG_WAVING = true;
+    public boolean ENABLE_HIDE_UI_HOTKEY = false;
+    public boolean ENABLE_EYES = false;
 
     public final void updateCitiesFontScale() {
         this.CITIES_FONT_SCALE = 10.0f / (float)this.FONT_MAIN_SIZEX;

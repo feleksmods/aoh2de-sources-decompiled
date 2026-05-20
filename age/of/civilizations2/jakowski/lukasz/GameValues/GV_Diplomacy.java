@@ -22,4 +22,6 @@ public class GV_Diplomacy {
     public float DIPLOMACY_RELATION_NEUTRAL = 10.0f;
     public float DIPLOMACY_RELATION_WARM = 30.0f;
     public float DIPLOMACY_RELATION_COOPERATIVE = 50.0f;
+    public boolean SHOW_FOREIGN_INVESTMENTS_BUTTON_IN_DIPLOMACY_MENU = false;
+    public boolean SHOW_SEND_VOLUNTEER_BUTTON_IN_DIPLOMACY_MENU = false;
 }

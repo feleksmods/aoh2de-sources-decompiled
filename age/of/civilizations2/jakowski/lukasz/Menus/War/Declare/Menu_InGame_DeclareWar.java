@@ -78,18 +78,34 @@ extends Menu {
                 return Menu_InGame_DeclareWar.this.getElementW() * 2;
             }
         });
-        menuElements.add(new Text_Desc(GameManager.getWarMessage(), 2, tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD, tempWidth - 4){
+        tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
+        if (CFG.core.getCivRelationOfCivB(onCivID, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) > (float)GameValues.gvRelations.FRIENDLY_MIN_RELATION) {
+            menuElements.add(new Text_Desc(CFG.lang.get("FriendlyCivWarDesc1") + " " + CFG.lang.get("FriendlyCivWarDesc2"), 2, tY, tempWidth - 4){
 
-            @Override
-            protected Color getColor(boolean isActive) {
-                return Colors.getColorButtonHover2(isActive, this.getIsHovered());
-            }
+                @Override
+                protected Color getColor(boolean isActive) {
+                    return isActive ? CFG.COLOR_NEGATIVE_ACTIVE : (this.getIsHovered() ? CFG.COLOR_NEGATIVE_HOVER : CFG.COLOR_NEGATIVE_2);
+                }
 
-            @Override
-            public int getWidthE() {
-                return Menu_InGame_DeclareWar.this.getElementW() * 2;
-            }
-        });
+                @Override
+                public int getWidthE() {
+                    return Menu_InGame_DeclareWar.this.getElementW() * 2;
+                }
+            });
+        } else {
+            menuElements.add(new Text_Desc(GameManager.getWarMessage(), 2, tY, tempWidth - 4){
+
+                @Override
+                protected Color getColor(boolean isActive) {
+                    return Colors.getColorButtonHover2(isActive, this.getIsHovered());
+                }
+
+                @Override
+                public int getWidthE() {
+                    return Menu_InGame_DeclareWar.this.getElementW() * 2;
+                }
+            });
+        }
         tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE();
         if (CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() != CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getPuppetOfCiv()) {
             menuElements.add(new Text_Desc(CFG.lang.get("VassalLordWarDesc") + " " + CFG.lang.get("Wars") + ": " + CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).playerGD.WARS_DECLARED_AS_VASSAL_AND_LORD_JOINED_WAR + " / " + GameValues.gvAiWar.AI_LORD_MAX_WARS_JOINED_WHEN_PLAYER_IS_VASSAL, 2, tY += CFG.PADD, tempWidth - 4){
@@ -370,6 +386,28 @@ extends Menu {
     public final void actionEL(int iID) {
         if (iID == this.getMenuElemsSize() - 1) {
             int i;
+            try {
+                if (CFG.core.getCivRelationOfCivB(this.iOnCivID, CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) > (float)GameValues.gvRelations.FRIENDLY_MIN_RELATION) {
+                    int i2;
+                    ArrayList<Integer> insCivIDs = new ArrayList<Integer>();
+                    for (i2 = 0; i2 < CFG.core.getCiv((int)this.iOnCivID).civNeighbors.civsSize; ++i2) {
+                        if (CFG.core.getCiv((int)this.iOnCivID).civNeighbors.civs.get((int)i2).civID == CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getCiv((int)this.iOnCivID).civNeighbors.civs.get((int)i2).civID == this.iOnCivID || insCivIDs.contains(CFG.core.getCiv((int)this.iOnCivID).civNeighbors.civs.get((int)i2).civID) || CFG.core.getCiv(CFG.core.getCiv((int)this.iOnCivID).civNeighbors.civs.get((int)i2).civID).getIsPlayer()) continue;
+                        insCivIDs.add(CFG.core.getCiv((int)this.iOnCivID).civNeighbors.civs.get((int)i2).civID);
+                    }
+                    for (i2 = 0; i2 < CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civNeighbors.civsSize; ++i2) {
+                        if (CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civNeighbors.civs.get((int)i2).civID == CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civNeighbors.civs.get((int)i2).civID == this.iOnCivID || insCivIDs.contains(CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civNeighbors.civs.get((int)i2).civID) || CFG.core.getCiv(CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civNeighbors.civs.get((int)i2).civID).getIsPlayer()) continue;
+                        insCivIDs.add(CFG.core.getCiv((int)CFG.core.getPlayer((int)CFG.PLAYER_TURN_ID).getCivId()).civNeighbors.civs.get((int)i2).civID);
+                    }
+                    for (i2 = 0; i2 < insCivIDs.size(); ++i2) {
+                        if ((Integer)insCivIDs.get(i2) <= 0 || CFG.core.getCiv((Integer)insCivIDs.get(i2)).getNumOfProvs() <= 0 || CFG.oR.nextInt(100) >= GameValues.gvRelations.WAR_ON_FRIENDLY_CIV_INSULT_CHANCE_100) continue;
+                        GameManager.decreaseRelation((Integer)insCivIDs.get(i2), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), GameValues.gvRelationDecrease.SUSPEND_DIPLOMATIC_RELATIONS_MAX, true);
+                    }
+                    CFG.menus.rebuildInGame_Messages();
+                }
+            }
+            catch (Exception ex) {
+                CFG.exceptionStack(ex);
+            }
             CFG.core.declareWar(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), this.iOnCivID, false);
             for (i = 2; i < this.getMenuElemsSize() - 2; ++i) {
                 if (!this.getMenuElem(i).getCheckboxSt() || !this.getMenuElem(i).getIsClickable()) continue;

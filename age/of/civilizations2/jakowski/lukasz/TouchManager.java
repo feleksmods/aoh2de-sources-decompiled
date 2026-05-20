@@ -16,6 +16,7 @@ import age.of.civilizations2.jakowski.lukasz.MapA.BuildingsManager;
 import age.of.civilizations2.jakowski.lukasz.MapA.Mode.MapModesManager;
 import age.of.civilizations2.jakowski.lukasz.Menus.ArmyS.Menu_MapEditor_ArmySeaBoxes_Add;
 import age.of.civilizations2.jakowski.lukasz.Menus.CivN.Menu_CreateNewGame_AddCiv;
+import age.of.civilizations2.jakowski.lukasz.Menus.Difficulty.Menu_InGame_FlagPainter;
 import age.of.civilizations2.jakowski.lukasz.Menus.Formable.AddCiv.Menu_InGame_AddCiv;
 import age.of.civilizations2.jakowski.lukasz.Menus.PeaceTreaty.Response.Menu_PeaceTreaty_Response;
 import age.of.civilizations2.jakowski.lukasz.RTS;
@@ -55,6 +56,7 @@ public class TouchManager {
     private ReverseDirection revDirectionY;
     private ReverseDirection2 revDirectionX2;
     private ReverseDirection2 revDirectionY2;
+    public static boolean actionFlagPaint = false;
     public static List<Integer> lMABX = new ArrayList<Integer>();
     public static int rODS = -1;
 
@@ -67,7 +69,7 @@ public class TouchManager {
     }
 
     public final void updateEnableScaling() {
-        this.enableScaling = !CFG.menus.getIn_MainMenu() && !CFG.menus.getIn_AboutMenu() && !CFG.menus.getIn_SKMenu() && !CFG.menus.getIn_MMMenu() && !CFG.menus.getIn_FBMenu() && !CFG.menus.getIn_NVMenu() && !CFG.menus.getIn_InitMenu() && !CFG.menus.getInLoadMap() && !CFG.menus.getInLoadSave();
+        this.enableScaling = !CFG.menus.getIn_MainMenu() && !CFG.menus.getInFlagPainter() && !CFG.menus.getIn_AboutMenu() && !CFG.menus.getIn_SKMenu() && !CFG.menus.getIn_MMMenu() && !CFG.menus.getIn_FBMenu() && !CFG.menus.getIn_NVMenu() && !CFG.menus.getIn_InitMenu() && !CFG.menus.getInLoadMap() && !CFG.menus.getInLoadSave();
     }
 
     public final void dSMD(SpriteBatch oSB) {
@@ -98,6 +100,38 @@ public class TouchManager {
     }
 
     public final void actionDown(int nPosX, int nPosY, int nPointer, int button) {
+        if (CFG.menus.getInFlagPainter()) {
+            if (nPosX >= Menu_InGame_FlagPainter.flagPosX && nPosX <= Menu_InGame_FlagPainter.flagPosX + Menu_InGame_FlagPainter.FLAG_W * Menu_InGame_FlagPainter.SCALE && nPosY >= Menu_InGame_FlagPainter.flagPosY && nPosY <= Menu_InGame_FlagPainter.flagPosY + Menu_InGame_FlagPainter.FLAG_H * Menu_InGame_FlagPainter.SCALE) {
+                if (button == 1) {
+                    Menu_InGame_FlagPainter.pickColorFromImage((nPosX - Menu_InGame_FlagPainter.flagPosX) / Menu_InGame_FlagPainter.SCALE, (nPosY - Menu_InGame_FlagPainter.flagPosY) / Menu_InGame_FlagPainter.SCALE);
+                    return;
+                }
+                actionFlagPaint = true;
+                switch (Menu_InGame_FlagPainter.brushType) {
+                    case FILL_BUCKET: {
+                        Menu_InGame_FlagPainter.addUndo();
+                        Menu_InGame_FlagPainter.fillBucket((nPosX - Menu_InGame_FlagPainter.flagPosX) / Menu_InGame_FlagPainter.SCALE, (nPosY - Menu_InGame_FlagPainter.flagPosY) / Menu_InGame_FlagPainter.SCALE);
+                        return;
+                    }
+                }
+                switch (Menu_InGame_FlagPainter.brushType) {
+                    case LINE_BRUSH: 
+                    case LINE_BRUSH_HORIZONTAL: 
+                    case LINE_BRUSH_VERTICAL: {
+                        Menu_InGame_FlagPainter.addUndo();
+                        Menu_InGame_FlagPainter.START_X = (nPosX - Menu_InGame_FlagPainter.flagPosX) / Menu_InGame_FlagPainter.SCALE;
+                        Menu_InGame_FlagPainter.START_Y = (nPosY - Menu_InGame_FlagPainter.flagPosY) / Menu_InGame_FlagPainter.SCALE;
+                        return;
+                    }
+                }
+                Menu_InGame_FlagPainter.addUndo();
+                Menu_InGame_FlagPainter.drawPixel((nPosX - Menu_InGame_FlagPainter.flagPosX) / Menu_InGame_FlagPainter.SCALE, (nPosY - Menu_InGame_FlagPainter.flagPosY) / Menu_InGame_FlagPainter.SCALE);
+                return;
+            }
+            actionFlagPaint = false;
+        } else {
+            actionFlagPaint = false;
+        }
         this.actionMap = true;
         this.actionBrush = false;
         this.actionBrushMove = false;
@@ -122,6 +156,15 @@ public class TouchManager {
     }
 
     public final void actionMove(int nPosX, int nPosY) {
+        if (actionFlagPaint) {
+            switch (Menu_InGame_FlagPainter.brushType) {
+                case FILL_BUCKET: {
+                    return;
+                }
+            }
+            Menu_InGame_FlagPainter.drawPixel((nPosX - Menu_InGame_FlagPainter.flagPosX) / Menu_InGame_FlagPainter.SCALE, (nPosY - Menu_InGame_FlagPainter.flagPosY) / Menu_InGame_FlagPainter.SCALE);
+            return;
+        }
         if (CFG.brushMode) {
             this.actDPoX = nPosX;
             this.actDPoY = nPosY;
@@ -166,6 +209,10 @@ public class TouchManager {
     }
 
     public final void actionUp(int nPosX, int nPosY, int nPointer, int button) {
+        if (actionFlagPaint) {
+            actionFlagPaint = false;
+            return;
+        }
         if (bSMD && (button == 2 || !CFG.getIsDesktop())) {
             bSMD = false;
             this.aUSM(nPosX, nPosY);
@@ -273,8 +320,11 @@ public class TouchManager {
 
     public final void aUSM(int nMaxX, int nMaxY) {
         try {
-            int added;
             int i;
+            int added;
+            int a;
+            boolean cont;
+            int i2;
             if (this.iSBXX == nMaxX || this.iSBXY == nMaxY) {
                 return;
             }
@@ -289,51 +339,122 @@ public class TouchManager {
                 nMaxY = tY;
             }
             if (CFG.menus.getInCrScAs()) {
-                for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
-                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.createScenarioAssignProvsCiv < 0) continue;
-                    boolean cont = false;
-                    for (int a = 1; a < CFG.core.getCivsSize(); ++a) {
-                        if (CFG.core.getCiv(a).getCapitalProvID() != CFG.core.getPIV(i)) continue;
+                for (i2 = 0; i2 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i2) {
+                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.createScenarioAssignProvsCiv < 0) continue;
+                    cont = false;
+                    for (a = 1; a < CFG.core.getCivsSize(); ++a) {
+                        if (CFG.core.getCiv(a).getCapitalProvID() != CFG.core.getPIV(i2)) continue;
                         cont = true;
                         break;
                     }
-                    if (cont || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() == CFG.createScenarioAssignProvsCiv || CFG.core.getProv(CFG.core.getPIV(i)).getWastelandLvl() >= 0) continue;
+                    if (cont || CFG.core.getProv(CFG.core.getPIV(i2)).getCivId() == CFG.createScenarioAssignProvsCiv || CFG.core.getProv(CFG.core.getPIV(i2)).getWastelandLvl() >= 0 || CFG.SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL && CFG.core.getProv(CFG.core.getPIV(i2)).getCivId() != 0) continue;
                     if (CFG.SCENARIO_EDITOR_OCCUPATION) {
-                        CFG.core.getProv(CFG.core.getPIV(i)).setCivId(CFG.createScenarioAssignProvsCiv, false, false);
-                        CFG.core.getProv(CFG.core.getPIV(i)).resetArmiesAll(-1);
-                        CFG.core.getProv(CFG.core.getPIV(i)).buildProvinceCore();
-                        CFG.core.setActiveProvID(CFG.core.getPIV(i));
+                        CFG.core.getProv(CFG.core.getPIV(i2)).setCivId(CFG.createScenarioAssignProvsCiv, false, false);
+                        CFG.core.getProv(CFG.core.getPIV(i2)).resetArmiesAll(-1);
+                        CFG.core.getProv(CFG.core.getPIV(i2)).buildProvinceCore();
+                        CFG.core.setActiveProvID(CFG.core.getPIV(i2));
                         continue;
                     }
-                    CFG.addUndoAssignProvinces(CFG.core.getPIV(i), CFG.core.getProv(CFG.core.getPIV(i)).getCivId());
-                    CFG.core.getProv(CFG.core.getPIV(i)).setCivId(CFG.createScenarioAssignProvsCiv, false, false);
-                    CFG.core.getProv(CFG.core.getPIV(i)).setTrueOwnerOfProv(CFG.createScenarioAssignProvsCiv);
-                    CFG.core.getProv(CFG.core.getPIV(i)).resetArmiesAll(-1);
-                    CFG.core.getProv(CFG.core.getPIV(i)).buildProvinceCore();
-                    CFG.core.setActiveProvID(CFG.core.getPIV(i));
+                    CFG.addUndoAssignProvinces(CFG.core.getPIV(i2), CFG.core.getProv(CFG.core.getPIV(i2)).getCivId());
+                    CFG.core.getProv(CFG.core.getPIV(i2)).setCivId(CFG.createScenarioAssignProvsCiv, false, false);
+                    CFG.core.getProv(CFG.core.getPIV(i2)).setTrueOwnerOfProv(CFG.createScenarioAssignProvsCiv);
+                    CFG.core.getProv(CFG.core.getPIV(i2)).resetArmiesAll(-1);
+                    CFG.core.getProv(CFG.core.getPIV(i2)).buildProvinceCore();
+                    CFG.core.setActiveProvID(CFG.core.getPIV(i2));
+                }
+            }
+            if (CFG.menus.getInGameAssign()) {
+                for (i2 = 0; i2 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i2) {
+                    int j;
+                    int nOwnerCivID;
+                    int nOwnerArmy;
+                    int nArmyNewOwnerArmy;
+                    int iToCivID;
+                    int j2;
+                    ArrayList<Integer> tempArmies;
+                    ArrayList<Integer> tempCivs;
+                    int provID;
+                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.createScenarioAssignProvsCiv < 0) continue;
+                    cont = false;
+                    for (a = 1; a < CFG.core.getCivsSize(); ++a) {
+                        if (CFG.core.getCiv(a).getCapitalProvID() != CFG.core.getPIV(i2)) continue;
+                        cont = true;
+                        break;
+                    }
+                    if (cont || CFG.core.getProv(CFG.core.getPIV(i2)).getCivId() == CFG.createScenarioAssignProvsCiv || CFG.core.getProv(CFG.core.getPIV(i2)).getWastelandLvl() >= 0) continue;
+                    if (CFG.SCENARIO_EDITOR_OCCUPATION) {
+                        provID = CFG.core.getPIV(i2);
+                        CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                        tempCivs = new ArrayList<Integer>();
+                        tempArmies = new ArrayList<Integer>();
+                        for (j2 = 0; j2 < CFG.core.getProv(provID).getCivsSize(); ++j2) {
+                            tempCivs.add(CFG.core.getProv(provID).getCivId(j2));
+                            tempArmies.add(CFG.core.getProv(provID).getArmyID(j2));
+                        }
+                        iToCivID = CFG.createScenarioAssignProvsCiv;
+                        nArmyNewOwnerArmy = CFG.core.getProv(provID).getArmyCivID1(iToCivID);
+                        nOwnerArmy = CFG.core.getProv(provID).getArmyID(0);
+                        nOwnerCivID = CFG.core.getProv(provID).getCivId();
+                        CFG.core.getProv(provID).updateArmy4(0);
+                        CFG.core.getProv(provID).updateArmy4(iToCivID, 0);
+                        CFG.core.getProv(provID).setCivId(iToCivID, false);
+                        CFG.core.getProv(provID).updateArmy4(iToCivID, nArmyNewOwnerArmy);
+                        CFG.core.getProv(provID).updateArmy4(nOwnerCivID, nOwnerArmy);
+                        for (j = 0; j < tempCivs.size(); ++j) {
+                            if (CFG.core.getCiv((Integer)tempCivs.get(j)).getPuppetOfCiv() == iToCivID || CFG.core.getCiv(iToCivID).getPuppetOfCiv() == ((Integer)tempCivs.get(j)).intValue() || CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() > 0 && CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() == CFG.core.getCiv(iToCivID).getAlliance() || CFG.core.getMilitaryAccess((Integer)tempCivs.get(j), iToCivID) > 0) continue;
+                            CFG.gameAction.accessLost_MoveArmyToClosetsProvince((Integer)tempCivs.get(j), provID, (Integer)tempArmies.get(j));
+                        }
+                        CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                        CFG.core.setActiveProvID(provID);
+                        continue;
+                    }
+                    provID = CFG.core.getPIV(i2);
+                    CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                    tempCivs = new ArrayList();
+                    tempArmies = new ArrayList();
+                    for (j2 = 0; j2 < CFG.core.getProv(provID).getCivsSize(); ++j2) {
+                        tempCivs.add(CFG.core.getProv(provID).getCivId(j2));
+                        tempArmies.add(CFG.core.getProv(provID).getArmyID(j2));
+                    }
+                    iToCivID = CFG.createScenarioAssignProvsCiv;
+                    nArmyNewOwnerArmy = CFG.core.getProv(provID).getArmyCivID1(iToCivID);
+                    nOwnerArmy = CFG.core.getProv(provID).getArmyID(0);
+                    nOwnerCivID = CFG.core.getProv(provID).getCivId();
+                    CFG.core.getProv(provID).updateArmy4(0);
+                    CFG.core.getProv(provID).updateArmy4(iToCivID, 0);
+                    CFG.core.getProv(provID).setTrueOwnerOfProv(iToCivID);
+                    CFG.core.getProv(provID).setCivId(iToCivID, false);
+                    CFG.core.getProv(provID).updateArmy4(iToCivID, nArmyNewOwnerArmy);
+                    CFG.core.getProv(provID).updateArmy4(nOwnerCivID, nOwnerArmy);
+                    for (j = 0; j < tempCivs.size(); ++j) {
+                        if (CFG.core.getCiv((Integer)tempCivs.get(j)).getPuppetOfCiv() == iToCivID || CFG.core.getCiv(iToCivID).getPuppetOfCiv() == ((Integer)tempCivs.get(j)).intValue() || CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() > 0 && CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() == CFG.core.getCiv(iToCivID).getAlliance() || CFG.core.getMilitaryAccess((Integer)tempCivs.get(j), iToCivID) > 0) continue;
+                        CFG.gameAction.accessLost_MoveArmyToClosetsProvince((Integer)tempCivs.get(j), provID, (Integer)tempArmies.get(j));
+                    }
+                    CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                    CFG.core.setActiveProvID(provID);
                 }
             } else if (CFG.menus.getInMapEditor_FormableCivs_Edit()) {
-                for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
-                    if (CFG.core.getProv(CFG.core.getPIV(i)).getSeaProv() || !TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY)) continue;
+                for (i2 = 0; i2 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i2) {
+                    if (CFG.core.getProv(CFG.core.getPIV(i2)).getSeaProv() || !TouchManager.aUSMIIBXC(CFG.core.getPIV(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY)) continue;
                     if (CFG.selectMode) {
-                        if (CFG.core.getPIV(i) < 0 || CFG.core.getProv(CFG.core.getPIV(i)).getSeaProv()) continue;
-                        CFG.core.getProvSelected().addProv(CFG.core.getPIV(i));
+                        if (CFG.core.getPIV(i2) < 0 || CFG.core.getProv(CFG.core.getPIV(i2)).getSeaProv()) continue;
+                        CFG.core.getProvSelected().addProv(CFG.core.getPIV(i2));
                         continue;
                     }
-                    CFG.core.getProvSelected().removeProv(CFG.core.getPIV(i));
+                    CFG.core.getProvSelected().removeProv(CFG.core.getPIV(i2));
                 }
             } else if (CFG.menus.getInCreateNewGame()) {
                 added = 0;
                 if (CFG.menus.getVisible_CreateNewGame_AddCiv()) {
-                    for (int i2 = 0; i2 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i2) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY)) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY)) continue;
                         if (Menu_CreateNewGame_AddCiv.addProvinceMode) {
-                            if (CFG.core.getPIV(i2) < 0 || CFG.core.getProv(CFG.core.getPIV(i2)).getWastelandLvl() >= 0 || CFG.core.getProv(CFG.core.getPIV(i2)).getSeaProv() || CFG.core.getProv(CFG.core.getPIV(i2)).getIsCapital2()) continue;
-                            Menu_CreateNewGame_AddCiv.addProvince(CFG.core.getPIV(i2));
+                            if (CFG.core.getPIV(i) < 0 || CFG.core.getProv(CFG.core.getPIV(i)).getWastelandLvl() >= 0 || CFG.core.getProv(CFG.core.getPIV(i)).getSeaProv() || CFG.core.getProv(CFG.core.getPIV(i)).getIsCapital2()) continue;
+                            Menu_CreateNewGame_AddCiv.addProvince(CFG.core.getPIV(i));
                             ++added;
                             continue;
                         }
-                        Menu_CreateNewGame_AddCiv.removeProvince(CFG.core.getPIV(i2));
+                        Menu_CreateNewGame_AddCiv.removeProvince(CFG.core.getPIV(i));
                         ++added;
                     }
                 }
@@ -342,32 +463,33 @@ public class TouchManager {
                 }
             } else if (CFG.menus.getInGameAC()) {
                 added = 0;
-                for (int i3 = 0; i3 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i3) {
-                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i3), this.iSBXX, this.iSBXY, nMaxX, nMaxY)) continue;
+                for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY)) continue;
                     if (Menu_InGame_AddCiv.addProvinceMode) {
-                        if (CFG.core.getPIV(i3) < 0 || CFG.core.getProv(CFG.core.getPIV(i3)).getWastelandLvl() >= 0 || CFG.core.getProv(CFG.core.getPIV(i3)).getSeaProv() || CFG.core.getProv(CFG.core.getPIV(i3)).getIsCapital2()) continue;
-                        Menu_InGame_AddCiv.addProvince(CFG.core.getPIV(i3));
+                        if (CFG.core.getPIV(i) < 0 || CFG.core.getProv(CFG.core.getPIV(i)).getWastelandLvl() >= 0 || CFG.core.getProv(CFG.core.getPIV(i)).getSeaProv() || CFG.core.getProv(CFG.core.getPIV(i)).getIsCapital2()) continue;
+                        Menu_InGame_AddCiv.addProvince(CFG.core.getPIV(i));
                         ++added;
                         continue;
                     }
-                    Menu_InGame_AddCiv.removeProvince(CFG.core.getPIV(i3));
+                    Menu_InGame_AddCiv.removeProvince(CFG.core.getPIV(i));
                     ++added;
                 }
                 if (added > 0) {
                     CFG.menus.rebuildInGame_AddCiv();
                 }
             } else if (CFG.menus.getInGame_PeaceTreaty()) {
-                for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
-                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() <= 0 || !Menu_PeaceTreaty_Response.DRAW_TREATY_PROVINCES || CFG.peaceTreatyData.drawProvOwners.get((int)CFG.core.getPIV((int)i)).isTaken > 0) continue;
-                    CFG.peaceTreatyData.takeProvince(CFG.core.getPIV(i), CFG.peaceTreatyData.brushCivID, CFG.core.getCiv(CFG.peaceTreatyData.brushCivID).getIsPlayer() ? CFG.peaceTreatyData.brushCivID : CFG.core.getPlayer(CFG.peaceTreatyData.playerTurnID).getCivId());
+                for (i2 = 0; i2 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i2) {
+                    if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i2)).getCivId() <= 0 || !Menu_PeaceTreaty_Response.DRAW_TREATY_PROVINCES || CFG.peaceTreatyData.drawProvOwners.get((int)CFG.core.getPIV((int)i2)).isTaken > 0) continue;
+                    CFG.peaceTreatyData.takeProvince(CFG.core.getPIV(i2), CFG.peaceTreatyData.brushCivID, CFG.core.getCiv(CFG.peaceTreatyData.brushCivID).getIsPlayer() ? CFG.peaceTreatyData.brushCivID : CFG.core.getPlayer(CFG.peaceTreatyData.playerTurnID).getCivId());
                 }
             } else if (CFG.menus.getInGameView()) {
+                int maxValue;
                 int actionDone;
                 if (CFG.menus.getInGame_ProvinceRecruit_Visible()) {
                     actionDone = 0;
-                    for (int i4 = 0; i4 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i4) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i4), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i4)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i4)).isOccupied() || Core.ISIP(CFG.core.getPIV(i4))) continue;
-                        Core.MRPRV(CFG.core.getPIV(i4));
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || Core.ISIP(CFG.core.getPIV(i))) continue;
+                        Core.MRPRV(CFG.core.getPIV(i));
                         ++actionDone;
                     }
                     if (actionDone > 0) {
@@ -377,25 +499,25 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == -1 || CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_ARMY_MODE) {
                     TouchManager.cMABX();
-                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() && CFG.core.getProv(CFG.core.getPIV(i)).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) <= 0) continue;
-                        TouchManager.adMABX(CFG.core.getPIV(i));
+                    for (i2 = 0; i2 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i2) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i2)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() && CFG.core.getProv(CFG.core.getPIV(i2)).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) <= 0) continue;
+                        TouchManager.adMABX(CFG.core.getPIV(i2));
                     }
-                    for (i = 0; i < CFG.NUM_OF_SEA_PROVINCES_IN_VIEW; ++i) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPSVI(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPSVI(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() && CFG.core.getProv(CFG.core.getPSVI(i)).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) <= 0) continue;
-                        TouchManager.adMABX(CFG.core.getPSVI(i));
+                    for (i2 = 0; i2 < CFG.NUM_OF_SEA_PROVINCES_IN_VIEW; ++i2) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPSVI(i2), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPSVI(i2)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() && CFG.core.getProv(CFG.core.getPSVI(i2)).getArmyCivID1(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) <= 0) continue;
+                        TouchManager.adMABX(CFG.core.getPSVI(i2));
                     }
                     TouchManager.mABXUP();
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_DEVELOPMENT_MODE) {
                     actionDone = 0;
-                    for (int i5 = 0; i5 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i5) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i5), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i5)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i5)).isOccupied()) continue;
-                        int maxValue = GameManager.investMaxDevGold(CFG.core.getPIV(i5), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
-                        if (!GameManager.investDevelopment(CFG.core.getPIV(i5), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), maxValue)) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied()) continue;
+                        maxValue = GameManager.investMaxDevGold(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+                        if (!GameManager.investDevelopment(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), maxValue)) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_DEVELOPMENT_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i5)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -412,14 +534,14 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_ECONOMY_MODE) {
                     actionDone = 0;
-                    for (int i6 = 0; i6 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i6) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i6), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i6)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i6)).isOccupied()) continue;
-                        int maxValue = GameManager.invest_MaxEconomy_Gold(CFG.core.getPIV(i6), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
-                        if (!GameManager.invest(CFG.core.getPIV(i6), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), maxValue)) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied()) continue;
+                        maxValue = GameManager.invest_MaxEconomy_Gold(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
+                        if (!GameManager.invest(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), maxValue)) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_ECONOMY_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i6)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -438,15 +560,15 @@ public class TouchManager {
                     actionDone = 0;
                     if (CFG.core.getActiveProvID() >= 0 && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()) {
                         int inCivID = CFG.core.getProv(CFG.core.getActiveProvID()).getCivId();
-                        for (int i7 = 0; i7 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i7) {
-                            if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i7), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i7)).getCivId() != inCivID || CFG.core.getProv(CFG.core.getPIV(i7)).isOccupied()) continue;
+                        for (int i3 = 0; i3 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i3) {
+                            if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i3), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i3)).getCivId() != inCivID || CFG.core.getProv(CFG.core.getPIV(i3)).isOccupied()) continue;
                             ArrayList<Integer> provinces = new ArrayList<Integer>();
-                            provinces.add(CFG.core.getPIV(i7));
+                            provinces.add(CFG.core.getPIV(i3));
                             if (!GameManager.spreadPropaganda(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), inCivID, provinces)) continue;
                             ++actionDone;
                             CFG.gameAction.updateInGame_ProvinceInfo();
                             if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_HAPPINESS_MODE) continue;
-                            CFG.core.getProv((int)CFG.core.getPIV((int)i7)).viewBool = true;
+                            CFG.core.getProv((int)CFG.core.getPIV((int)i3)).viewBool = true;
                         }
                         if (actionDone > 0) {
                             CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -462,12 +584,12 @@ public class TouchManager {
                             CFG.toastM.setTimeInView(3500);
                         }
                     } else {
-                        for (int i8 = 0; i8 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i8) {
-                            if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i8), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i8)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i8)).isOccupied() || !Festival.addFestival(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getPIV(i8))) continue;
+                        for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                            if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !Festival.addFestival(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getPIV(i))) continue;
                             ++actionDone;
                             CFG.gameAction.updateInGame_ProvinceInfo();
                             if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_HAPPINESS_MODE) continue;
-                            CFG.core.getProv((int)CFG.core.getPIV((int)i8)).viewBool = true;
+                            CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                         }
                         if (actionDone > 0) {
                             CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -485,25 +607,25 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_PROVINCE_STABILITY_MODE) {
                     actionDone = 0;
-                    for (int i9 = 0; i9 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i9) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i9), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i9)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i9)).isOccupied()) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied()) continue;
                         int nMax = 0;
-                        if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)GameManager.assimilateCost(CFG.core.getPIV(i9), GameValues.gvAssimilate.ASSIMILATE_NUM_OF_TURNS_MAX)) {
+                        if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)GameManager.assimilateCost(CFG.core.getPIV(i), GameValues.gvAssimilate.ASSIMILATE_NUM_OF_TURNS_MAX)) {
                             nMax = GameValues.gvAssimilate.ASSIMILATE_NUM_OF_TURNS_MAX;
                         } else {
-                            int a = GameValues.gvAssimilate.ASSIMILATE_NUM_OF_TURNS_MAX - 1;
-                            while (a >= 5) {
-                                nMax = a--;
-                                if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)GameManager.assimilateCost(CFG.core.getPIV(i9), nMax)) break;
+                            int a2 = GameValues.gvAssimilate.ASSIMILATE_NUM_OF_TURNS_MAX - 1;
+                            while (a2 >= 5) {
+                                nMax = a2--;
+                                if (CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).getGold() >= (long)GameManager.assimilateCost(CFG.core.getPIV(i), nMax)) break;
                             }
                         }
-                        if (!GameManager.addAssi(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getPIV(i9), nMax)) continue;
+                        if (!GameManager.addAssi(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.core.getPIV(i), nMax)) continue;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.menus.getInGame_ProvincemMore_Visible()) {
                             CFG.menus.setVisible_InGame_ProvinceMore(true, true);
                         }
                         if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_PROVINCE_STABILITY_MODE) {
-                            CFG.core.getProv((int)CFG.core.getPIV((int)i9)).viewBool = true;
+                            CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                         }
                         ++actionDone;
                     }
@@ -522,12 +644,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_FORTIFICATIONS_MODE) {
                     actionDone = 0;
-                    for (int i10 = 0; i10 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i10) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i10), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i10)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i10)).isOccupied() || !BuildingsManager.constructFort(CFG.core.getPIV(i10), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructFort(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_FORTIFICATIONS_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i10)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -544,12 +666,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_WATCH_TOWER_MODE) {
                     actionDone = 0;
-                    for (int i11 = 0; i11 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i11) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i11), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i11)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i11)).isOccupied() || !BuildingsManager.constructTower(CFG.core.getPIV(i11), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructTower(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_WATCH_TOWER_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i11)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -566,12 +688,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_PORT_MODE) {
                     actionDone = 0;
-                    for (int i12 = 0; i12 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i12) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i12), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i12)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i12)).isOccupied() || !BuildingsManager.constructPort(CFG.core.getPIV(i12), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructPort(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_PORT_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i12)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -588,12 +710,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_FARM_MODE) {
                     actionDone = 0;
-                    for (int i13 = 0; i13 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i13) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i13), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i13)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i13)).isOccupied() || !BuildingsManager.constructFarm(CFG.core.getPIV(i13), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructFarm(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_FARM_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i13)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -610,12 +732,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_WORKSHOP_MODE) {
                     actionDone = 0;
-                    for (int i14 = 0; i14 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i14) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i14), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i14)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i14)).isOccupied() || !BuildingsManager.constructWorkshop(CFG.core.getPIV(i14), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructWorkshop(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_WORKSHOP_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i14)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -632,12 +754,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_MARKET_MODE) {
                     actionDone = 0;
-                    for (int i15 = 0; i15 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i15) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i15), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i15)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i15)).isOccupied() || !BuildingsManager.constructMarket(CFG.core.getPIV(i15), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructMarket(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_MARKET_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i15)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -654,12 +776,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_LIBRARY_MODE) {
                     actionDone = 0;
-                    for (int i16 = 0; i16 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i16) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i16), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i16)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i16)).isOccupied() || !BuildingsManager.constructLibrary(CFG.core.getPIV(i16), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructLibrary(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_LIBRARY_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i16)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -676,12 +798,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_ARMOURY_MODE) {
                     actionDone = 0;
-                    for (int i17 = 0; i17 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i17) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i17), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i17)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i17)).isOccupied() || !BuildingsManager.constructArmoury(CFG.core.getPIV(i17), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructArmoury(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_ARMOURY_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i17)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -698,12 +820,12 @@ public class TouchManager {
                     }
                 } else if (CFG.mapModesManager.getActiveMapModeID() == MapModesManager.VIEW_LEVEL_OF_SUPPLY_MODE) {
                     actionDone = 0;
-                    for (int i18 = 0; i18 < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i18) {
-                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i18), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i18)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i18)).isOccupied() || !BuildingsManager.constructSupply(CFG.core.getPIV(i18), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
+                    for (i = 0; i < CFG.NUM_OF_PROVINCES_IN_VIEW; ++i) {
+                        if (!TouchManager.aUSMIIBXC(CFG.core.getPIV(i), this.iSBXX, this.iSBXY, nMaxX, nMaxY) || CFG.core.getProv(CFG.core.getPIV(i)).getCivId() != CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId() || CFG.core.getProv(CFG.core.getPIV(i)).isOccupied() || !BuildingsManager.constructSupply(CFG.core.getPIV(i), CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId())) continue;
                         ++actionDone;
                         CFG.gameAction.updateInGame_ProvinceInfo();
                         if (CFG.mapModesManager.getActiveMapModeID() != MapModesManager.VIEW_LEVEL_OF_SUPPLY_MODE) continue;
-                        CFG.core.getProv((int)CFG.core.getPIV((int)i18)).viewBool = true;
+                        CFG.core.getProv((int)CFG.core.getPIV((int)i)).viewBool = true;
                     }
                     if (actionDone > 0) {
                         CFG.menus.updateInGameTopAll(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId());
@@ -1271,6 +1393,9 @@ public class TouchManager {
                             return;
                         }
                         if (CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != CFG.createScenarioAssignProvsCiv && CFG.core.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0) {
+                            if (CFG.SCENARIO_EDITOR_ASSIGN_ONLY_NEUTRAL && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != 0) {
+                                return;
+                            }
                             if (CFG.SCENARIO_EDITOR_OCCUPATION) {
                                 CFG.core.getProv(CFG.core.getActiveProvID()).setCivId(CFG.createScenarioAssignProvsCiv, false, false);
                                 CFG.core.getProv(CFG.core.getActiveProvID()).resetArmiesAll(-1);
@@ -1283,6 +1408,95 @@ public class TouchManager {
                                 CFG.core.getProv(CFG.core.getActiveProvID()).resetArmiesAll(-1);
                                 CFG.core.getProv(CFG.core.getActiveProvID()).buildProvinceCore();
                                 CFG.core.setActiveProvID(CFG.core.getActiveProvID());
+                            }
+                        }
+                    } else {
+                        for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
+                            if (CFG.core.getCiv(i).getCapitalProvID() != CFG.core.getActiveProvID()) continue;
+                            if (CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != CFG.createScenarioAssignProvsCiv) {
+                                CFG.setDialogType(DialogType.CREATE_SCENARIO_ASSIGN_CIVILIZATION);
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        } : (CFG.menus.getInGameAssign() ? new ExtraAction(){
+
+            @Override
+            public void extraAction(int nPX, int nPY) {
+                if (CFG.core.getActiveProvID() >= 0) {
+                    if (CFG.core.getProv(CFG.core.getActiveProvID()).getSeaProv()) {
+                        if (CFG.brushMode && !TouchManager.this.actionBrush) {
+                            TouchManager.this.actionMoveMap(nPX, nPY);
+                            TouchManager.this.actionBrushMove = true;
+                        }
+                        return;
+                    }
+                    if (CFG.brushMode) {
+                        if (TouchManager.this.actionBrushMove) {
+                            TouchManager.this.actionMoveMap(nPX, nPY);
+                            return;
+                        }
+                        TouchManager.this.actionBrush = true;
+                    }
+                    if (CFG.createScenarioAssignProvsCiv >= 0) {
+                        for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
+                            if (CFG.core.getCiv(i).getCapitalProvID() != CFG.core.getActiveProvID()) continue;
+                            if (!CFG.brushMode && CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != CFG.createScenarioAssignProvsCiv) {
+                                CFG.setDialogType(DialogType.CREATE_SCENARIO_ASSIGN_CIVILIZATION);
+                            }
+                            return;
+                        }
+                        if (CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != CFG.createScenarioAssignProvsCiv && CFG.core.getProv(CFG.core.getActiveProvID()).getWastelandLvl() < 0) {
+                            int provID = CFG.core.getActiveProvID();
+                            if (CFG.SCENARIO_EDITOR_OCCUPATION) {
+                                CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                                ArrayList<Integer> tempCivs = new ArrayList<Integer>();
+                                ArrayList<Integer> tempArmies = new ArrayList<Integer>();
+                                for (int j = 0; j < CFG.core.getProv(provID).getCivsSize(); ++j) {
+                                    tempCivs.add(CFG.core.getProv(provID).getCivId(j));
+                                    tempArmies.add(CFG.core.getProv(provID).getArmyID(j));
+                                }
+                                int iToCivID = CFG.createScenarioAssignProvsCiv;
+                                int nArmyNewOwnerArmy = CFG.core.getProv(provID).getArmyCivID1(iToCivID);
+                                int nOwnerArmy = CFG.core.getProv(provID).getArmyID(0);
+                                int nOwnerCivID = CFG.core.getProv(provID).getCivId();
+                                CFG.core.getProv(provID).updateArmy4(0);
+                                CFG.core.getProv(provID).updateArmy4(iToCivID, 0);
+                                CFG.core.getProv(provID).setCivId(iToCivID, false);
+                                CFG.core.getProv(provID).updateArmy4(iToCivID, nArmyNewOwnerArmy);
+                                CFG.core.getProv(provID).updateArmy4(nOwnerCivID, nOwnerArmy);
+                                for (int j = 0; j < tempCivs.size(); ++j) {
+                                    if (CFG.core.getCiv((Integer)tempCivs.get(j)).getPuppetOfCiv() == iToCivID || CFG.core.getCiv(iToCivID).getPuppetOfCiv() == ((Integer)tempCivs.get(j)).intValue() || CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() > 0 && CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() == CFG.core.getCiv(iToCivID).getAlliance() || CFG.core.getMilitaryAccess((Integer)tempCivs.get(j), iToCivID) > 0) continue;
+                                    CFG.gameAction.accessLost_MoveArmyToClosetsProvince((Integer)tempCivs.get(j), provID, (Integer)tempArmies.get(j));
+                                }
+                                CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                                CFG.core.setActiveProvID(provID);
+                            } else {
+                                CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                                ArrayList<Integer> tempCivs = new ArrayList<Integer>();
+                                ArrayList<Integer> tempArmies = new ArrayList<Integer>();
+                                for (int j = 0; j < CFG.core.getProv(provID).getCivsSize(); ++j) {
+                                    tempCivs.add(CFG.core.getProv(provID).getCivId(j));
+                                    tempArmies.add(CFG.core.getProv(provID).getArmyID(j));
+                                }
+                                int iToCivID = CFG.createScenarioAssignProvsCiv;
+                                int nArmyNewOwnerArmy = CFG.core.getProv(provID).getArmyCivID1(iToCivID);
+                                int nOwnerArmy = CFG.core.getProv(provID).getArmyID(0);
+                                int nOwnerCivID = CFG.core.getProv(provID).getCivId();
+                                CFG.core.getProv(provID).updateArmy4(0);
+                                CFG.core.getProv(provID).updateArmy4(iToCivID, 0);
+                                CFG.core.getProv(provID).setTrueOwnerOfProv(iToCivID);
+                                CFG.core.getProv(provID).setCivId(iToCivID, false);
+                                CFG.core.getProv(provID).updateArmy4(iToCivID, nArmyNewOwnerArmy);
+                                CFG.core.getProv(provID).updateArmy4(nOwnerCivID, nOwnerArmy);
+                                for (int j = 0; j < tempCivs.size(); ++j) {
+                                    if (CFG.core.getCiv((Integer)tempCivs.get(j)).getPuppetOfCiv() == iToCivID || CFG.core.getCiv(iToCivID).getPuppetOfCiv() == ((Integer)tempCivs.get(j)).intValue() || CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() > 0 && CFG.core.getCiv((Integer)tempCivs.get(j)).getAlliance() == CFG.core.getCiv(iToCivID).getAlliance() || CFG.core.getMilitaryAccess((Integer)tempCivs.get(j), iToCivID) > 0) continue;
+                                    CFG.gameAction.accessLost_MoveArmyToClosetsProvince((Integer)tempCivs.get(j), provID, (Integer)tempArmies.get(j));
+                                }
+                                CFG.core.getCiv((int)CFG.core.getProv((int)provID).getCivId()).uFOL = true;
+                                CFG.core.setActiveProvID(provID);
                             }
                         }
                     } else {
@@ -1738,7 +1952,7 @@ public class TouchManager {
             @Override
             public void extraAction(int nPX, int nPY) {
             }
-        }))))))))))))))))))))))))))))))));
+        })))))))))))))))))))))))))))))))));
         this.mAxDEA = null;
         this.mAxDEA = CFG.menus.getInManageDiplomacy() ? new ExtraAction(){
 
@@ -2161,12 +2375,26 @@ public class TouchManager {
                     }
                 }
             }
+        } : (CFG.menus.getInGameAssign() ? new ExtraAction(){
+
+            @Override
+            public void extraAction(int nPX, int nPY) {
+                if (CFG.brushMode) {
+                    for (int i = 1; i < CFG.core.getCivsSize(); ++i) {
+                        if (CFG.core.getCiv(i).getCapitalProvID() != CFG.core.getActiveProvID()) continue;
+                        if (CFG.core.getProv(CFG.core.getActiveProvID()).getCivId() != CFG.createScenarioAssignProvsCiv) {
+                            CFG.setDialogType(DialogType.CREATE_SCENARIO_ASSIGN_CIVILIZATION);
+                        }
+                        return;
+                    }
+                }
+            }
         } : new ExtraAction(){
 
             @Override
             public void extraAction(int nPX, int nPY) {
             }
-        }));
+        })));
     }
 
     public static final int getDetailsPosX(int nProvinceID) {

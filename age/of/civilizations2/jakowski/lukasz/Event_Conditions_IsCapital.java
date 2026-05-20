@@ -67,10 +67,10 @@ extends Event_Conditions {
                 ++numOfControlledProvinces;
             }
         }
-        catch (IndexOutOfBoundsException ex) {
+        catch (Exception ex) {
             return false;
         }
-        return !((float)numOfControlledProvinces / (float)this.lProvinces.size() > (float)this.getValue() / 100.0f);
+        return (float)numOfControlledProvinces / (float)this.lProvinces.size() >= (float)this.getValue() / 100.0f;
     }
 
     @Override

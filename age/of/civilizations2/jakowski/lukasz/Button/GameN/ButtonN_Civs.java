@@ -43,8 +43,9 @@ extends ButtonM {
         super.init(CFG.lang.get("Provinces"), 0, iPosX, iPosY, iWidth, Math.max(CFG.BUTTON_H, CFG.PADD * 2 + CFG.TEXT_HEIGHT_DEFAULT * 3 + this.textPadding() * 2), true, true, false, false);
         this.iCivRight = nCivRight;
         this.iCivLeft = nCivLeft;
-        this.sName_Left = new TextValue(CFG.core.getCiv(this.iCivLeft).getCivName(), CFG.FONT_BOLD_SMALL);
-        this.sName_Right = new TextValue(CFG.core.getCiv(this.iCivRight).getCivName(), CFG.FONT_BOLD_SMALL);
+        int widthTextMax = iWidth / 2 - (ButtonN_Civs.flagWidthPadding() + CFG.PADD * 7 + (int)((float)IMGManager.getIMG(Images.provinces).getWidth() * this.getImageScale(Images.provinces)) * 2);
+        this.sName_Left = new TextValue(CFG.core.getCiv(this.iCivLeft).getCivName(), CFG.FONT_BOLD_SMALL, widthTextMax);
+        this.sName_Right = new TextValue(CFG.core.getCiv(this.iCivRight).getCivName(), CFG.FONT_BOLD_SMALL, widthTextMax);
         this.sProvincesValue_Left = new TextValue(CFG.getNumberWthSpaces("" + CFG.core.getCiv(this.iCivLeft).getNumOfProvs()), CFG.FONT_REGULAR_SMALL);
         this.sProvincesValue_Right = new TextValue(CFG.getNumberWthSpaces("" + CFG.core.getCiv(this.iCivRight).getNumOfProvs()), CFG.FONT_REGULAR_SMALL);
         this.sPopulation = new TextValue(CFG.lang.get("Population"));
@@ -282,6 +283,30 @@ extends ButtonM {
                     CFG.glyphLay.setText(CFG.fontMain.get(nFont), this.text);
                     this.iTextW = (int)CFG.glyphLay.width;
                     this.iTextH = (int)CFG.glyphLay.height;
+                } else {
+                    this.iTextH = 0;
+                    this.iTextW = 0;
+                }
+            }
+            catch (Exception ex) {
+                CFG.exceptionStack(ex);
+            }
+        }
+
+        public TextValue(String nText, int nFont, int width) {
+            this.text = nText;
+            try {
+                if (this.text != null && this.text.length() > 0) {
+                    CFG.glyphLay.setText(CFG.fontMain.get(nFont), this.text);
+                    this.iTextW = (int)CFG.glyphLay.width;
+                    this.iTextH = (int)CFG.glyphLay.height;
+                    int tWMax = 0;
+                    while (this.iTextW > width - CFG.PADD && this.text.length() > 5 && ++tWMax < 100) {
+                        this.text = this.text.substring(0, Math.max(1, this.text.length() - 3)) + "..";
+                        CFG.glyphLay.setText(CFG.fontMain.get(nFont), this.text);
+                        this.iTextW = (int)CFG.glyphLay.width;
+                        this.iTextH = (int)CFG.glyphLay.height;
+                    }
                 } else {
                     this.iTextH = 0;
                     this.iTextW = 0;

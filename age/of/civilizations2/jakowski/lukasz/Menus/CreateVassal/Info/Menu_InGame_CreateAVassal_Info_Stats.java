@@ -200,9 +200,13 @@ extends Menu {
                     this.getMenuElem(iID).setCheckboxSt(!this.getMenuElem(iID).getCheckboxSt());
                     CFG.createVassalData.playAsVassal = this.getMenuElem(iID).getCheckboxSt();
                 }
-                catch (NullPointerException nullPointerException) {
+                catch (Exception exception) {
                     // empty catch block
                 }
+                return;
+            }
+            case 14: {
+                super.actionEL(iID);
                 return;
             }
         }
