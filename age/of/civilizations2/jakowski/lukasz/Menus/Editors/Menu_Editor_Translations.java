@@ -1,23 +1,19 @@
-package age.of.civilizations2.jakowski.lukasz.Menus.Events;
+package age.of.civilizations2.jakowski.lukasz.Menus.Editors;
 
-import age.of.civilizations2.jakowski.lukasz.Button.Classic.Button_Classic;
 import age.of.civilizations2.jakowski.lukasz.Button.Classic.Button_Classic_LR_Line;
 import age.of.civilizations2.jakowski.lukasz.Button.MenuElemUI;
 import age.of.civilizations2.jakowski.lukasz.CFG;
 import age.of.civilizations2.jakowski.lukasz.Menu;
 import age.of.civilizations2.jakowski.lukasz.Title.TitleM;
+import age.of.civilizations2.jakowski.lukasz.View;
 import java.util.ArrayList;
 
-public class Menu_CreateScenario_Events_SelectIdeology
+public class Menu_Editor_Translations
 extends Menu {
-    public Menu_CreateScenario_Events_SelectIdeology() {
+    public Menu_Editor_Translations() {
         ArrayList<MenuElemUI> menuElements = new ArrayList<MenuElemUI>();
-        int tY = CFG.PADD;
-        menuElements.add(new Button_Classic_LR_Line(null, -1, 0, tY, CFG.GAMEWIDTH, CFG.BUTTON_H, true));
-        for (int i = 0; i < CFG.ideologiesMgr.getIdeologiesSize(); ++i) {
-            menuElements.add(new Button_Classic(CFG.ideologiesMgr.getIdeologyID(i).getName(), (int)(50.0f * CFG.GUI_SCALE), 0, tY, CFG.GAMEWIDTH, CFG.BUTTON_H, true));
-            tY += ((MenuElemUI)menuElements.get(menuElements.size() - 1)).getHeightE() + CFG.PADD;
-        }
+        menuElements.add(new Button_Classic_LR_Line(null, -1, 0, 0, CFG.GAMEWIDTH, CFG.BUTTON_H, true));
+        menuElements.add(new Button_Classic_LR_Line(null, -1, 0, CFG.PADD, CFG.GAMEWIDTH, CFG.BUTTON_H, true));
         this.initMenuWithBackButton(new TitleM(null, CFG.BUTTON_H * 3 / 4, false, false), 0, CFG.BUTTON_H * 3 / 4, CFG.GAMEWIDTH, CFG.GAMEHEIGHT - CFG.BUTTON_H * 3 / 4, menuElements);
         this.updateLang();
     }
@@ -25,7 +21,8 @@ extends Menu {
     @Override
     public void updateLang() {
         this.getMenuElem(0).setTextE(CFG.lang.get("Back"));
-        this.getTitleM().setText(CFG.lang.get("Government"));
+        this.getMenuElem(1).setTextE(CFG.lang.get("CreateTranslation"));
+        this.getTitleM().setText(CFG.lang.get("TranslationEditor"));
     }
 
     @Override
@@ -35,14 +32,16 @@ extends Menu {
                 this.onBackPressed();
                 return;
             }
+            case 1: {
+                CFG.menus.setMenuID(View.eCREATE_TRANSLATION);
+                return;
+            }
         }
-        CFG.eventsManager.selectCivAction(iID - 1);
-        this.onBackPressed();
     }
 
     @Override
-    public final void onBackPressed() {
-        CFG.eventsManager.selectCivBack();
+    public void onBackPressed() {
+        CFG.menus.setMenuID(View.eGAME_EDITOR);
         CFG.menus.setBackAnimation(true);
     }
 }

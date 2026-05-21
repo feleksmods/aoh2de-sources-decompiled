@@ -1331,44 +1331,44 @@ extends Menu {
                 }
             });
             nPosY += ((MenuElemUI)menuElems.get(menuElems.size() - 1)).getHeightE();
-            if (!isRebels) {
-                menuElems.add(new Button_DiplomacyAction(Images.diploTrade, CFG.lang.get("TradeRequest"), 0, 0, nPosY, menuW - 2, tempElemH, true){
+        }
+        if (!isRebels) {
+            menuElems.add(new Button_DiplomacyAction(Images.diploTrade, CFG.lang.get("TradeRequest"), 0, 0, nPosY, menuW - 2, tempElemH, true){
 
-                    @Override
-                    public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
-                        if (this.menuElemHover != null) {
-                            this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
-                        }
+                @Override
+                public void drawMEH2(SpriteBatch oSB, int iTranslateX, int iTranslateY, boolean isActive) {
+                    if (this.menuElemHover != null) {
+                        this.menuElemHover.drawAlwaysBelowMEH(oSB, Menu_InGame_Civ_Actions.this.getPosX() + this.getWidthE() + Core.PADDING + iTranslateX, Touch.getMousePosY());
                     }
+                }
 
-                    @Override
-                    public void actionElem(int iID) {
-                        CFG.tradeRequest = new TradeRequest_GameData();
-                        CFG.tradeRequest.iCivLEFT = CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId();
-                        CFG.tradeRequest.iCivRIGHT = CFG.getActiveCivInfoId();
-                        CFG.menus.rebuildInGame_TradeRequest(CFG.getActiveCivInfoId());
-                    }
+                @Override
+                public void actionElem(int iID) {
+                    CFG.tradeRequest = new TradeRequest_GameData();
+                    CFG.tradeRequest.iCivLEFT = CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId();
+                    CFG.tradeRequest.iCivRIGHT = CFG.getActiveCivInfoId();
+                    CFG.menus.rebuildInGame_TradeRequest(CFG.getActiveCivInfoId());
+                }
 
-                    @Override
-                    public void buildElemHover() {
-                        ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
-                        ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
-                        nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("TradeRequest"), CFG.COLOR_HOVER_TITLE));
-                        nData.add(new ME_Hover_2Type_Image_Big(Images.diploTrade, CFG.PADD, 0));
-                        nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
-                        nElements.add(new MEHover_2E(nData));
-                        nData.clear();
-                        nData.add(new ME_Hover_2Type_Space());
-                        nElements.add(new MEHover_2E(nData));
-                        nData.clear();
-                        nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("TradeDealDesc")));
-                        nElements.add(new MEHover_2E(nData));
-                        nData.clear();
-                        this.menuElemHover = new ME_Hover_v2(nElements);
-                    }
-                });
-                nPosY += tempElemH;
-            }
+                @Override
+                public void buildElemHover() {
+                    ArrayList<MEHover_2E> nElements = new ArrayList<MEHover_2E>();
+                    ArrayList<ME_Hover_2Type> nData = new ArrayList<ME_Hover_2Type>();
+                    nData.add(new ME_Hover_2Type_Text_Big(CFG.lang.get("TradeRequest"), CFG.COLOR_HOVER_TITLE));
+                    nData.add(new ME_Hover_2Type_Image_Big(Images.diploTrade, CFG.PADD, 0));
+                    nData.add(new ME_Hover_2Type_Flag_Big(CFG.getActiveCivInfoId(), CFG.PADD, 0));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_Space());
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    nData.add(new ME_Hover_2Type_TextDesc(CFG.lang.get("TradeDealDesc")));
+                    nElements.add(new MEHover_2E(nData));
+                    nData.clear();
+                    this.menuElemHover = new ME_Hover_v2(nElements);
+                }
+            });
+            nPosY += tempElemH;
         }
         menuElems.add(new Button_DiplomacyAction_XV(Images.sanctions, CFG.lang.get("ImposeSanctions"), 0, 0, nPosY, menuW - 2, tempElemH, true, !CFG.core.getCiv(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId()).areSanctionsAdded(CFG.core.getPlayer(CFG.PLAYER_TURN_ID).getCivId(), CFG.getActiveCivInfoId())){
 
